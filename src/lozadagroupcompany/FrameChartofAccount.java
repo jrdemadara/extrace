@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package lozadagroupcompany;
 
 import java.sql.Connection;
@@ -15,15 +10,8 @@ import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
-/**
- *
- * @author Administrator
- */
-public class FrameChartofAccount extends javax.swing.JFrame {
+public final class FrameChartofAccount extends javax.swing.JFrame {
 
-    /**
-     * Creates new form FrameChartofAccount
-     */
     DatabaseConnection conn = new DatabaseConnection();
     DefaultTableModel tablemodel;
     Connection connection = conn.getConnection();
@@ -47,16 +35,14 @@ public class FrameChartofAccount extends javax.swing.JFrame {
             TableModel.removeRow(0);
         }
 
-        try {
-            Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM tblchartofaccount");
-            while (rs.next()) {
-                String id = rs.getString("ID");
-                String code = rs.getString("ChartCode");
-                String name = rs.getString("ChartName");
-                TableModel.addRow(new Object[]{id, code, name});
-            }
-            stmt.close();
+            try (Statement stmt = connection.createStatement()) {
+                ResultSet rs = stmt.executeQuery("SELECT * FROM tblchartofaccount");
+                while (rs.next()) {
+                    String id = rs.getString("ID");
+                    String code = rs.getString("ChartCode");
+                    String name = rs.getString("ChartName");
+                    TableModel.addRow(new Object[]{id, code, name});
+                } 
         } catch (SQLException ex) {
             Logger.getLogger(FrameChartofAccount.class.getName()).log(Level.SEVERE, null, ex);
         }
