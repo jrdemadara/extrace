@@ -223,10 +223,8 @@ public class FrameItem extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FrameItem().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new FrameItem().setVisible(true);
         });
     }
 

@@ -5,6 +5,16 @@
  */
 package lozadagroupcompany;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.RowFilter;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
+
 /**
  *
  * @author Administrator
@@ -14,8 +24,42 @@ public class FrameChartofAccount extends javax.swing.JFrame {
     /**
      * Creates new form FrameChartofAccount
      */
+    DatabaseConnection conn = new DatabaseConnection();
+    DefaultTableModel tablemodel;
+    Connection connection = conn.getConnection();
+    DefaultTableModel dm;
+
     public FrameChartofAccount() {
         initComponents();
+        RetrieveData();
+    }
+
+    private void SearchData(String query) {
+        dm = (DefaultTableModel) table.getModel();
+        TableRowSorter<DefaultTableModel> tr = new TableRowSorter<>(dm);
+        table.setRowSorter(tr);
+        tr.setRowFilter(RowFilter.regexFilter(query));
+    }
+
+    public void RetrieveData() {
+        DefaultTableModel TableModel = (DefaultTableModel) table.getModel();
+        while (TableModel.getRowCount() > 0) {
+            TableModel.removeRow(0);
+        }
+
+        try {
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tblchartofaccount");
+            while (rs.next()) {
+                String id = rs.getString("ID");
+                String code = rs.getString("ChartCode");
+                String name = rs.getString("ChartName");
+                TableModel.addRow(new Object[]{id, code, name});
+            }
+            stmt.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(FrameChartofAccount.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -35,7 +79,7 @@ public class FrameChartofAccount extends javax.swing.JFrame {
         jTextField2 = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        table = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -100,8 +144,8 @@ public class FrameChartofAccount extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTable1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 52, 66)));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        table.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 52, 66)));
+        table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -117,7 +161,7 @@ public class FrameChartofAccount extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(table);
 
         jButton1.setBackground(new java.awt.Color(45, 52, 66));
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
@@ -195,10 +239,8 @@ public class FrameChartofAccount extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FrameChartofAccount().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new FrameChartofAccount().setVisible(true);
         });
     }
 
@@ -211,8 +253,8 @@ public class FrameChartofAccount extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
 }

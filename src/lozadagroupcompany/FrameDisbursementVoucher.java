@@ -282,10 +282,8 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FrameDisbursementVoucher().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new FrameDisbursementVoucher().setVisible(true);
         });
     }
 
