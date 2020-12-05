@@ -1,9 +1,90 @@
 package lozadagroupcompany;
 
-public class FrameMonitoring extends javax.swing.JFrame {
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import static jdk.nashorn.internal.objects.NativeRegExp.source;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRTableModelDataSource;
+import net.sf.jasperreports.engine.design.JRDesignQuery;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
+
+public final class FrameMonitoring extends javax.swing.JFrame {
+
+    DatabaseConnection conn = new DatabaseConnection();
+    DefaultTableModel tablemodel;
+    Connection connection = conn.getConnection();
+    DefaultTableModel dm;
+    String user;
 
     public FrameMonitoring() {
         initComponents();
+        retrieveDV();
+        retrieveMR();
+    }
+
+    void retrieveDV() {
+        DefaultTableModel tableModel = (DefaultTableModel) tabledv.getModel();
+        while (tableModel.getRowCount() > 0) {
+            tableModel.removeRow(0);
+        }
+        try (Statement stmt = connection.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tbldisbursementvoucher");
+            while (rs.next()) {
+                String code = rs.getString("DisbursementCode");
+                String payee = rs.getString("Payee");
+                String des = rs.getString("Description");
+                String part = rs.getString("Particulars");
+                String gross = rs.getString("GrossAmount");
+                String vat = rs.getString("VAT");
+                String netvat = rs.getString("NetVAT");
+                String fund = rs.getString("FundSource");
+                String pre = rs.getString("PreparedBy");
+                String approved = rs.getString("ApprovedBy");
+                String receive = rs.getString("ReceivedBy");
+                String date = rs.getString("Date");
+                tableModel.addRow(new Object[]{code, payee, des, part, gross, vat, netvat, fund, pre, approved, receive, date});
+            }
+        } catch (SQLException e) {
+        }
+    }
+
+    void retrieveMR() {
+        DefaultTableModel tableModel = (DefaultTableModel) tablemr.getModel();
+        while (tableModel.getRowCount() > 0) {
+            tableModel.removeRow(0);
+        }
+        try (Statement stmt = connection.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tblmerchandisereceipt");
+            while (rs.next()) {
+                String code = rs.getString("MerchReceiptCode");
+                String supplier = rs.getString("Supplier");
+                String quantity = rs.getString("Quantity");
+                String unit = rs.getString("Unit");
+                String unitcost = rs.getString("UnitCost");
+                String totalamount = rs.getString("TotalAmount");
+                String reqby = rs.getString("RequestedBy");
+                String approvedby = rs.getString("ApprovedBy");
+                String date = rs.getString("Date");
+                tableModel.addRow(new Object[]{code, supplier, quantity, unit, unitcost, totalamount, reqby, approvedby, date});
+            }
+        } catch (SQLException e) {
+        }
     }
 
     /**
@@ -17,22 +98,43 @@ public class FrameMonitoring extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        lblcode = new javax.swing.JLabel();
+        lbltype = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
+        jTabbedPane2 = new javax.swing.JTabbedPane();
+        jPanel5 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tabledv = new javax.swing.JTable();
+        jTextField3 = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        tableparticular = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tablemw = new javax.swing.JTable();
+        jTextField2 = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         jTextField1 = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tablemr = new javax.swing.JTable();
+        jButton3 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setAlwaysOnTop(true);
 
         jPanel1.setBackground(new java.awt.Color(45, 52, 66));
 
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("MONITORING");
+
+        lblcode.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
+        lblcode.setForeground(new java.awt.Color(255, 153, 0));
+        lblcode.setText("000000");
+
+        lbltype.setForeground(new java.awt.Color(255, 255, 255));
+        lbltype.setText("CODE");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -41,60 +143,265 @@ public class FrameMonitoring extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lbltype)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblcode)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(lblcode)
+                    .addComponent(lbltype))
                 .addContainerGap())
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(146, 152, 163)));
 
+        tabledv.setBackground(new java.awt.Color(107, 115, 131));
+        tabledv.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        tabledv.setForeground(new java.awt.Color(255, 255, 255));
+        tabledv.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "DV Code", "Payee", "Description", "Particulars", "Gross Amount", "VAT", "NetVAT", "Fund Source", "Prepared By", "Approved By", "Received By", "Date"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tabledv.setGridColor(new java.awt.Color(204, 204, 204));
+        tabledv.setSelectionBackground(new java.awt.Color(45, 52, 66));
+        tabledv.setSelectionForeground(new java.awt.Color(235, 235, 236));
+        tabledv.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tabledv.setShowHorizontalLines(true);
+        tabledv.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabledvMouseClicked(evt);
+            }
+        });
+        jScrollPane4.setViewportView(tabledv);
+
+        jTextField3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField3.setText("Search...");
+
+        jButton1.setBackground(new java.awt.Color(45, 52, 66));
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("Print");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 984, Short.MAX_VALUE)
+                    .addComponent(jTextField3)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1))
+        );
+
+        jTabbedPane2.addTab("Voucher", jPanel5);
+
+        tableparticular.setBackground(new java.awt.Color(107, 115, 131));
+        tableparticular.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        tableparticular.setForeground(new java.awt.Color(255, 255, 255));
+        tableparticular.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "MW Code", "Business No", "Purpose", "Destination", "Quantity", "Unit", "Unit Cost", "Total Amount", "Requested By", "Approved By", "Date"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tableparticular.setGridColor(new java.awt.Color(204, 204, 204));
+        tableparticular.setSelectionBackground(new java.awt.Color(45, 52, 66));
+        tableparticular.setSelectionForeground(new java.awt.Color(235, 235, 236));
+        tableparticular.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tableparticular.setShowHorizontalLines(true);
+        tableparticular.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableparticularMouseClicked(evt);
+            }
+        });
+        jScrollPane5.setViewportView(tableparticular);
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 978, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jTabbedPane2.addTab("Particular", jPanel6);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1002, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTabbedPane2)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 497, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTabbedPane2)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Disbursement Voucher", jPanel2);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(146, 152, 163)));
 
+        tablemw.setBackground(new java.awt.Color(107, 115, 131));
+        tablemw.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        tablemw.setForeground(new java.awt.Color(255, 255, 255));
+        tablemw.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "MW Code", "Business No", "Purpose", "Destination", "Quantity", "Unit", "Unit Cost", "Total Amount", "Requested By", "Approved By", "Date"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tablemw.setGridColor(new java.awt.Color(204, 204, 204));
+        tablemw.setSelectionBackground(new java.awt.Color(45, 52, 66));
+        tablemw.setSelectionForeground(new java.awt.Color(235, 235, 236));
+        tablemw.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tablemw.setShowHorizontalLines(true);
+        tablemw.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tablemwMouseClicked(evt);
+            }
+        });
+        jScrollPane3.setViewportView(tablemw);
+
+        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField2.setText("Search...");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1002, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 497, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Merchandise Withdrawal", jPanel3);
 
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(146, 152, 163)));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField1.setText("Search...");
+
+        tablemr.setBackground(new java.awt.Color(107, 115, 131));
+        tablemr.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 52, 66)));
+        tablemr.setForeground(new java.awt.Color(255, 255, 255));
+        tablemr.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "MR Code", "Supplier", "Quantity", "Unit", "Unit Cost", "Total Amount", "Requested By", "Approved By", "Date"
             }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false
+            };
 
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField1.setText("Search...");
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tablemr.setGridColor(new java.awt.Color(204, 204, 204));
+        tablemr.setSelectionBackground(new java.awt.Color(45, 52, 66));
+        tablemr.setSelectionForeground(new java.awt.Color(235, 235, 236));
+        tablemr.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tablemr.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tablemrMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tablemr);
+
+        jButton3.setBackground(new java.awt.Color(45, 52, 66));
+        jButton3.setForeground(new java.awt.Color(255, 255, 255));
+        jButton3.setText("Print");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -103,8 +410,11 @@ public class FrameMonitoring extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField1)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE))
+                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -113,7 +423,9 @@ public class FrameMonitoring extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton3)
                 .addContainerGap())
         );
 
@@ -152,6 +464,115 @@ public class FrameMonitoring extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void tablemwMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablemwMouseClicked
+
+    }//GEN-LAST:event_tablemwMouseClicked
+
+    private void tabledvMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledvMouseClicked
+        int row = tabledv.getSelectedRow();
+        if (row > -1) {
+            DefaultTableModel TableModel1 = (DefaultTableModel) tabledv.getModel();
+            DefaultTableModel TableModel2 = (DefaultTableModel) tableparticular.getModel();
+            lblcode.setText(TableModel1.getValueAt(row, 0).toString());
+            lbltype.setText("DISBURSEMENT VOUCHER CODE:");
+            while (TableModel2.getRowCount() > 0) {
+                TableModel2.removeRow(0);
+            }
+            try (Statement stmt = connection.createStatement()) {
+                ResultSet rs = stmt.executeQuery("SELECT * FROM tbldisbursementvoucherparticular WHERE DisbursementCode = '" + lblcode.getText() + "' ");
+                while (rs.next()) {
+                    String dvcode = rs.getString("DisbursementCode");
+                    String code = rs.getString("Code");
+                    String particular = rs.getString("Particular");
+                    String quantity = rs.getString("Quantity");
+                    String unit = rs.getString("Unit");
+                    String gross = rs.getString("GrossAmount");
+                    String vat = rs.getString("VAT");
+                    String netvat = rs.getString("NetVAT");
+                    TableModel2.addRow(new Object[]{dvcode, code, particular, quantity, unit, gross, vat, netvat});
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Can't read record in system table!\nSystem detects changes in table entities!\nPlease contact the backend developer.", "ERROR 1012", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            //Do nothing!
+        }
+    }//GEN-LAST:event_tabledvMouseClicked
+
+    private void tableparticularMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableparticularMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tableparticularMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        int row = tabledv.getSelectedRow();
+        if (row > -1) {
+            try {
+                InputStream i = getClass().getResourceAsStream("/report/newReport.jrxml");
+                JasperDesign jasdi = JRXmlLoader.load(i);
+                String sql = "SELECT `DisbursementCode`, `Payee`, `Description`, `GrossAmount` FROM `tbldisbursementvoucher` WHERE DisbursementCode = '" + lblcode.getText() + "'";
+                JRDesignQuery newQuery = new JRDesignQuery();
+                newQuery.setText(sql);
+
+                jasdi.setQuery(newQuery);
+
+                HashMap<String, Object> para = new HashMap<>();
+                para.put("dvcode", lblcode.getText());
+
+                JasperReport js = JasperCompileManager.compileReport(jasdi);
+                JasperPrint jp = JasperFillManager.fillReport(js, para, connection);
+                // JasperExportManager.exportReportToHtmlFile(jp ,ore);
+                JasperViewer.viewReport(jp);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(rootPane, e);
+            }
+
+        }
+
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        int row = tablemr.getSelectedRow();
+        if (row > -1) {
+            try {
+                InputStream i = getClass().getResourceAsStream("/report/MRReport.jrxml");
+                JasperDesign jasdi = JRXmlLoader.load(i);
+                String sql = "SELECT * FROM tblmerchandisereceipt WHERE MerchReceiptCode = '" + lblcode.getText() + "'";
+                JRDesignQuery newQuery = new JRDesignQuery();
+                newQuery.setText(sql);
+
+                jasdi.setQuery(newQuery);
+
+                HashMap<String, Object> object = new HashMap<>();
+                object.put("mrcode", lblcode.getText());
+                object.put("supplier", tablemr.getValueAt(row, 1).toString());
+                object.put("date", tablemr.getValueAt(row, 8).toString());
+                object.put("quantity", tablemr.getValueAt(row, 2).toString());
+                object.put("unit", tablemr.getValueAt(row, 3).toString());
+                object.put("unitcost", tablemr.getValueAt(row, 4).toString());
+                object.put("totalamount", tablemr.getValueAt(row, 5).toString());
+                object.put("requestedby", tablemr.getValueAt(row, 6).toString());
+                object.put("approvedby", tablemr.getValueAt(row, 7).toString());
+                JasperReport js = JasperCompileManager.compileReport(jasdi);
+                JasperPrint jp = JasperFillManager.fillReport(js, object, connection);
+                JasperViewer.viewReport(jp);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(rootPane, e);
+            }
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void tablemrMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablemrMouseClicked
+        int row = tablemr.getSelectedRow();
+        DefaultTableModel TableModel = (DefaultTableModel) tablemr.getModel();
+        if (row > -1) {
+            lblcode.setText(TableModel.getValueAt(row, 0).toString());
+            lbltype.setText("MERCHANDISE RECEIPT CODE:");
+        } else {
+            //Do nothing!
+        }
+    }//GEN-LAST:event_tablemrMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -186,15 +607,30 @@ public class FrameMonitoring extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
+    private javax.swing.JLabel lblcode;
+    private javax.swing.JLabel lbltype;
+    private javax.swing.JTable tabledv;
+    private javax.swing.JTable tablemr;
+    private javax.swing.JTable tablemw;
+    private javax.swing.JTable tableparticular;
     // End of variables declaration//GEN-END:variables
 }

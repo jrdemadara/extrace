@@ -299,13 +299,15 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        table.setBackground(new java.awt.Color(107, 115, 131));
         table.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 52, 66)));
+        table.setForeground(new java.awt.Color(255, 255, 255));
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Merch Receipt Code", "Supplier", "Quantity", "Unit", "Unit Cost", "Total Amount", "Requested By", "Approved By", "Date"
+                "MR Code", "Supplier", "Quantity", "Unit", "Unit Cost", "Total Amount", "Requested By", "Approved By", "Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -314,6 +316,14 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        table.setGridColor(new java.awt.Color(204, 204, 204));
+        table.setSelectionBackground(new java.awt.Color(45, 52, 66));
+        table.setSelectionForeground(new java.awt.Color(235, 235, 236));
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(table);
@@ -388,6 +398,10 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
         double total = unitcost * quantity;
         txttotal.setText(Double.toString(total));
     }//GEN-LAST:event_spquantityStateChanged
+
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tableMouseClicked
 
     /**
      * @param args the command line arguments

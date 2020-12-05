@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="420" orientation="Landscape" columnWidth="380" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="392adaed-ab09-48b7-91fa-c5722e23f6bd">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="ireport.zoom" value="2.357947691000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="mrcode" class="java.lang.String"/>
+	<field name="supplier" class="java.lang.String"/>
+	<field name="date" class="java.lang.String"/>
+	<field name="quantity" class="java.lang.String"/>
+	<field name="unit" class="java.lang.String"/>
+	<field name="unitcost" class="java.lang.String"/>
+	<field name="totalamount" class="java.lang.String"/>
+	<field name="requestedby" class="java.lang.String"/>
+	<field name="approvedby" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="90" splitType="Stretch">
+			<staticText>
+				<reportElement x="80" y="0" width="280" height="20" uuid="e7323a31-f909-46f4-b6fe-e021e1fe2b38"/>
+				<textElement>
+					<font fontName="Lato Black" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LOZADA GROUP OF COMPANIES]]></text>
+			</staticText>
+			<image>
+				<reportElement x="5" y="10" width="65" height="40" uuid="b3a72dc9-526a-4a33-849f-279230dc5451"/>
+				<imageExpression><![CDATA["C:/Users/Administrator/Documents/NetBeansProjects/ProjectManagementPlus/src/source/logo-m.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="80" y="20" width="280" height="10" uuid="120bfce5-316d-47b6-bdce-c9f04262e987"/>
+				<textElement>
+					<font fontName="Lato" size="8"/>
+				</textElement>
+				<text><![CDATA[Fishcode Village, 314 Skydeck Building, Brgy Talomo River, Calinan, Davao City]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="30" width="280" height="10" uuid="05d6dff2-b78e-4d03-805d-882361dd7132"/>
+				<textElement>
+					<font fontName="Lato" size="8"/>
+				</textElement>
+				<text><![CDATA[Calinan, Davao City]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="393" y="10" width="162" height="20" uuid="bba9269e-120a-49de-b9db-24d7ad068bc2"/>
+				<textElement>
+					<font fontName="Lato Black" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MERCHADISE RECEIPT]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="60" width="555" height="1" uuid="1942b37b-6c40-49de-a038-0edc021a459b"/>
+				<graphicElement>
+					<pen lineWidth="2.0"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="393" y="30" width="150" height="30" forecolor="#FF6600" uuid="2a547171-366b-4e68-ab26-678a6c2e1218"/>
+				<textElement>
+					<font fontName="Lato Black" size="22"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{mrcode}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="183" y="69" width="187" height="21" uuid="a3e79149-f984-49f0-b343-32a141b3de11"/>
+				<textElement>
+					<font fontName="Lato Black" size="10"/>
+				</textElement>
+				<text><![CDATA[MERCHADISE RECEIPT FORM (FUEL)]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="22" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="70" height="21" uuid="fad5ce65-0a11-4ba6-a6ef-40bf077517c1"/>
+				<textElement>
+					<font fontName="Lato Black" size="10"/>
+				</textElement>
+				<text><![CDATA[SUPPLIER :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="70" y="0" width="85" height="21" forecolor="#FF6600" uuid="6b6e0e5e-d8cd-4213-b2c2-4cc61c473499"/>
+				<textElement>
+					<font fontName="Lato Black" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{supplier}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="393" y="0" width="70" height="21" uuid="5a40ef74-72c9-4593-a65c-53d030d58791"/>
+				<textElement>
+					<font fontName="Lato Black" size="10"/>
+				</textElement>
+				<text><![CDATA[DATE :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="463" y="1" width="92" height="20" forecolor="#FF6600" uuid="40ea1a57-35fd-445f-9b60-ab914aeab807"/>
+				<textElement>
+					<font fontName="Lato Black"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="21" width="555" height="1" uuid="17292413-a30a-4d15-9e00-fbdf17345cb8"/>
+				<graphicElement>
+					<pen lineWidth="2.0"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="117" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="10" width="70" height="21" uuid="faa38ade-ea06-440e-abc6-ddd0624ba93d"/>
+				<textElement>
+					<font fontName="Lato Black" size="10"/>
+				</textElement>
+				<text><![CDATA[Quantity]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="275" y="10" width="70" height="21" uuid="aaa0ae05-1a76-4202-9f39-983c94655537"/>
+				<textElement>
+					<font fontName="Lato Black" size="10"/>
+				</textElement>
+				<text><![CDATA[Unit Cost]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="428" y="10" width="70" height="21" uuid="2af17738-36e8-4e7f-b07f-58b7d7d64efb"/>
+				<textElement>
+					<font fontName="Lato Black" size="10"/>
+				</textElement>
+				<text><![CDATA[Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="145" y="10" width="70" height="21" uuid="446dfc4d-867e-4442-af02-b31999ecb839"/>
+				<textElement>
+					<font fontName="Lato Black" size="10"/>
+				</textElement>
+				<text><![CDATA[Unit]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="31" width="100" height="20" uuid="6e952a1a-549f-4ea9-8d5a-75bfde7eae91"/>
+				<textElement>
+					<font fontName="Lato" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="145" y="31" width="100" height="20" uuid="a60d0699-eed0-4e9f-98c7-c5eff21e95a1"/>
+				<textElement>
+					<font fontName="Lato" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{unit}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="275" y="31" width="100" height="20" uuid="e52eb994-d67f-4d98-bac7-c27fb8e39674"/>
+				<textElement>
+					<font fontName="Lato" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{unitcost}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="428" y="31" width="100" height="20" uuid="f367f084-b343-4aac-bbd5-ba34fe6cd9fb"/>
+				<textElement>
+					<font fontName="Lato" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{totalamount}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="103" width="555" height="1" uuid="3da3c152-6b96-48e9-8fe4-318ba12e323d"/>
+				<graphicElement>
+					<pen lineWidth="2.0"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="30" y="104" width="481" height="13" uuid="dbe64de1-3a81-47a1-b264-c5aa0cf1b8fb"/>
+				<text><![CDATA[*******************************************************NOTHING FOLLOWS*******************************************]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<staticText>
+				<reportElement x="102" y="33" width="70" height="21" uuid="479358fb-0582-4ed5-9c4b-0a80284b6955"/>
+				<textElement>
+					<font fontName="Lato Black" size="10"/>
+				</textElement>
+				<text><![CDATA[Requested By]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="390" y="32" width="70" height="21" uuid="ee6f6d48-23f9-4f3d-8e8f-b5dd8a94a7d3"/>
+				<textElement>
+					<font fontName="Lato Black" size="10"/>
+				</textElement>
+				<text><![CDATA[Approved By]]></text>
+			</staticText>
+			<line>
+				<reportElement x="47" y="32" width="173" height="1" uuid="fab671c5-62dd-4296-a29e-ada3ff8b3222"/>
+			</line>
+			<textField>
+				<reportElement x="17" y="13" width="244" height="18" uuid="f8887a7c-2712-408f-aba3-a51ea4a6520b"/>
+				<textElement textAlignment="Center">
+					<font fontName="Lato" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{requestedby}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="290" y="11" width="253" height="20" uuid="0ad73ee9-38d3-4e97-83d0-2aef8373faef"/>
+				<textElement textAlignment="Center">
+					<font fontName="Lato" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{approvedby}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="335" y="30" width="173" height="1" uuid="83258ab0-4ca0-4d9f-b4f5-5ace367c09ef"/>
+			</line>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
