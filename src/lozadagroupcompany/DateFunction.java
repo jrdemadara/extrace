@@ -31,7 +31,7 @@ public class DateFunction {
   }
     
     public static String getFormattedYearMonth(){
-    SimpleDateFormat sdf1 = new SimpleDateFormat("M-yy");
+    SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM");
     Date date = new Date();
     return sdf1.format(date);
   }

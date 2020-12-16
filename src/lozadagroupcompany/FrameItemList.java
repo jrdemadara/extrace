@@ -29,11 +29,10 @@ public class FrameItemList extends javax.swing.JFrame {
         try (Statement stmt = connection.createStatement()) {
             ResultSet rs = stmt.executeQuery("SELECT * FROM tblitems");
             while (rs.next()) {
-                String code = rs.getString("ItemCode");
                 String item = rs.getString("Item");
                 String unit = rs.getString("Unit");
                 String cost = rs.getString("UnitCost");
-                TableModel.addRow(new Object[]{code, item, unit, cost});
+                TableModel.addRow(new Object[]{item, unit, cost});
             }
         } catch (SQLException ex) {
             Logger.getLogger(FrameItemList.class.getName()).log(Level.SEVERE, null, ex);
@@ -88,11 +87,11 @@ public class FrameItemList extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Item Code", "ItemName", "Unit", "UnitCost"
+                "Item Name", "Unit", "Unit Cost"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, true
+                false, false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -162,14 +161,12 @@ public class FrameItemList extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         int row = table.getSelectedRow();
         if (row > -1) {
-            String code = (String) model.getValueAt(row, 0);
-            String item = (model.getValueAt(row, 1).toString());
-            String unit = (model.getValueAt(row, 2).toString());
-            String cost = (model.getValueAt(row, 3).toString());
+            String item = (model.getValueAt(row, 0).toString());
+            String unit = (model.getValueAt(row, 1).toString());
+            String cost = (model.getValueAt(row, 2).toString());
             String quantity = "1";
             String totalamount = "0.00";
             FrameDisbursementVoucher.LoadParticular(new Object[]{
-                code,
                 item,
                 quantity,
                 unit,
