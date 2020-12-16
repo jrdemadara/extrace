@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-public final class FrameChartofAccount extends javax.swing.JFrame {
+public class FramePersonnel extends javax.swing.JFrame {
 
     DatabaseConnection conn = new DatabaseConnection();
     DefaultTableModel tablemodel;
@@ -18,16 +18,16 @@ public final class FrameChartofAccount extends javax.swing.JFrame {
     DefaultTableModel dm;
     int id;
 
-    public FrameChartofAccount() {
+    public FramePersonnel() {
         initComponents();
-        RetrieveData();
+        Refresh();
     }
 
     private void Refresh() {
         RetrieveData();
         btsave.setText("Save");
-        txtcode.setText("");
-        txtchartname.setText("");
+        txtname.setText("");
+        cbposition.setSelectedIndex(0);
         id = 0;
     }
 
@@ -37,67 +37,67 @@ public final class FrameChartofAccount extends javax.swing.JFrame {
             TableModel.removeRow(0);
         }
         try (Statement stmt = connection.createStatement()) {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM tblchartofaccount");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tblpersonnel");
             while (rs.next()) {
                 String sid = rs.getString("ID");
-                String code = rs.getString("ChartCode");
-                String name = rs.getString("ChartName");
-                TableModel.addRow(new Object[]{sid, code, name});
+                String name = rs.getString("Name");
+                String position = rs.getString("Position");
+                TableModel.addRow(new Object[]{sid, name, position});
             }
         } catch (SQLException ex) {
-            Logger.getLogger(FrameChartofAccount.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FramePersonnel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     private void Save() {
         try (Statement stmt0 = connection.createStatement()) {
-            ResultSet rs = stmt0.executeQuery("SELECT * FROM tblchartofaccount WHERE ChartName = '" + txtchartname.getText().toUpperCase() + "'");
+            ResultSet rs = stmt0.executeQuery("SELECT * FROM tblpersonnel WHERE Name = '" + txtname.getText().toUpperCase() + "'");
             if (rs.next()) {
-                JOptionPane.showMessageDialog(this, "Chart of Account '" + txtcode.getText() + "' is already exist!", " System Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Personnel '" + txtname.getText() + "' is already exist!", " System Error", JOptionPane.ERROR_MESSAGE);
             } else {
-                try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tblchartofaccount VALUES(?,?,?)")) {
+                try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tblpersonnel VALUES(?,?,?)")) {
                     stmt.setInt(1, 0);
-                    stmt.setString(2, txtcode.getText());
-                    stmt.setString(3, txtchartname.getText().toUpperCase());
+                    stmt.setString(2, txtname.getText().toUpperCase());
+                    stmt.setString(3, cbposition.getSelectedItem().toString());
                     stmt.execute();
                     stmt.close();
-                    JOptionPane.showMessageDialog(this, "Chart of Account '" + txtcode.getText() + "' has been created!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Personnel '" + txtname.getText() + "' has been created!", " System Information", JOptionPane.INFORMATION_MESSAGE);
                 } catch (SQLException ex) {
-                    Logger.getLogger(FrameChartofAccount.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(FramePersonnel.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(FrameChartofAccount.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FramePersonnel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     private void Update() {
-        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblchartofaccount SET ChartCode = ?, ChartName = ? WHERE ID = ?")) {
+        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblpersonnel SET Name = ?, Position = ? WHERE ID = ?")) {
             stmt.setInt(3, id);
-            stmt.setString(1, txtcode.getText());
-            stmt.setString(2, txtchartname.getText().toUpperCase());
+            stmt.setString(1, txtname.getText().toUpperCase());
+            stmt.setString(2, cbposition.getSelectedItem().toString());
             stmt.executeUpdate();
             Refresh();
-            JOptionPane.showMessageDialog(this, "Chart of Account '" + txtcode.getText() + "' has been updated!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Personnel '" + txtname.getText() + "' has been updated!", " System Information", JOptionPane.INFORMATION_MESSAGE);
         } catch (SQLException ex) {
-            Logger.getLogger(FrameChartofAccount.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FramePersonnel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     private void Delete() {
         int row = table.getSelectedRow();
         if (row > -1) {
-            if (JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this chart of account?", " System Information", JOptionPane.YES_NO_OPTION,
+            if (JOptionPane.showConfirmDialog(this, "Are you sure you want to delete personnel '" + txtname.getText() + "'?", " System Information", JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                 String sid = table.getValueAt(row, 0).toString();
-                String sqlc = "DELETE FROM tblchartofaccount WHERE ID=?";
+                String sqlc = "DELETE FROM tblpersonnel WHERE ID = ?";
                 try (PreparedStatement stmt = connection.prepareStatement(sqlc)) {
                     stmt.setString(1, sid);
                     stmt.executeUpdate();
-                    JOptionPane.showMessageDialog(this, "Chart of Account '" + txtcode.getText() + "' has been deleted!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Personnel '" + txtname.getText() + "' has been deleted!", " System Information", JOptionPane.INFORMATION_MESSAGE);
                     Refresh();
                 } catch (SQLException ex) {
-                    Logger.getLogger(FrameChartofAccount.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(FramePersonnel.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         } else {
@@ -117,15 +117,15 @@ public final class FrameChartofAccount extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        txtcode = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        txtchartname = new javax.swing.JTextField();
+        txtname = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
+        cbposition = new javax.swing.JComboBox();
+        jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         btsave = new javax.swing.JButton();
-        btclose = new javax.swing.JButton();
         btdelete = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -133,7 +133,7 @@ public final class FrameChartofAccount extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(45, 52, 66));
 
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("CHART OF ACCOUNT");
+        jLabel1.setText("PERSONNEL");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -154,9 +154,11 @@ public final class FrameChartofAccount extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 52, 66)));
 
-        jLabel2.setText("Chart Code");
+        jLabel3.setText("Name");
 
-        jLabel3.setText("Chart Name");
+        cbposition.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "REQUESTER", "VERIFIER", "APPROVER", "RECEIVER" }));
+
+        jLabel4.setText("Position");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -165,12 +167,12 @@ public final class FrameChartofAccount extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtcode)
-                    .addComponent(txtchartname)
+                    .addComponent(txtname)
+                    .addComponent(cbposition, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3))
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -178,13 +180,13 @@ public final class FrameChartofAccount extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtchartname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cbposition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -194,7 +196,7 @@ public final class FrameChartofAccount extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Chart Code", "Chart Name"
+                "ID", "Name", "Position"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -221,21 +223,21 @@ public final class FrameChartofAccount extends javax.swing.JFrame {
             }
         });
 
-        btclose.setBackground(new java.awt.Color(107, 115, 131));
-        btclose.setForeground(new java.awt.Color(255, 255, 255));
-        btclose.setText("Close");
-        btclose.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btcloseActionPerformed(evt);
-            }
-        });
-
         btdelete.setBackground(new java.awt.Color(45, 52, 66));
         btdelete.setForeground(new java.awt.Color(255, 255, 255));
         btdelete.setText("Delete");
         btdelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btdeleteActionPerformed(evt);
+            }
+        });
+
+        jButton2.setBackground(new java.awt.Color(107, 115, 131));
+        jButton2.setForeground(new java.awt.Color(255, 255, 255));
+        jButton2.setText("Close");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
             }
         });
 
@@ -247,13 +249,13 @@ public final class FrameChartofAccount extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btsave, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btdelete, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btclose, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 493, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
@@ -267,12 +269,12 @@ public final class FrameChartofAccount extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btclose)
-                    .addComponent(btsave)
-                    .addComponent(btdelete))
+                    .addComponent(jButton2)
+                    .addComponent(btdelete)
+                    .addComponent(btsave))
                 .addContainerGap())
         );
 
@@ -280,40 +282,39 @@ public final class FrameChartofAccount extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btcloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btcloseActionPerformed
-        dispose();
-    }//GEN-LAST:event_btcloseActionPerformed
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        btsave.setText("Update");
+        int row = table.getSelectedRow();
+        id = Integer.parseInt(table.getValueAt(row, 0).toString());
+        txtname.setText(table.getValueAt(row, 1).toString());
+        cbposition.setSelectedItem(table.getValueAt(row, 2).toString());
+    }//GEN-LAST:event_tableMouseClicked
 
     private void btsaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btsaveActionPerformed
         if ("Save".equals(btsave.getText())) {
-            if (!"".equals(txtcode.getText()) && !"".equals(txtchartname.getText())) {
+            if (!"".equals(txtname.getText())) {
                 Save();
                 Refresh();
             } else {
                 JOptionPane.showMessageDialog(this, "Please fill the required fields.", " System Warning", JOptionPane.WARNING_MESSAGE);
             }
         } else {
-            if (!"".equals(txtcode.getText()) && !"".equals(txtchartname.getText())) {
+            if (!"".equals(txtname.getText())) {
                 Update();
                 Refresh();
             } else {
                 JOptionPane.showMessageDialog(this, "Please fill the required fields.", " System Warning", JOptionPane.WARNING_MESSAGE);
             }
         }
-
     }//GEN-LAST:event_btsaveActionPerformed
 
     private void btdeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btdeleteActionPerformed
         Delete();
     }//GEN-LAST:event_btdeleteActionPerformed
 
-    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
-        btsave.setText("Update");
-        int row = table.getSelectedRow();
-        id = Integer.parseInt(table.getValueAt(row, 0).toString());
-        txtcode.setText(table.getValueAt(row, 1).toString());
-        txtchartname.setText(table.getValueAt(row, 2).toString());
-    }//GEN-LAST:event_tableMouseClicked
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -332,34 +333,34 @@ public final class FrameChartofAccount extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrameChartofAccount.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FramePersonnel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrameChartofAccount.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FramePersonnel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrameChartofAccount.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FramePersonnel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrameChartofAccount.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FramePersonnel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new FrameChartofAccount().setVisible(true);
+            new FramePersonnel().setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btclose;
     private javax.swing.JButton btdelete;
     private javax.swing.JButton btsave;
+    private javax.swing.JComboBox cbposition;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
-    private javax.swing.JTextField txtchartname;
-    private javax.swing.JTextField txtcode;
+    private javax.swing.JTextField txtname;
     // End of variables declaration//GEN-END:variables
 }

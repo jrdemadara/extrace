@@ -1,21 +1,104 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package lozadagroupcompany;
 
-/**
- *
- * @author Administrator
- */
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 public class FrameUnit extends javax.swing.JFrame {
 
-    /**
-     * Creates new form FrameUnit
-     */
+    DatabaseConnection conn = new DatabaseConnection();
+    DefaultTableModel tablemodel;
+    Connection connection = conn.getConnection();
+    DefaultTableModel dm;
+    int id;
+
     public FrameUnit() {
         initComponents();
+        Refresh();
+    }
+
+    private void Refresh() {
+        RetrieveData();
+        btsave.setText("Save");
+        txtunit.setText("");
+        id = 0;
+    }
+
+    public void RetrieveData() {
+        DefaultTableModel TableModel = (DefaultTableModel) table.getModel();
+        while (TableModel.getRowCount() > 0) {
+            TableModel.removeRow(0);
+        }
+        try (Statement stmt = connection.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tblunit");
+            while (rs.next()) {
+                String sid = rs.getString("ID");
+                String unit = rs.getString("Unit");
+                TableModel.addRow(new Object[]{sid, unit});
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(FrameUnit.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void Save() {
+        try (Statement stmt0 = connection.createStatement()) {
+            ResultSet rs = stmt0.executeQuery("SELECT * FROM tblunit WHERE Unit = '" + txtunit.getText().toUpperCase() + "'");
+            if (rs.next()) {
+                JOptionPane.showMessageDialog(this, "Unit '" + txtunit.getText() + "' is already exist!", " System Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tblunit VALUES(?,?)")) {
+                    stmt.setInt(1, 0);
+                    stmt.setString(2, txtunit.getText().toUpperCase());
+                    stmt.execute();
+                    stmt.close();
+                    JOptionPane.showMessageDialog(this, "Unit '" + txtunit.getText() + "' has been created!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+                } catch (SQLException ex) {
+                    Logger.getLogger(FrameUnit.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(FrameUnit.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void Update() {
+        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblunit SET Unit = ? WHERE ID = ?")) {
+            stmt.setInt(2, id);
+            stmt.setString(1, txtunit.getText().toUpperCase());
+            stmt.executeUpdate();
+            Refresh();
+            JOptionPane.showMessageDialog(this, "Unit '" + txtunit.getText() + "' has been updated!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+        } catch (SQLException ex) {
+            Logger.getLogger(FrameUnit.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void Delete() {
+        int row = table.getSelectedRow();
+        if (row > -1) {
+            if (JOptionPane.showConfirmDialog(this, "Are you sure you want to delete unit '" + txtunit.getText() + "'?", " System Information", JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                String sid = table.getValueAt(row, 0).toString();
+                String sqlc = "DELETE FROM tblunit WHERE ID = ?";
+                try (PreparedStatement stmt = connection.prepareStatement(sqlc)) {
+                    stmt.setString(1, sid);
+                    stmt.executeUpdate();
+                    JOptionPane.showMessageDialog(this, "Unit '" + txtunit.getText() + "' has been deleted!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+                    Refresh();
+                } catch (SQLException ex) {
+                    Logger.getLogger(FrameUnit.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select data.", " System Information", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     /**
@@ -30,12 +113,13 @@ public class FrameUnit extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        jTextField2 = new javax.swing.JTextField();
+        txtunit = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        table = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
+        btdelete = new javax.swing.JButton();
+        btsave = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -73,7 +157,7 @@ public class FrameUnit extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField2)
+                    .addComponent(txtunit)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -85,12 +169,12 @@ public class FrameUnit extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtunit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTable1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 52, 66)));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        table.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 52, 66)));
+        table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -106,15 +190,39 @@ public class FrameUnit extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
-
-        jButton1.setBackground(new java.awt.Color(45, 52, 66));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Save");
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(table);
 
         jButton2.setBackground(new java.awt.Color(107, 115, 131));
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("Close");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        btdelete.setBackground(new java.awt.Color(45, 52, 66));
+        btdelete.setForeground(new java.awt.Color(255, 255, 255));
+        btdelete.setText("Delete");
+        btdelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btdeleteActionPerformed(evt);
+            }
+        });
+
+        btsave.setBackground(new java.awt.Color(45, 52, 66));
+        btsave.setForeground(new java.awt.Color(255, 255, 255));
+        btsave.setText("Save");
+        btsave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btsaveActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -126,13 +234,15 @@ public class FrameUnit extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btsave, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btdelete, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 493, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -146,13 +256,47 @@ public class FrameUnit extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
-                    .addComponent(jButton1))
+                    .addComponent(btdelete)
+                    .addComponent(btsave))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btdeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btdeleteActionPerformed
+        Delete();
+    }//GEN-LAST:event_btdeleteActionPerformed
+
+    private void btsaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btsaveActionPerformed
+        if ("Save".equals(btsave.getText())) {
+            if (!"".equals(txtunit.getText())) {
+                Save();
+                Refresh();
+            } else {
+                JOptionPane.showMessageDialog(this, "Please fill the required fields.", " System Warning", JOptionPane.WARNING_MESSAGE);
+            }
+        } else {
+            if (!"".equals(txtunit.getText())) {
+                Update();
+                Refresh();
+            } else {
+                JOptionPane.showMessageDialog(this, "Please fill the required fields.", " System Warning", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btsaveActionPerformed
+
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        btsave.setText("Update");
+        int row = table.getSelectedRow();
+        id = Integer.parseInt(table.getValueAt(row, 0).toString());
+        txtunit.setText(table.getValueAt(row, 1).toString());
+    }//GEN-LAST:event_tableMouseClicked
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -188,14 +332,15 @@ public class FrameUnit extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btdelete;
+    private javax.swing.JButton btsave;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTable table;
+    private javax.swing.JTextField txtunit;
     // End of variables declaration//GEN-END:variables
 }
