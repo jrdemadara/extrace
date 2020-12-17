@@ -42,10 +42,11 @@ public class FrameItem extends javax.swing.JFrame {
             ResultSet rs = stmt.executeQuery("SELECT * FROM tblitems");
             while (rs.next()) {
                 String sid = rs.getString("ID");
+                String code = rs.getString("Code");
                 String item = rs.getString("Item");
                 String unit = rs.getString("Unit");
                 String cost = rs.getString("UnitCost");
-                TableModel.addRow(new Object[]{sid, item, unit, cost});
+                TableModel.addRow(new Object[]{sid,code, item, unit, cost});
             }
         } catch (SQLException ex) {
             Logger.getLogger(FrameItem.class.getName()).log(Level.SEVERE, null, ex);
@@ -70,11 +71,12 @@ public class FrameItem extends javax.swing.JFrame {
             if (rs.next()) {
                 JOptionPane.showMessageDialog(this, "Item '" + txtname.getText() + "' is already exist!", " System Error", JOptionPane.ERROR_MESSAGE);
             } else {
-                try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tblitems VALUES(?,?,?,?)")) {
+                try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tblitems VALUES(?,?,?,?,?)")) {
                     stmt.setInt(1, 0);
-                    stmt.setString(2, txtname.getText().toUpperCase());
-                    stmt.setString(3, cbunit.getSelectedItem().toString());
-                    stmt.setString(4, txtcost.getText());
+                    stmt.setString(2, txtcode.getText());
+                    stmt.setString(3, txtname.getText().toUpperCase());
+                    stmt.setString(4, cbunit.getSelectedItem().toString());
+                    stmt.setString(5, txtcost.getText());
                     stmt.execute();
                     stmt.close();
                     JOptionPane.showMessageDialog(this, "Item '" + txtname.getText() + "' has been created!", " System Information", JOptionPane.INFORMATION_MESSAGE);
@@ -88,11 +90,12 @@ public class FrameItem extends javax.swing.JFrame {
     }
 
     private void Update() {
-        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblitems SET Item = ?, Unit = ?, UnitCost = ? WHERE ID = ?")) {
-            stmt.setInt(4, id);
-            stmt.setString(1, txtname.getText().toUpperCase());
-            stmt.setString(2, cbunit.getSelectedItem().toString());
-            stmt.setString(3, txtcost.getText());
+        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblitems SET Code = ?, Item = ?, Unit = ?, UnitCost = ? WHERE ID = ?")) {
+            stmt.setInt(5, id);
+            stmt.setString(1, txtcode.getText());
+            stmt.setString(2, txtname.getText().toUpperCase());
+            stmt.setString(3, cbunit.getSelectedItem().toString());
+            stmt.setString(4, txtcost.getText());
             stmt.executeUpdate();
             Refresh();
             JOptionPane.showMessageDialog(this, "Item '" + txtname.getText() + "' has been updated!", " System Information", JOptionPane.INFORMATION_MESSAGE);
@@ -140,6 +143,8 @@ public class FrameItem extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         txtcost = new javax.swing.JTextField();
         cbunit = new javax.swing.JComboBox();
+        jLabel6 = new javax.swing.JLabel();
+        txtcode = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         btsave = new javax.swing.JButton();
@@ -148,6 +153,7 @@ public class FrameItem extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
+        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(45, 52, 66));
 
@@ -185,42 +191,49 @@ public class FrameItem extends javax.swing.JFrame {
             }
         });
 
+        jLabel6.setText("Code");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel4)
-                                .addGap(211, 211, 211))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(cbunit, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(6, 6, 6)))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(txtcost, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel4)
+                        .addGap(211, 211, 211))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(txtname, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(txtcode)
+                                    .addComponent(cbunit, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(6, 6, 6)))))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addComponent(txtname, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(txtcost, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel3)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
@@ -238,11 +251,11 @@ public class FrameItem extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Item Name", "Unit", "Unit Cost"
+                "ID", "Code", "Item Name", "Unit", "Unit Cost"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -354,9 +367,10 @@ public class FrameItem extends javax.swing.JFrame {
         btsave.setText("Update");
         int row = table.getSelectedRow();
         id = Integer.parseInt(table.getValueAt(row, 0).toString());
-        txtname.setText(table.getValueAt(row, 1).toString());
-        cbunit.setSelectedItem(table.getValueAt(row, 2).toString());
-        txtcost.setText(table.getValueAt(row, 3).toString());
+        txtcode.setText(table.getValueAt(row, 1).toString());
+        txtname.setText(table.getValueAt(row, 2).toString());
+        cbunit.setSelectedItem(table.getValueAt(row, 3).toString());
+        txtcost.setText(table.getValueAt(row, 4).toString());
     }//GEN-LAST:event_tableMouseClicked
 
     private void txtcostKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtcostKeyReleased
@@ -412,10 +426,12 @@ public class FrameItem extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
+    private javax.swing.JTextField txtcode;
     private javax.swing.JTextField txtcost;
     private javax.swing.JTextField txtname;
     // End of variables declaration//GEN-END:variables

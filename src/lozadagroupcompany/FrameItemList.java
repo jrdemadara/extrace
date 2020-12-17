@@ -29,10 +29,11 @@ public class FrameItemList extends javax.swing.JFrame {
         try (Statement stmt = connection.createStatement()) {
             ResultSet rs = stmt.executeQuery("SELECT * FROM tblitems");
             while (rs.next()) {
+                String code = rs.getString("Code");
                 String item = rs.getString("Item");
                 String unit = rs.getString("Unit");
                 String cost = rs.getString("UnitCost");
-                TableModel.addRow(new Object[]{item, unit, cost});
+                TableModel.addRow(new Object[]{code, item, unit, cost});
             }
         } catch (SQLException ex) {
             Logger.getLogger(FrameItemList.class.getName()).log(Level.SEVERE, null, ex);
@@ -58,6 +59,7 @@ public class FrameItemList extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
+        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(45, 52, 66));
 
@@ -87,11 +89,11 @@ public class FrameItemList extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Item Name", "Unit", "Unit Cost"
+                "Code", "Item Name", "Unit", "Unit Cost"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, true
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -161,12 +163,14 @@ public class FrameItemList extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         int row = table.getSelectedRow();
         if (row > -1) {
-            String item = (model.getValueAt(row, 0).toString());
-            String unit = (model.getValueAt(row, 1).toString());
-            String cost = (model.getValueAt(row, 2).toString());
+            String code = (model.getValueAt(row, 0).toString());
+            String item = (model.getValueAt(row, 1).toString());
+            String unit = (model.getValueAt(row, 2).toString());
+            String cost = (model.getValueAt(row, 3).toString());
             String quantity = "1";
             String totalamount = "0.00";
             FrameDisbursementVoucher.LoadParticular(new Object[]{
+                code,
                 item,
                 quantity,
                 unit,

@@ -8,7 +8,9 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 public class FrameMerchandiseReceipt extends javax.swing.JFrame {
 
@@ -20,22 +22,27 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
 
     public FrameMerchandiseReceipt() {
         initComponents();
+        RetrieveUnit();
+        RetrieveSupplier();
+        RetrievePersonnel();
         Refresh();
     }
 
     private void Refresh() {
         CodeGenerator();
-        RetrieveUnit();
-        RetrieveSupplier();
-        retrieveData();
-        spquantity.setValue(0.00);
+        RetrieveData();
+        btsave.setText("Save");
+        spquantity.setValue(0);
         txtunitcost.setText("0.00");
         txttotal.setText("0.00");
         cbsupplier.setSelectedIndex(0);
         cbunit.setSelectedIndex(0);
+        cbrequest.setSelectedIndex(0);
+        cbapprove.setSelectedIndex(0);
+
     }
 
-    void retrieveData() {
+    void RetrieveData() {
         DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
         while (tableModel.getRowCount() > 0) {
             tableModel.removeRow(0);
@@ -58,6 +65,13 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
         }
     }
 
+    private void Search(String query) {
+        dm = (DefaultTableModel) table.getModel();
+        TableRowSorter<DefaultTableModel> tr = new TableRowSorter<>(dm);
+        table.setRowSorter(tr);
+        tr.setRowFilter(RowFilter.regexFilter(query));
+    }
+
     private void RetrieveSupplier() {
         cbsupplier.addItem("Select Supplier");
         try (Statement stmt = connection.createStatement()) {
@@ -65,6 +79,20 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
             while (rs.next()) {
                 String chart = rs.getString("SupplierName");
                 cbsupplier.addItem(chart);
+            }
+        } catch (SQLException e) {
+        }
+    }
+
+    private void RetrievePersonnel() {
+        cbrequest.addItem("Select Personnel");
+        cbapprove.addItem("Select Personnel");
+        try (Statement stmt = connection.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tblpersonnel");
+            while (rs.next()) {
+                String chart = rs.getString("Name");
+                cbrequest.addItem(chart);
+                cbapprove.addItem(chart);
             }
         } catch (SQLException e) {
         }
@@ -91,8 +119,8 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
             stmt.setString(5, cbunit.getSelectedItem().toString());
             stmt.setString(6, txtunitcost.getText());
             stmt.setString(7, txttotal.getText());
-            stmt.setString(8, user);
-            stmt.setString(9, "");
+            stmt.setString(8, cbrequest.getSelectedItem().toString());
+            stmt.setString(9, cbapprove.getSelectedItem().toString());
             stmt.setString(10, DateFunction.getFormattedDate());
             stmt.execute();
             stmt.close();
@@ -100,6 +128,45 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(FrameMerchandiseReceipt.class.getName()).log(Level.SEVERE, null, ex);
 
+        }
+    }
+
+    private void Update() {
+        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblmerchandisereceipt SET Supplier = ?, Quantity = ?, Unit = ?, UnitCost = ?, TotalAmount = ?, RequestedBy = ?, ApprovedBy = ? WHERE MerchReceiptCode = ?")) {
+            stmt.setString(8, lblcode.getText());
+            stmt.setString(1, cbsupplier.getSelectedItem().toString());
+            stmt.setInt(2, Integer.parseInt(spquantity.getValue().toString()));
+            stmt.setString(3, cbunit.getSelectedItem().toString());
+            stmt.setString(4, txtunitcost.getText());
+            stmt.setString(5, txttotal.getText());
+            stmt.setString(6, cbrequest.getSelectedItem().toString());
+            stmt.setString(7, cbapprove.getSelectedItem().toString());
+            stmt.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Merchandise Receipt '" + lblcode.getText() + "' has been updated!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+            Refresh();
+        } catch (SQLException ex) {
+            Logger.getLogger(FrameMerchandiseReceipt.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void Delete() {
+        int row = table.getSelectedRow();
+        if (row > -1) {
+            if (JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this data?", " System Information", JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                String sid = table.getValueAt(row, 0).toString();
+                String sqlc = "DELETE FROM tblmerchandisereceipt WHERE MerchReceiptCode = ?";
+                try (PreparedStatement stmt = connection.prepareStatement(sqlc)) {
+                    stmt.setString(1, sid);
+                    stmt.executeUpdate();
+                    JOptionPane.showMessageDialog(this, "Merchandise Receipt '" + lblcode.getText() + "' has been deleted!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+                    Refresh();
+                } catch (SQLException ex) {
+                    Logger.getLogger(FrameMerchandiseReceipt.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select data.", " System Information", JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -162,13 +229,20 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
         txttotal = new javax.swing.JTextField();
         cbunit = new javax.swing.JComboBox();
         spquantity = new javax.swing.JSpinner();
+        jLabel10 = new javax.swing.JLabel();
+        cbrequest = new javax.swing.JComboBox();
+        cbapprove = new javax.swing.JComboBox();
+        jLabel11 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        btsave = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        txtsearch = new javax.swing.JTextField();
+        btdelete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
+        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(45, 52, 66));
 
@@ -233,41 +307,60 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
             }
         });
 
+        jLabel10.setText("Requested By");
+
+        cbrequest.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbrequestActionPerformed(evt);
+            }
+        });
+
+        cbapprove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbapproveActionPerformed(evt);
+            }
+        });
+
+        jLabel11.setText("Approved By");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(spquantity, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addGap(43, 43, 43))
+                            .addComponent(txttotal)))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel2)
+                        .addComponent(cbsupplier, 0, 227, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(cbunit, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(cbrequest, javax.swing.GroupLayout.Alignment.LEADING, 0, 245, Short.MAX_VALUE))
+                    .addComponent(jLabel10))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(189, 189, 189))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(spquantity)
-                                .addGap(6, 6, 6)))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7)
-                            .addComponent(txttotal, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(152, 152, 152))
+                        .addComponent(jLabel5)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel2)
-                            .addComponent(cbsupplier, 0, 227, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cbunit, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(0, 152, Short.MAX_VALUE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(txtunitcost)
-                                .addContainerGap())))))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(txtunitcost, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
+                            .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cbapprove, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -295,7 +388,15 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spquantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(spquantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbrequest, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbapprove, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -328,18 +429,35 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(table);
 
-        jButton1.setBackground(new java.awt.Color(45, 52, 66));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Save");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btsave.setBackground(new java.awt.Color(45, 52, 66));
+        btsave.setForeground(new java.awt.Color(255, 255, 255));
+        btsave.setText("Save");
+        btsave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btsaveActionPerformed(evt);
             }
         });
 
         jButton2.setBackground(new java.awt.Color(107, 115, 131));
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("Close");
+
+        txtsearch.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtsearch.setText("Search...");
+        txtsearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtsearchKeyReleased(evt);
+            }
+        });
+
+        btdelete.setBackground(new java.awt.Color(45, 52, 66));
+        btdelete.setForeground(new java.awt.Color(255, 255, 255));
+        btdelete.setText("Delete");
+        btdelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btdeleteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -351,13 +469,16 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btsave, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btdelete, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 11, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(txtsearch))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -367,11 +488,14 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtsearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
-                    .addComponent(jButton1))
+                    .addComponent(btsave)
+                    .addComponent(btdelete))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -379,14 +503,23 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (!"Select Supplier".equals(cbsupplier.getSelectedItem()) && !"0.00".equals(txtunitcost.getText()) && !"Select Unit".equals(cbunit.getSelectedItem())) {
-            Save();
-            Refresh();
+    private void btsaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btsaveActionPerformed
+        if ("Save".equals(btsave.getText())) {
+            if (!"Select Supplier".equals(cbsupplier.getSelectedItem()) && !"0.00".equals(txtunitcost.getText()) && !"Select Unit".equals(cbunit.getSelectedItem()) && !"Select Personnel".equals(cbrequest.getSelectedItem()) && !"Select Personnel".equals(cbapprove.getSelectedItem())) {
+                Save();
+                Refresh();
+            } else {
+                JOptionPane.showMessageDialog(this, "Please fill the required fields.", " System Warning", JOptionPane.WARNING_MESSAGE);
+            }
         } else {
-            JOptionPane.showMessageDialog(this, "Please fill the required fields.", " System Warning", JOptionPane.WARNING_MESSAGE);
+            if (!"Select Supplier".equals(cbsupplier.getSelectedItem()) && !"0.00".equals(txtunitcost.getText()) && !"Select Unit".equals(cbunit.getSelectedItem()) && !"Select Personnel".equals(cbrequest.getSelectedItem()) && !"Select Personnel".equals(cbapprove.getSelectedItem())) {
+                Update();
+                Refresh();
+            } else {
+                JOptionPane.showMessageDialog(this, "Please fill the required fields.", " System Warning", JOptionPane.WARNING_MESSAGE);
+            }
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btsaveActionPerformed
 
     private void spquantityInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_spquantityInputMethodTextChanged
 
@@ -400,8 +533,33 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
     }//GEN-LAST:event_spquantityStateChanged
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
-        // TODO add your handling code here:
+        btsave.setText("Update");
+        int row = table.getSelectedRow();
+        lblcode.setText(table.getValueAt(row, 0).toString());
+        cbsupplier.setSelectedItem(table.getValueAt(row, 1).toString());
+        spquantity.setValue(Integer.parseInt(table.getValueAt(row, 2).toString()));
+        cbunit.setSelectedItem(table.getValueAt(row, 3).toString());
+        txtunitcost.setText(table.getValueAt(row, 4).toString());
+        txttotal.setText(table.getValueAt(row, 5).toString());
+        cbrequest.setSelectedItem(table.getValueAt(row, 6).toString());
+        cbapprove.setSelectedItem(table.getValueAt(row, 7).toString());
     }//GEN-LAST:event_tableMouseClicked
+
+    private void cbrequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbrequestActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbrequestActionPerformed
+
+    private void cbapproveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbapproveActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbapproveActionPerformed
+
+    private void btdeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btdeleteActionPerformed
+        Delete();
+    }//GEN-LAST:event_btdeleteActionPerformed
+
+    private void txtsearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtsearchKeyReleased
+        Search(txtsearch.getText());
+    }//GEN-LAST:event_txtsearchKeyReleased
 
     /**
      * @param args the command line arguments
@@ -444,11 +602,16 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btdelete;
+    private javax.swing.JButton btsave;
+    private javax.swing.JComboBox cbapprove;
+    private javax.swing.JComboBox cbrequest;
     private javax.swing.JComboBox cbsupplier;
     private javax.swing.JComboBox cbunit;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -461,6 +624,7 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
     private javax.swing.JLabel lblcode;
     private javax.swing.JSpinner spquantity;
     private javax.swing.JTable table;
+    private javax.swing.JTextField txtsearch;
     private javax.swing.JTextField txttotal;
     private javax.swing.JTextField txtunitcost;
     // End of variables declaration//GEN-END:variables

@@ -17,7 +17,6 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
     Connection connection = conn.getConnection();
     DefaultTableModel dm;
     int particulars;
-    String user = "";
 
     public FrameDisbursementVoucher() {
         initComponents();
@@ -29,6 +28,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         RetrieveChart();
         RetrieveSupplier();
         RetrievePersonnel();
+        btsave.setText("Save");
         txtdescription.setText("");
         txtparticular.setText("");
         txtgrossamount.setText("0.00");
@@ -36,6 +36,13 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         txtnetvat.setText("0.00");
         cbpayee.setSelectedIndex(0);
         cbfundsource.setSelectedIndex(0);
+        cbprepare.setSelectedIndex(0);
+        cbapprove.setSelectedIndex(0);
+        cbreceive.setSelectedIndex(0);
+        DefaultTableModel TableModel = (DefaultTableModel) table.getModel();
+        while (TableModel.getRowCount() > 0) {
+            TableModel.removeRow(0);
+        }
     }
 
     private void RetrieveSupplier() {
@@ -84,9 +91,29 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         CountParticular();
     }
 
+    public static void LoadDV(String code, String payee, String description, String fundsource, String particular, String grossamount, String vat, String netvat, String prepare, String approve, String receive) {
+        lblcode.setText(code);
+        cbpayee.setSelectedItem(payee);
+        txtdescription.setText(description);
+        cbfundsource.setSelectedItem(fundsource);
+        txtparticular.setText(particular);
+        txtgrossamount.setText(grossamount);
+        txtvat.setText(vat);
+        txtnetvat.setText(netvat);
+        cbprepare.setSelectedItem(prepare);
+        cbapprove.setSelectedItem(approve);
+        cbreceive.setSelectedItem(receive);
+        btsave.setText("Update");
+    }
+
+    public static void LoadDVParticular(Object[] dataRow) {
+        DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+        tableModel.addRow(dataRow);
+    }
+
     public static void ModifyQuantity(String quantity) {
         int row = table.getSelectedRow();
-        table.setValueAt(quantity, row, 1);
+        table.setValueAt(quantity, row, 2);
     }
 
     private static void CountParticular() {
@@ -102,14 +129,14 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         double totalvat = 0;
         double totalnetvat = 0;
         for (int i = 0; i < table.getRowCount(); i++) {
-            double quantity = Double.parseDouble(table.getValueAt(i, 1).toString());
-            double unitcost = Double.parseDouble(table.getValueAt(i, 3).toString());
+            double quantity = Double.parseDouble(table.getValueAt(i, 2).toString());
+            double unitcost = Double.parseDouble(table.getValueAt(i, 4).toString());
             double totalamount = Math.ceil(unitcost * quantity);
             double vat = Math.ceil((totalamount / 1.12) * 0.12);
             double netvat = Math.ceil(totalamount / 1.12);
-            table.setValueAt(totalamount, i, 4);
-            table.setValueAt(vat, i, 5);
-            table.setValueAt(netvat, i, 6);
+            table.setValueAt(totalamount, i, 5);
+            table.setValueAt(vat, i, 6);
+            table.setValueAt(netvat, i, 7);
             grandtotal += totalamount;
             totalvat += vat;
             totalnetvat += netvat;
@@ -122,21 +149,25 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
 
     private void Save() {
         for (int i = 0; i < table.getRowCount(); i++) {
-            String particular = table.getValueAt(i, 0).toString();
-            String quantity = table.getValueAt(i, 1).toString();
-            String unit = table.getValueAt(i, 2).toString();
-            String gross = table.getValueAt(i, 3).toString();
-            String vat = table.getValueAt(i, 4).toString();
-            String netvat = table.getValueAt(i, 5).toString();
-            try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tbldisbursementvoucherparticular VALUES(?,?,?,?,?,?,?,?)")) {
+            String code = table.getValueAt(i, 0).toString();
+            String particular = table.getValueAt(i, 1).toString();
+            String quantity = table.getValueAt(i, 2).toString();
+            String unit = table.getValueAt(i, 3).toString();
+            String unitcost = table.getValueAt(i, 4).toString();
+            String gross = table.getValueAt(i, 5).toString();
+            String vat = table.getValueAt(i, 6).toString();
+            String netvat = table.getValueAt(i, 7).toString();
+            try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tbldisbursementvoucherparticular VALUES(?,?,?,?,?,?,?,?,?,?)")) {
                 stmt.setInt(1, 0);
                 stmt.setString(2, lblcode.getText());
-                stmt.setString(3, particular);
-                stmt.setString(4, quantity);
-                stmt.setString(5, unit);
-                stmt.setString(6, gross);
-                stmt.setString(7, vat);
-                stmt.setString(8, netvat);
+                stmt.setString(3, code);
+                stmt.setString(4, particular);
+                stmt.setString(5, quantity);
+                stmt.setString(6, unit);
+                stmt.setString(7, unitcost);
+                stmt.setString(8, gross);
+                stmt.setString(9, vat);
+                stmt.setString(10, netvat);
                 stmt.execute();
                 stmt.close();
             } catch (SQLException ex) {
@@ -165,6 +196,54 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(FrameDisbursementVoucher.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void Update() {
+        for (int i = 0; i < table.getRowCount(); i++) {
+            String code = table.getValueAt(i, 0).toString();
+            String particular = table.getValueAt(i, 1).toString();
+            String quantity = table.getValueAt(i, 2).toString();
+            String unit = table.getValueAt(i, 3).toString();
+            String unitcost = table.getValueAt(i, 4).toString();
+            String gross = table.getValueAt(i, 5).toString();
+            String vat = table.getValueAt(i, 6).toString();
+            String netvat = table.getValueAt(i, 7).toString();
+            try (PreparedStatement stmt = connection.prepareStatement("UPDATE tbldisbursementvoucherparticular SET Code = ?, Particular = ?, Quantity = ?, Unit = ?, UnitCost = ?, GrossAmount = ?, VAT = ?, NetVAT = ? WHERE DisbursementCode = ?")) {
+                stmt.setString(1, code);
+                stmt.setString(2, particular);
+                stmt.setString(3, quantity);
+                stmt.setString(4, unit);
+                stmt.setString(5, unitcost);
+                stmt.setString(6, gross);
+                stmt.setString(7, vat);
+                stmt.setString(8, netvat);
+                stmt.setString(9, lblcode.getText());
+                stmt.executeUpdate();
+                Refresh();
+            } catch (SQLException ex) {
+                Logger.getLogger(FrameDisbursementVoucher.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tbldisbursementvoucher SET Payee = ?, Description = ?, Particulars = ?, GrossAmount = ?, VAT = ?, NetVAT = ?, FundSource = ?, PreparedBy = ?, ApprovedBy = ?, ReceivedBy = ? WHERE DisbursementCode = ?")) {
+            stmt.setString(1, cbpayee.getSelectedItem().toString());
+            stmt.setString(2, txtdescription.getText().toUpperCase());
+            stmt.setString(3, txtparticular.getText());
+            stmt.setString(4, txtgrossamount.getText());
+            stmt.setString(5, txtvat.getText());
+            stmt.setString(6, txtnetvat.getText());
+            stmt.setString(7, cbfundsource.getSelectedItem().toString());
+            stmt.setString(8, cbprepare.getSelectedItem().toString());
+            stmt.setString(9, cbapprove.getSelectedItem().toString());
+            stmt.setString(10, cbreceive.getSelectedItem().toString());
+            stmt.setString(11, lblcode.getText());
+            stmt.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Disbursement Voucher '" + lblcode.getText() + "' has been updated!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+            Refresh();
+        } catch (SQLException ex) {
+            Logger.getLogger(FrameDisbursementVoucher.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     private String CodeGenerator() {
@@ -196,9 +275,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
                 code = newcode;
                 lblcode.setText(code);
             }
-
         }
-
         return code;
     }
 
@@ -212,8 +289,8 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
     private void initComponents() {
 
         jPopupMenu1 = new javax.swing.JPopupMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        modifyquantity = new javax.swing.JMenuItem();
+        remove = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         lblcode = new javax.swing.JLabel();
@@ -248,24 +325,25 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
 
         jPopupMenu1.setInvoker(table);
 
-        jMenuItem1.setText("Modify Quantity");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        modifyquantity.setText("Modify Quantity");
+        modifyquantity.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                modifyquantityActionPerformed(evt);
             }
         });
-        jPopupMenu1.add(jMenuItem1);
+        jPopupMenu1.add(modifyquantity);
 
-        jMenuItem2.setText("Remove Item");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        remove.setText("Remove Item");
+        remove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                removeActionPerformed(evt);
             }
         });
-        jPopupMenu1.add(jMenuItem2);
+        jPopupMenu1.add(remove);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
+        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(45, 52, 66));
 
@@ -490,7 +568,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setBackground(new java.awt.Color(107, 115, 131));
+        jButton3.setBackground(new java.awt.Color(45, 52, 66));
         jButton3.setForeground(new java.awt.Color(255, 255, 255));
         jButton3.setText("Add Item");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -525,17 +603,18 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Item", "Quantity", "Unit", "Unit Cost", "Total Amount", "VAT", "Net VAT"
+                "Code", "Item", "Quantity", "Unit", "Unit Cost", "Total Amount", "VAT", "Net VAT"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+        table.setComponentPopupMenu(jPopupMenu1);
         table.setGridColor(new java.awt.Color(204, 204, 204));
         table.setSelectionBackground(new java.awt.Color(45, 52, 66));
         table.setSelectionForeground(new java.awt.Color(235, 235, 236));
@@ -592,11 +671,20 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btsaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btsaveActionPerformed
-        if (!"Select Payee".equals(cbpayee.getSelectedItem()) && !"".equals(txtdescription.getText()) && !"Select Fund".equals(cbfundsource.getSelectedItem())) {
-            Save();
-            Refresh();
+        if ("Save".equals(btsave.getText())) {
+            if (!"Select Payee".equals(cbpayee.getSelectedItem()) && !"".equals(txtdescription.getText()) && !"Select Fund".equals(cbfundsource.getSelectedItem()) && !"Select Personnel".equals(cbprepare.getSelectedItem()) && !"Select Personnel".equals(cbapprove.getSelectedItem()) && !"Select Personnel".equals(cbreceive.getSelectedItem())) {
+                Save();
+                Refresh();
+            } else {
+                JOptionPane.showMessageDialog(this, "Please fill the required fields.", " System Warning", JOptionPane.WARNING_MESSAGE);
+            }
         } else {
-            JOptionPane.showMessageDialog(this, "Please fill the required fields.", " System Warning", JOptionPane.WARNING_MESSAGE);
+            if (!"Select Payee".equals(cbpayee.getSelectedItem()) && !"".equals(txtdescription.getText()) && !"Select Fund".equals(cbfundsource.getSelectedItem()) && !"Select Personnel".equals(cbprepare.getSelectedItem()) && !"Select Personnel".equals(cbapprove.getSelectedItem()) && !"Select Personnel".equals(cbreceive.getSelectedItem())) {
+                Update();
+                Refresh();
+            } else {
+                JOptionPane.showMessageDialog(this, "Please fill the required fields.", " System Warning", JOptionPane.WARNING_MESSAGE);
+            }
         }
     }//GEN-LAST:event_btsaveActionPerformed
 
@@ -619,12 +707,12 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         frame.setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void modifyquantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyquantityActionPerformed
         FrameDVSettle frame = new FrameDVSettle();
         frame.setVisible(true);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_modifyquantityActionPerformed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+    private void removeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeActionPerformed
         int row = table.getSelectedRow();
         String item = table.getValueAt(row, 1).toString();
         if (row > -1) {
@@ -635,7 +723,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
                 CalculateParticular();
             }
         }
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+    }//GEN-LAST:event_removeActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         int row = table.getSelectedRow();
@@ -665,8 +753,9 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
     }//GEN-LAST:event_txtdescriptionActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        FrameMonitoring frame = new FrameMonitoring();
+        FrameDVList frame = new FrameDVList();
         frame.setVisible(true);
+        dispose();
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void cbprepareActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbprepareActionPerformed
@@ -714,12 +803,12 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btsave;
-    private javax.swing.JComboBox cbapprove;
-    private javax.swing.JComboBox cbfundsource;
-    private javax.swing.JComboBox cbpayee;
-    private javax.swing.JComboBox cbprepare;
-    private javax.swing.JComboBox cbreceive;
+    private static javax.swing.JButton btsave;
+    private static javax.swing.JComboBox cbapprove;
+    private static javax.swing.JComboBox cbfundsource;
+    private static javax.swing.JComboBox cbpayee;
+    private static javax.swing.JComboBox cbprepare;
+    private static javax.swing.JComboBox cbreceive;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -735,15 +824,15 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JLabel lblcode;
+    private static javax.swing.JLabel lblcode;
+    private javax.swing.JMenuItem modifyquantity;
+    private javax.swing.JMenuItem remove;
     private static javax.swing.JTable table;
-    private javax.swing.JTextField txtdescription;
+    private static javax.swing.JTextField txtdescription;
     private static javax.swing.JTextField txtgrossamount;
     private static javax.swing.JTextField txtnetvat;
     private static javax.swing.JTextField txtparticular;
