@@ -4,12 +4,12 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/J:/Dev%20Project/lozadacompany/src/lozadagroupcompany/FrameMonitoring.java</file>
-            <file>file:/J:/Dev%20Project/lozadacompany/src/lozadagroupcompany/FrameItem.java</file>
             <file>file:/J:/Dev%20Project/lozadacompany/src/lozadagroupcompany/FrameDisbursementVoucher.java</file>
-            <file>file:/J:/Dev%20Project/lozadacompany/src/lozadagroupcompany/FrameDVList.java</file>
             <file>file:/J:/Dev%20Project/lozadacompany/src/lozadagroupcompany/FrameMerchandiseReceipt.java</file>
-            <file>file:/J:/Dev%20Project/lozadacompany/src/lozadagroupcompany/FrameItemList.java</file>
+            <file>file:/J:/Dev%20Project/lozadacompany/src/report/MWReport.jrxml</file>
+            <file>file:/J:/Dev%20Project/lozadacompany/src/lozadagroupcompany/FrameMerchandiseWithdrawal.java</file>
             <file>file:/J:/Dev%20Project/lozadacompany/src/lozadagroupcompany/FrameMain.java</file>
+            <file>file:/J:/Dev%20Project/lozadacompany/src/report/MRReport.jrxml</file>
         </group>
     </open-files>
 </project-private>

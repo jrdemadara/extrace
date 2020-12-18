@@ -36,6 +36,7 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         initComponents();
         retrieveDV();
         retrieveMR();
+        retrieveMW();
     }
 
     void retrieveDV() {
@@ -87,6 +88,32 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         }
     }
 
+    void retrieveMW() {
+        DefaultTableModel tableModel = (DefaultTableModel) tablemw.getModel();
+        while (tableModel.getRowCount() > 0) {
+            tableModel.removeRow(0);
+        }
+        try (Statement stmt = connection.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tblmerchandisewithdrawal");
+            while (rs.next()) {
+                String code = rs.getString("MerchWithdrawalCode");
+                String mrcode = rs.getString("MRCode");
+                String no = rs.getString("BusinessNo");
+                String purpose = rs.getString("Purpose");
+                String destination = rs.getString("Destination");
+                String quantity = rs.getString("Quantity");
+                String unit = rs.getString("Unit");
+                String unitcost = rs.getString("UnitCost");
+                String totalamount = rs.getString("TotalAmount");
+                String req = rs.getString("RequestedBy");
+                String approved = rs.getString("ApprovedBy");
+                String date = rs.getString("Date");
+                tableModel.addRow(new Object[]{code, mrcode, no, purpose, destination, quantity, unit, unitcost, totalamount, req, approved, date});
+            }
+        } catch (SQLException e) {
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -108,6 +135,7 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         tabledv = new javax.swing.JTable();
         jTextField3 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         tableparticular = new javax.swing.JTable();
@@ -115,11 +143,14 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         tablemw = new javax.swing.JTable();
         jTextField2 = new javax.swing.JTextField();
+        jButton4 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jTextField1 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablemr = new javax.swing.JTable();
         jButton3 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -206,18 +237,26 @@ public final class FrameMonitoring extends javax.swing.JFrame {
             }
         });
 
+        jButton5.setBackground(new java.awt.Color(45, 52, 66));
+        jButton5.setForeground(new java.awt.Color(255, 255, 255));
+        jButton5.setText("Export Exel");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jTextField3)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 984, Short.MAX_VALUE)
-                    .addComponent(jTextField3)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -225,9 +264,11 @@ public final class FrameMonitoring extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton5)))
         );
 
         jTabbedPane2.addTab("Voucher", jPanel5);
@@ -276,7 +317,7 @@ public final class FrameMonitoring extends javax.swing.JFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -337,6 +378,24 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField2.setText("Search...");
 
+        jButton4.setBackground(new java.awt.Color(45, 52, 66));
+        jButton4.setForeground(new java.awt.Color(255, 255, 255));
+        jButton4.setText("Print");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jButton6.setBackground(new java.awt.Color(45, 52, 66));
+        jButton6.setForeground(new java.awt.Color(255, 255, 255));
+        jButton6.setText("Export Exel");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -345,7 +404,12 @@ public final class FrameMonitoring extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3))
+                    .addComponent(jScrollPane3)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -354,7 +418,11 @@ public final class FrameMonitoring extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton4)
+                    .addComponent(jButton6))
                 .addContainerGap())
         );
 
@@ -404,6 +472,15 @@ public final class FrameMonitoring extends javax.swing.JFrame {
             }
         });
 
+        jButton7.setBackground(new java.awt.Color(45, 52, 66));
+        jButton7.setForeground(new java.awt.Color(255, 255, 255));
+        jButton7.setText("Export Exel");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -415,6 +492,8 @@ public final class FrameMonitoring extends javax.swing.JFrame {
                     .addComponent(jScrollPane1)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -424,9 +503,11 @@ public final class FrameMonitoring extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton3)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton3)
+                    .addComponent(jButton7))
                 .addContainerGap())
         );
 
@@ -466,7 +547,14 @@ public final class FrameMonitoring extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tablemwMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablemwMouseClicked
-
+        int row = tablemw.getSelectedRow();
+        DefaultTableModel TableModel = (DefaultTableModel) tablemw.getModel();
+        if (row > -1) {
+            lblcode.setText(TableModel.getValueAt(row, 0).toString());
+            lbltype.setText("MERCHANDISE WITHDRAWAL CODE:");
+        } else {
+            //Do nothing!
+        }
     }//GEN-LAST:event_tablemwMouseClicked
 
     private void tabledvMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledvMouseClicked
@@ -556,7 +644,7 @@ public final class FrameMonitoring extends javax.swing.JFrame {
                 object.put("approvedby", tablemr.getValueAt(row, 7).toString());
                 JasperReport js = JasperCompileManager.compileReport(jasdi);
                 JasperPrint jp = JasperFillManager.fillReport(js, object, connection);
-                JasperViewer.viewReport(jp);
+                JasperViewer.viewReport(jp, false);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(rootPane, e);
             }
@@ -573,6 +661,51 @@ public final class FrameMonitoring extends javax.swing.JFrame {
             //Do nothing!
         }
     }//GEN-LAST:event_tablemrMouseClicked
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        int row = tablemw.getSelectedRow();
+        if (row > -1) {
+            try {
+                InputStream i = getClass().getResourceAsStream("/report/MWReport.jrxml");
+                JasperDesign jasdi = JRXmlLoader.load(i);
+                String sql = "SELECT * FROM tblmerchandisewithdrawal WHERE MerchWithdrawalCode = '" + lblcode.getText() + "'";
+                JRDesignQuery newQuery = new JRDesignQuery();
+                newQuery.setText(sql);
+
+                jasdi.setQuery(newQuery);
+
+                HashMap<String, Object> object = new HashMap<>();
+                object.put("mwcode", lblcode.getText());
+                object.put("businessno", tablemw.getValueAt(row, 1).toString());
+                object.put("purpose", tablemw.getValueAt(row, 8).toString());
+                object.put("destination", tablemw.getValueAt(row, 2).toString());
+                object.put("quantity", tablemw.getValueAt(row, 3).toString());
+                object.put("unit", tablemw.getValueAt(row, 3).toString());
+                object.put("unitcost", tablemw.getValueAt(row, 4).toString());
+                object.put("totalamount", tablemw.getValueAt(row, 5).toString());
+                object.put("requestedby", tablemw.getValueAt(row, 6).toString());
+                object.put("approvedby", tablemw.getValueAt(row, 7).toString());
+                object.put("date", DateFunction.getFormattedDate());
+                JasperReport js = JasperCompileManager.compileReport(jasdi);
+                JasperPrint jp = JasperFillManager.fillReport(js, object, connection);
+                JasperViewer.viewReport(jp, false);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(rootPane, e);
+            }
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton7ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -611,6 +744,10 @@ public final class FrameMonitoring extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

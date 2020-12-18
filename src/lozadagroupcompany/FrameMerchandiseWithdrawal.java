@@ -17,15 +17,8 @@ import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
-/**
- *
- * @author Administrator
- */
 public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
 
-    /**
-     * Creates new form FrameUnit
-     */
     DatabaseConnection conn = new DatabaseConnection();
     DefaultTableModel tablemodel;
     Connection connection = conn.getConnection();
@@ -35,7 +28,6 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
     public FrameMerchandiseWithdrawal() {
         initComponents();
         RetrievePersonnel();
-        RetrieveUnit();
         Refresh();
     }
 
@@ -43,15 +35,18 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
         CodeGenerator();
         retrieveData();
         btsave.setText("Save");
+        btclose.setText("Close");
         spquantity.setValue(0);
         txtunitcost.setText("0.00");
         txttotal.setText("0.00");
         txtno.setText("");
         txtpurpose.setText("");
         txtdestination.setText("");
-        cbunit.setSelectedIndex(0);
+        txtunitcost.setText("");
         cbrequest.setSelectedIndex(0);
         cbapprove.setSelectedIndex(0);
+        txtunit.setText("");
+        txtmrcode.setText("");
     }
 
     void retrieveData() {
@@ -63,6 +58,7 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
             ResultSet rs = stmt.executeQuery("SELECT * FROM tblmerchandisewithdrawal");
             while (rs.next()) {
                 String code = rs.getString("MerchWithdrawalCode");
+                String mrcode = rs.getString("MRCode");
                 String no = rs.getString("BusinessNo");
                 String purpose = rs.getString("Purpose");
                 String destination = rs.getString("Destination");
@@ -73,7 +69,7 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
                 String req = rs.getString("RequestedBy");
                 String approved = rs.getString("ApprovedBy");
                 String date = rs.getString("Date");
-                tableModel.addRow(new Object[]{code, no, purpose, destination, quantity, unit, unitcost, totalamount, req, approved, date});
+                tableModel.addRow(new Object[]{code, mrcode, no, purpose, destination, quantity, unit, unitcost, totalamount, req, approved, date});
             }
         } catch (SQLException e) {
         }
@@ -86,16 +82,11 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
         tr.setRowFilter(RowFilter.regexFilter(query));
     }
 
-    private void RetrieveUnit() {
-        cbunit.addItem("Select Unit");
-        try (Statement stmt = connection.createStatement()) {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM tblunit");
-            while (rs.next()) {
-                String chart = rs.getString("Unit");
-                cbunit.addItem(chart);
-            }
-        } catch (SQLException e) {
-        }
+    public static void LoadMR(String mrcode, String unit, String unitcost, String quantity) {
+        txtmrcode.setText(mrcode);
+        txtunit.setText(unit);
+        txtunitcost.setText(unitcost);
+
     }
 
     private void RetrievePersonnel() {
@@ -113,40 +104,41 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
     }
 
     private void Save() {
-        try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tblmerchandisewithdrawal VALUES(?,?,?,?,?,?,?,?,?,?,?,?)")) {
+        try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tblmerchandisewithdrawal VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
             stmt.setInt(1, 0);
             stmt.setString(2, lblcode.getText());
-            stmt.setString(3, txtno.getText());
-            stmt.setString(4, txtpurpose.getText());
-            stmt.setString(5, txtdestination.getText());
-            stmt.setString(6, spquantity.getValue().toString());
-            stmt.setString(7, cbunit.getSelectedItem().toString());
-            stmt.setString(8, txtunitcost.getText());
-            stmt.setString(9, txttotal.getText());
-            stmt.setString(10, cbrequest.getSelectedItem().toString());
-            stmt.setString(11, cbapprove.getSelectedItem().toString());
-            stmt.setString(12, DateFunction.getFormattedDate());
+            stmt.setString(3, txtmrcode.getText());
+            stmt.setString(4, txtno.getText());
+            stmt.setString(5, txtpurpose.getText());
+            stmt.setString(6, txtdestination.getText());
+            stmt.setString(7, spquantity.getValue().toString());
+            stmt.setString(8, txtunit.getText());
+            stmt.setString(9, txtunitcost.getText());
+            stmt.setString(10, txttotal.getText());
+            stmt.setString(11, cbrequest.getSelectedItem().toString());
+            stmt.setString(12, cbapprove.getSelectedItem().toString());
+            stmt.setString(13, DateFunction.getFormattedDate());
             stmt.execute();
             stmt.close();
             JOptionPane.showMessageDialog(this, "Merchandise Withdrawal '" + lblcode.getText() + "' has been saved!", " System Information", JOptionPane.INFORMATION_MESSAGE);
         } catch (SQLException ex) {
             Logger.getLogger(FrameMerchandiseWithdrawal.class.getName()).log(Level.SEVERE, null, ex);
-
         }
     }
 
     private void Update() {
-        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblmerchandisewithdrawal SET BusinessNo = ?, Purpose = ?, Destination = ?, Quantity = ?, Unit = ?, UnitCost = ?, TotalAmount = ?, RequestedBy = ?, ApprovedBy = ? WHERE MerchWithdrawalCode = ?")) {
-            stmt.setString(10, lblcode.getText());
-            stmt.setString(1, txtno.getText());
-            stmt.setString(2, txtpurpose.getText());
-            stmt.setString(3, txtdestination.getText());
-            stmt.setInt(4, Integer.parseInt(spquantity.getValue().toString()));
-            stmt.setString(5, cbunit.getSelectedItem().toString());
-            stmt.setString(6, txtunitcost.getText());
-            stmt.setString(7, txttotal.getText());
-            stmt.setString(8, cbrequest.getSelectedItem().toString());
-            stmt.setString(9, cbapprove.getSelectedItem().toString());
+        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblmerchandisewithdrawal SET MRCode = ?, BusinessNo = ?, Purpose = ?, Destination = ?, Quantity = ?, Unit = ?, UnitCost = ?, TotalAmount = ?, RequestedBy = ?, ApprovedBy = ? WHERE MerchWithdrawalCode = ?")) {
+            stmt.setString(11, lblcode.getText());
+            stmt.setString(1, txtmrcode.getText());
+            stmt.setString(2, txtno.getText());
+            stmt.setString(3, txtpurpose.getText());
+            stmt.setString(4, txtdestination.getText());
+            stmt.setInt(5, Integer.parseInt(spquantity.getValue().toString()));
+            stmt.setString(6, txtunit.getText());
+            stmt.setString(7, txtunitcost.getText());
+            stmt.setString(8, txttotal.getText());
+            stmt.setString(9, cbrequest.getSelectedItem().toString());
+            stmt.setString(10, cbapprove.getSelectedItem().toString());
             stmt.executeUpdate();
             JOptionPane.showMessageDialog(this, "Merchandise Withdrawal '" + lblcode.getText() + "' has been updated!", " System Information", JOptionPane.INFORMATION_MESSAGE);
             Refresh();
@@ -234,19 +226,22 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         txttotal = new javax.swing.JTextField();
         txtdestination = new javax.swing.JTextField();
-        cbunit = new javax.swing.JComboBox();
         spquantity = new javax.swing.JSpinner();
         jLabel11 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         cbrequest = new javax.swing.JComboBox();
         cbapprove = new javax.swing.JComboBox();
         jLabel12 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        txtunit = new javax.swing.JTextField();
+        txtmrcode = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        btclose = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         btsave = new javax.swing.JButton();
         btdelete = new javax.swing.JButton();
         txtsearch = new javax.swing.JTextField();
+        btimport = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -290,6 +285,8 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 52, 66)));
 
+        txtno.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
+
         jLabel2.setText("Business No.");
 
         jLabel3.setText("Purpose");
@@ -300,16 +297,28 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
 
         jLabel8.setText("Unit Cost");
 
+        txtunitcost.setEditable(false);
+        txtunitcost.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
+        txtunitcost.setForeground(new java.awt.Color(0, 204, 0));
         txtunitcost.setText("0.00");
 
         jLabel9.setText("Total Amount");
 
         txttotal.setEditable(false);
+        txttotal.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
         txttotal.setText("0.00");
 
+        spquantity.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
         spquantity.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 spquantityStateChanged(evt);
+            }
+        });
+        spquantity.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                spquantityInputMethodTextChanged(evt);
             }
         });
 
@@ -331,6 +340,16 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
 
         jLabel12.setText("Approved By");
 
+        txtunit.setEditable(false);
+        txtunit.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
+        txtunit.setForeground(new java.awt.Color(0, 204, 0));
+
+        txtmrcode.setEditable(false);
+        txtmrcode.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
+        txtmrcode.setForeground(new java.awt.Color(0, 204, 0));
+
+        jLabel5.setText("MR Code");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -345,29 +364,37 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
                         .addGap(201, 201, 201))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtno, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
+                            .addComponent(txtmrcode, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(txtno, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtpurpose, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(cbunit, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txttotal, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txttotal, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtunit, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtunitcost, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
                             .addComponent(jLabel10)
                             .addComponent(cbrequest, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel11)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel12)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtdestination)
-                    .addComponent(spquantity, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
-                    .addComponent(cbapprove, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(cbapprove, 0, 219, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel11)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel12))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(spquantity))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -390,16 +417,18 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
-                            .addComponent(jLabel3))
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel5))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtpurpose, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtpurpose, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtmrcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(cbunit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtunitcost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txtunitcost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtunit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel7)
@@ -417,12 +446,12 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jButton2.setBackground(new java.awt.Color(107, 115, 131));
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Close");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btclose.setBackground(new java.awt.Color(107, 115, 131));
+        btclose.setForeground(new java.awt.Color(255, 255, 255));
+        btclose.setText("Close");
+        btclose.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btcloseActionPerformed(evt);
             }
         });
 
@@ -434,11 +463,11 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
 
             },
             new String [] {
-                "MW Code", "Business No", "Purpose", "Destination", "Quantity", "Unit", "Unit Cost", "Total Amount", "Requested By", "Approved By", "Date"
+                "MW Code", "MR Code", "Business No", "Purpose", "Destination", "Quantity", "Unit", "Unit Cost", "Total Amount", "Requested By", "Approved By", "Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -483,29 +512,34 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
             }
         });
 
+        btimport.setBackground(new java.awt.Color(45, 52, 66));
+        btimport.setForeground(new java.awt.Color(255, 255, 255));
+        btimport.setText("Import MR");
+        btimport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btimportActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jScrollPane2))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btimport, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btsave, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btdelete, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(txtsearch)))
+                        .addComponent(btclose, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txtsearch))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -520,9 +554,10 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
+                    .addComponent(btclose)
                     .addComponent(btsave)
-                    .addComponent(btdelete))
+                    .addComponent(btdelete)
+                    .addComponent(btimport))
                 .addContainerGap())
         );
 
@@ -535,37 +570,44 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
         double quantity = Double.parseDouble(spquantity.getValue().toString());
         double total = unitcost * quantity;
         txttotal.setText(Double.toString(total));
+
     }//GEN-LAST:event_spquantityStateChanged
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        dispose();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void btcloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btcloseActionPerformed
+        if ("Cancel".equals(btclose.getText())) {
+            Refresh();
+        } else {
+            dispose();
+        }
+    }//GEN-LAST:event_btcloseActionPerformed
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
         btsave.setText("Update");
+        btclose.setText("Cancel");
         int row = table.getSelectedRow();
         lblcode.setText(table.getValueAt(row, 0).toString());
-        txtno.setText(table.getValueAt(row, 1).toString());
-        txtpurpose.setText(table.getValueAt(row, 2).toString());
-        txtdestination.setText(table.getValueAt(row, 3).toString());
-        spquantity.setValue(Integer.parseInt(table.getValueAt(row, 4).toString()));
-        cbunit.setSelectedItem(table.getValueAt(row, 5).toString());
-        txtunitcost.setText(table.getValueAt(row, 6).toString());
-        txttotal.setText(table.getValueAt(row, 7).toString());
-        cbrequest.setSelectedItem(table.getValueAt(row, 8).toString());
-        cbapprove.setSelectedItem(table.getValueAt(row, 9).toString());
+        txtmrcode.setText(table.getValueAt(row, 1).toString());
+        txtno.setText(table.getValueAt(row, 2).toString());
+        txtpurpose.setText(table.getValueAt(row, 3).toString());
+        txtdestination.setText(table.getValueAt(row, 4).toString());
+        spquantity.setValue(Integer.parseInt(table.getValueAt(row, 5).toString()));
+        txtunit.setText(table.getValueAt(row, 6).toString());
+        txtunitcost.setText(table.getValueAt(row, 7).toString());
+        txttotal.setText(table.getValueAt(row, 8).toString());
+        cbrequest.setSelectedItem(table.getValueAt(row, 9).toString());
+        cbapprove.setSelectedItem(table.getValueAt(row, 10).toString());
     }//GEN-LAST:event_tableMouseClicked
 
     private void btsaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btsaveActionPerformed
         if ("Save".equals(btsave.getText())) {
-            if (!"".equals(txtpurpose.getText()) && !"".equals(txtdestination.getText()) && !"".equals(txtno.getText()) && !"0.00".equals(txtunitcost.getText()) && !"0.00".equals(txttotal.getText()) && !"0.00".equals(txtunitcost.getText()) && !"Select Unit".equals(cbunit.getSelectedItem()) && !"Select Personnel".equals(cbrequest.getSelectedItem()) && !"Select Personnel".equals(cbapprove.getSelectedItem())) {
+            if (!"".equals(txtpurpose.getText()) && !"".equals(txtdestination.getText()) && !"".equals(txtno.getText()) && !"0.00".equals(txtunitcost.getText()) && !"0.00".equals(txttotal.getText()) && !"0.00".equals(txtunitcost.getText()) && !"Select Unit".equals(txtunit.getText()) && !"Select Personnel".equals(cbrequest.getSelectedItem()) && !"Select Personnel".equals(cbapprove.getSelectedItem())) {
                 Save();
                 Refresh();
             } else {
                 JOptionPane.showMessageDialog(this, "Please fill the required fields.", " System Warning", JOptionPane.WARNING_MESSAGE);
             }
         } else {
-            if (!"".equals(txtpurpose.getText()) && !"".equals(txtdestination.getText()) && !"".equals(txtno.getText()) && !"0.00".equals(txtunitcost.getText()) && !"0.00".equals(txttotal.getText()) && !"0.00".equals(txtunitcost.getText()) && !"Select Unit".equals(cbunit.getSelectedItem()) && !"Select Personnel".equals(cbrequest.getSelectedItem()) && !"Select Personnel".equals(cbapprove.getSelectedItem())) {
+            if (!"".equals(txtpurpose.getText()) && !"".equals(txtdestination.getText()) && !"".equals(txtno.getText()) && !"0.00".equals(txtunitcost.getText()) && !"0.00".equals(txttotal.getText()) && !"0.00".equals(txtunitcost.getText()) && !"Select Unit".equals(txtunit.getText()) && !"Select Personnel".equals(cbrequest.getSelectedItem()) && !"Select Personnel".equals(cbapprove.getSelectedItem())) {
                 Update();
                 Refresh();
             } else {
@@ -589,6 +631,15 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
     private void txtsearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtsearchKeyReleased
         Search(txtsearch.getText());
     }//GEN-LAST:event_txtsearchKeyReleased
+
+    private void btimportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btimportActionPerformed
+        FrameMRList frame = new FrameMRList();
+        frame.setVisible(true);
+    }//GEN-LAST:event_btimportActionPerformed
+
+    private void spquantityInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_spquantityInputMethodTextChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_spquantityInputMethodTextChanged
 
     /**
      * @param args the command line arguments
@@ -634,12 +685,12 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btclose;
     private javax.swing.JButton btdelete;
+    private javax.swing.JButton btimport;
     private javax.swing.JButton btsave;
     private javax.swing.JComboBox cbapprove;
     private javax.swing.JComboBox cbrequest;
-    private javax.swing.JComboBox cbunit;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -647,6 +698,7 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -658,10 +710,12 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
     private javax.swing.JSpinner spquantity;
     private javax.swing.JTable table;
     private javax.swing.JTextField txtdestination;
+    private static javax.swing.JTextField txtmrcode;
     private javax.swing.JTextField txtno;
     private javax.swing.JTextField txtpurpose;
     private javax.swing.JTextField txtsearch;
     private javax.swing.JTextField txttotal;
-    private javax.swing.JTextField txtunitcost;
+    private static javax.swing.JTextField txtunit;
+    private static javax.swing.JTextField txtunitcost;
     // End of variables declaration//GEN-END:variables
 }

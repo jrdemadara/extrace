@@ -32,6 +32,7 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
         CodeGenerator();
         RetrieveData();
         btsave.setText("Save");
+        btclose.setText("Close");
         spquantity.setValue(0);
         txtunitcost.setText("0.00");
         txttotal.setText("0.00");
@@ -236,7 +237,7 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         btsave = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btclose = new javax.swing.JButton();
         txtsearch = new javax.swing.JTextField();
         btdelete = new javax.swing.JButton();
 
@@ -438,9 +439,14 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(107, 115, 131));
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Close");
+        btclose.setBackground(new java.awt.Color(107, 115, 131));
+        btclose.setForeground(new java.awt.Color(255, 255, 255));
+        btclose.setText("Close");
+        btclose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btcloseActionPerformed(evt);
+            }
+        });
 
         txtsearch.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtsearch.setText("Search...");
@@ -473,7 +479,7 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btdelete, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btclose, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -493,7 +499,7 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
+                    .addComponent(btclose)
                     .addComponent(btsave)
                     .addComponent(btdelete))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -532,19 +538,6 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
         txttotal.setText(Double.toString(total));
     }//GEN-LAST:event_spquantityStateChanged
 
-    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
-        btsave.setText("Update");
-        int row = table.getSelectedRow();
-        lblcode.setText(table.getValueAt(row, 0).toString());
-        cbsupplier.setSelectedItem(table.getValueAt(row, 1).toString());
-        spquantity.setValue(Integer.parseInt(table.getValueAt(row, 2).toString()));
-        cbunit.setSelectedItem(table.getValueAt(row, 3).toString());
-        txtunitcost.setText(table.getValueAt(row, 4).toString());
-        txttotal.setText(table.getValueAt(row, 5).toString());
-        cbrequest.setSelectedItem(table.getValueAt(row, 6).toString());
-        cbapprove.setSelectedItem(table.getValueAt(row, 7).toString());
-    }//GEN-LAST:event_tableMouseClicked
-
     private void cbrequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbrequestActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cbrequestActionPerformed
@@ -560,6 +553,28 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
     private void txtsearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtsearchKeyReleased
         Search(txtsearch.getText());
     }//GEN-LAST:event_txtsearchKeyReleased
+
+    private void btcloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btcloseActionPerformed
+        if ("Cancel".equals(btclose.getText())) {
+            Refresh();
+        } else {
+            dispose();
+        }
+    }//GEN-LAST:event_btcloseActionPerformed
+
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        btsave.setText("Update");
+        btclose.setText("Cancel");
+        int row = table.getSelectedRow();
+        lblcode.setText(table.getValueAt(row, 0).toString());
+        cbsupplier.setSelectedItem(table.getValueAt(row, 1).toString());
+        spquantity.setValue(Integer.parseInt(table.getValueAt(row, 2).toString()));
+        cbunit.setSelectedItem(table.getValueAt(row, 3).toString());
+        txtunitcost.setText(table.getValueAt(row, 4).toString());
+        txttotal.setText(table.getValueAt(row, 5).toString());
+        cbrequest.setSelectedItem(table.getValueAt(row, 6).toString());
+        cbapprove.setSelectedItem(table.getValueAt(row, 7).toString());
+    }//GEN-LAST:event_tableMouseClicked
 
     /**
      * @param args the command line arguments
@@ -602,13 +617,13 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btclose;
     private javax.swing.JButton btdelete;
     private javax.swing.JButton btsave;
     private javax.swing.JComboBox cbapprove;
     private javax.swing.JComboBox cbrequest;
     private javax.swing.JComboBox cbsupplier;
     private javax.swing.JComboBox cbunit;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

@@ -29,6 +29,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         RetrieveSupplier();
         RetrievePersonnel();
         btsave.setText("Save");
+        btclose.setText("Close");
         txtdescription.setText("");
         txtparticular.setText("");
         txtgrossamount.setText("0.00");
@@ -104,6 +105,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         cbapprove.setSelectedItem(approve);
         cbreceive.setSelectedItem(receive);
         btsave.setText("Update");
+        btclose.setText("Cancel");
     }
 
     public static void LoadDVParticular(Object[] dataRow) {
@@ -175,7 +177,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
             }
         }
 
-        try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tbldisbursementvoucher VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
+        try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tbldisbursementvoucher VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
             stmt.setInt(1, 0);
             stmt.setString(2, lblcode.getText());
             stmt.setString(3, cbpayee.getSelectedItem().toString());
@@ -188,8 +190,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
             stmt.setString(10, cbprepare.getSelectedItem().toString());
             stmt.setString(11, cbapprove.getSelectedItem().toString());
             stmt.setString(12, cbreceive.getSelectedItem().toString());
-            stmt.setString(13, "REQUESTED");
-            stmt.setString(14, DateFunction.getFormattedDate());
+            stmt.setString(13, DateFunction.getFormattedDate());
             stmt.execute();
             stmt.close();
             JOptionPane.showMessageDialog(this, "Disbursement Voucher '" + lblcode.getText() + "' has been saved!", " System Information", JOptionPane.INFORMATION_MESSAGE);
@@ -316,7 +317,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         cbreceive = new javax.swing.JComboBox();
         btsave = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btclose = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
@@ -559,12 +560,12 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(107, 115, 131));
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Close");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btclose.setBackground(new java.awt.Color(107, 115, 131));
+        btclose.setForeground(new java.awt.Color(255, 255, 255));
+        btclose.setText("Close");
+        btclose.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btcloseActionPerformed(evt);
             }
         });
 
@@ -634,7 +635,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btclose, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -660,7 +661,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
+                    .addComponent(btclose)
                     .addComponent(btsave)
                     .addComponent(jButton5))
                 .addContainerGap())
@@ -688,9 +689,13 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btsaveActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        dispose();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void btcloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btcloseActionPerformed
+        if ("Cancel".equals(btclose.getText())) {
+            Refresh();
+        } else {
+            dispose();
+        }
+    }//GEN-LAST:event_btcloseActionPerformed
 
     private void txtgrossamountKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtgrossamountKeyReleased
         double x;
@@ -803,13 +808,13 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private static javax.swing.JButton btclose;
     private static javax.swing.JButton btsave;
     private static javax.swing.JComboBox cbapprove;
     private static javax.swing.JComboBox cbfundsource;
     private static javax.swing.JComboBox cbpayee;
     private static javax.swing.JComboBox cbprepare;
     private static javax.swing.JComboBox cbreceive;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;

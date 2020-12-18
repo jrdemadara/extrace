@@ -30,12 +30,13 @@
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<subDataset name="Dataset1" >
+	<subDataset name="Dataset1" uuid="9fe7df7d-1d4c-45d8-be9d-2a648cc26217">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 		<queryString>
 			<![CDATA[]]>
 		</queryString>
 	</subDataset>
+	<parameter name="dvcode" class="java.lang.String"/>
 	<field name="Payee" class="java.lang.String"/>
 	<field name="Description" class="java.lang.String"/>
 	<field name="FundSource" class="java.lang.String"/>
@@ -53,39 +54,39 @@
 	<title>
 		<band height="66" splitType="Stretch">
 			<image>
-				<reportElement x="0" y="0" width="69" height="40" />
+				<reportElement x="0" y="0" width="69" height="40" uuid="887c9db5-071a-4b58-bef1-9384cba72b2a"/>
 				<imageExpression><![CDATA["C:/Users/Administrator/Documents/NetBeansProjects/ProjectManagementPlus/src/source/logo-m.png"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="80" y="0" width="330" height="30" />
+				<reportElement x="80" y="0" width="330" height="30" uuid="f30d57c5-4767-4bdd-af97-29b784d372aa"/>
 				<textElement>
 					<font fontName="Lato Black" size="18" isBold="true"/>
 				</textElement>
 				<text><![CDATA[LOZADA GROUP OF COMPANIES]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="100" y="20" width="280" height="30" />
+				<reportElement x="100" y="20" width="280" height="30" uuid="4f1659eb-eb7c-45e5-aef8-b28cd155fa92"/>
 				<textElement textAlignment="Center">
 					<font fontName="Lato" size="10"/>
 				</textElement>
 				<text><![CDATA[Fishcode Village, 314 Skydeck Building, Brgy. Talomo River, Calinan Davao City]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="400" y="10" width="160" height="40" forecolor="#FF6600" />
+				<reportElement x="400" y="10" width="160" height="40" forecolor="#FF6600" uuid="9463fc0f-9e67-41e5-af51-8fd93edde9ec"/>
 				<textElement>
 					<font fontName="Lato Black" size="26" isBold="true"/>
 				</textElement>
 				<text><![CDATA[NO. 000077]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="400" y="0" width="160" height="20" />
+				<reportElement x="400" y="0" width="160" height="20" uuid="8576caf0-b4f3-46ca-ab2f-94abe6a6799b"/>
 				<textElement>
 					<font fontName="Lato Black" size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[DISBURSEMENT VOUCHER]]></text>
 			</staticText>
 			<line>
-				<reportElement x="0" y="60" width="555" height="1" >
+				<reportElement x="0" y="60" width="555" height="1" uuid="3ea9b0c2-da45-45d6-9f78-d54fb45dec8f">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<graphicElement>
@@ -97,21 +98,21 @@
 	<pageHeader>
 		<band height="117" splitType="Stretch">
 			<line>
-				<reportElement x="-4" y="55" width="559" height="1" />
+				<reportElement x="-4" y="55" width="559" height="1" uuid="1fed1a8a-e3fa-4e84-bc5b-68ded0020821"/>
 				<graphicElement>
 					<pen lineWidth="2.0"/>
 				</graphicElement>
 			</line>
 			<componentElement>
-				<reportElement x="1" y="57" width="554" height="60" >
+				<reportElement x="1" y="57" width="554" height="60" uuid="cc192d5c-143b-4ee9-acf1-0a147627b193">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
 					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="Dataset1" />
-					<jr:column width="40" >
+					<datasetRun subDataset="Dataset1" uuid="88e58797-b20e-4b0b-a51a-981d22d118d4"/>
+					<jr:column width="40" uuid="4a56d0bf-af57-41c0-8945-363667bf105a">
 						<jr:tableHeader style="Table_TH" height="30"/>
 						<jr:tableFooter style="Table_TH" height="30"/>
 						<jr:columnHeader style="Table_CH" height="30"/>
@@ -121,101 +122,105 @@
 				</jr:table>
 			</componentElement>
 			<staticText>
-				<reportElement x="0" y="0" width="80" height="19" />
+				<reportElement x="0" y="0" width="80" height="19" uuid="c539f464-5305-4449-a47a-f6b538ff6c02"/>
 				<textElement>
 					<font fontName="Lato Black" size="8"/>
 				</textElement>
 				<text><![CDATA[PAYEE                            :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="19" width="80" height="19" />
+				<reportElement x="0" y="19" width="80" height="19" uuid="f834b251-fb4c-485d-97e4-2c202dc12de5"/>
 				<textElement>
 					<font fontName="Lato Black" size="8"/>
 				</textElement>
 				<text><![CDATA[DESCRIPTION         :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="380" y="0" width="80" height="19" />
+				<reportElement x="380" y="0" width="80" height="19" uuid="5631495b-64f8-41a6-9df6-917d1b5048b5"/>
 				<textElement>
 					<font fontName="Lato Black" size="8"/>
 				</textElement>
 				<text><![CDATA[TIN            : ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="380" y="19" width="80" height="17" />
+				<reportElement x="380" y="19" width="80" height="17" uuid="8bf0e275-998a-4b51-b639-bba1130f7c11"/>
 				<textElement>
 					<font fontName="Lato Black" size="8"/>
 				</textElement>
 				<text><![CDATA[DATE       :]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="80" y="0" width="100" height="19" />
+				<reportElement x="80" y="0" width="100" height="19" uuid="9ccd29c5-95a6-447b-b0f2-61d94ee054ee"/>
 				<textFieldExpression><![CDATA[$F{Payee}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="38" width="80" height="17" />
+				<reportElement x="0" y="38" width="80" height="17" uuid="f54d6aab-dcf3-4122-aac1-b778ed0b53f9"/>
 				<textElement>
 					<font fontName="Lato Black" size="8"/>
 				</textElement>
 				<text><![CDATA[FUND SOURCE        :]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="80" y="19" width="100" height="19" />
+				<reportElement x="80" y="19" width="100" height="19" uuid="53e8ac35-998f-4c18-949d-b1fa243777ef"/>
 				<textFieldExpression><![CDATA[$F{Description}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="80" y="38" width="100" height="17" />
+				<reportElement x="80" y="38" width="100" height="17" uuid="118eab2b-89dd-4dd7-a4e9-7c710971d2bf"/>
 				<textFieldExpression><![CDATA[$F{FundSource}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="460" y="0" width="94" height="19" />
+				<reportElement x="460" y="0" width="94" height="19" uuid="e2e87734-6d14-40fd-8cc6-9e0629a6b1ca"/>
 				<textFieldExpression><![CDATA[$F{TIN}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="460" y="19" width="94" height="17" />
+				<reportElement x="460" y="19" width="94" height="17" uuid="b16608b2-207c-47b1-8155-88700aecb49f"/>
 				<textFieldExpression><![CDATA[$F{Date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="279" y="11" width="100" height="20" uuid="1374f6c3-86a3-4907-a427-ea707e965d5b"/>
+				<textFieldExpression><![CDATA[$P{dvcode}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="94" splitType="Stretch">
 			<staticText>
-				<reportElement x="380" y="37" width="90" height="20" />
+				<reportElement x="380" y="37" width="90" height="20" uuid="78bb7698-ad48-4a15-aa97-fe135a2b8436"/>
 				<textElement>
 					<font fontName="Lato Black" size="9"/>
 				</textElement>
 				<text><![CDATA[TOTAL AMOUNT    :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="380" y="57" width="90" height="20"/>
+				<reportElement x="380" y="57" width="90" height="20" uuid="56b6d484-9ae0-46ce-b6c9-ca605e1bdf76"/>
 				<textElement>
 					<font fontName="Lato Black" size="9"/>
 				</textElement>
 				<text><![CDATA[INPUT VAT                  :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="380" y="74" width="90" height="20" />
+				<reportElement x="380" y="74" width="90" height="20" uuid="4424ccd8-fa46-494a-ae2a-15600f8079af"/>
 				<textElement>
 					<font fontName="Lato Black" size="9"/>
 				</textElement>
 				<text><![CDATA[NET VAT                        :]]></text>
 			</staticText>
 			<line>
-				<reportElement x="0" y="30" width="555" height="1" />
+				<reportElement x="0" y="30" width="555" height="1" uuid="7e780e2f-5547-49c0-97b0-4c44fd25d5fc"/>
 				<graphicElement>
 					<pen lineWidth="2.0"/>
 				</graphicElement>
 			</line>
 			<textField>
-				<reportElement x="470" y="37" width="84" height="17" />
+				<reportElement x="470" y="37" width="84" height="17" uuid="18c7caa3-55fd-4825-b86e-4e89af7947f1"/>
 				<textFieldExpression><![CDATA[$F{TotalAmount}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="471" y="57" width="84" height="17" />
+				<reportElement x="471" y="57" width="84" height="17" uuid="4e1c0670-2e9c-432c-918e-c7563bad89ed"/>
 				<textFieldExpression><![CDATA[$F{VAT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="471" y="74" width="84" height="20" />
+				<reportElement x="471" y="74" width="84" height="20" uuid="32948ece-384f-4e97-832d-ef9476bbacc0"/>
 				<textFieldExpression><![CDATA[$F{NetVAT}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -226,22 +231,22 @@
 	<columnFooter>
 		<band height="45" splitType="Stretch">
 			<staticText>
-				<reportElement x="-4" y="6" width="573" height="19"/>
+				<reportElement x="-4" y="6" width="573" height="19" uuid="0c185ca3-b0ae-4b54-8e47-174d631d367e"/>
 				<textElement>
 					<font fontName="Lato" size="12"/>
 				</textElement>
 				<text><![CDATA[*************************************************NOTHING FOLLOWS******************************************]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="10" y="25" width="100" height="20" />
+				<reportElement x="10" y="25" width="100" height="20" uuid="ec6e37fa-9833-4bae-b080-5369a475d530"/>
 				<textFieldExpression><![CDATA[$F{Prepared}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="190" y="25" width="100" height="20" />
+				<reportElement x="190" y="25" width="100" height="20" uuid="5038941d-817f-43b8-94be-bfbb3e81fc56"/>
 				<textFieldExpression><![CDATA[$F{Approved}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="371" y="25" width="100" height="20" />
+				<reportElement x="371" y="25" width="100" height="20" uuid="da6256c3-868a-4793-b775-104f325bce64"/>
 				<textFieldExpression><![CDATA[$F{Received}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -249,51 +254,51 @@
 	<pageFooter>
 		<band height="54" splitType="Stretch">
 			<staticText>
-				<reportElement x="10" y="25" width="80" height="15" />
+				<reportElement x="10" y="25" width="80" height="15" uuid="d3e2811f-a62c-450d-b574-1078c8eaabca"/>
 				<textElement>
 					<font fontName="Lato Black"/>
 				</textElement>
 				<text><![CDATA[Prepared By:]]></text>
 			</staticText>
 			<line>
-				<reportElement x="11" y="5" width="140" height="1" />
+				<reportElement x="11" y="5" width="140" height="1" uuid="9146c736-87ea-403e-bc6b-bcdda41e1c72"/>
 			</line>
 			<staticText>
-				<reportElement x="11" y="9" width="140" height="15" />
+				<reportElement x="11" y="9" width="140" height="15" uuid="be3f6b65-c8ab-48c8-9c30-9f96927d521e"/>
 				<textElement>
 					<font fontName="Lato"/>
 				</textElement>
 				<text><![CDATA[Signature over Printed Name]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="190" y="9" width="140" height="15" />
+				<reportElement x="190" y="9" width="140" height="15" uuid="a2179c8b-c520-457b-a814-b94190ce079a"/>
 				<textElement>
 					<font fontName="Lato"/>
 				</textElement>
 				<text><![CDATA[Signature over Printed Name]]></text>
 			</staticText>
 			<line>
-				<reportElement x="190" y="5" width="140" height="1"/>
+				<reportElement x="190" y="5" width="140" height="1" uuid="8bd60ab5-1f1f-4ad4-a534-c4750f6b4210"/>
 			</line>
 			<staticText>
-				<reportElement x="370" y="10" width="140" height="15" />
+				<reportElement x="370" y="10" width="140" height="15" uuid="32330326-eb4d-4a32-8402-9bc49bef0390"/>
 				<textElement>
 					<font fontName="Lato"/>
 				</textElement>
 				<text><![CDATA[Signature over Printed Name]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="190" y="25" width="80" height="15" />
+				<reportElement x="190" y="25" width="80" height="15" uuid="61166303-f1f5-4bd9-80da-998abc6d7d8c"/>
 				<textElement>
 					<font fontName="Lato Black"/>
 				</textElement>
 				<text><![CDATA[Approved By:]]></text>
 			</staticText>
 			<line>
-				<reportElement x="370" y="5" width="140" height="1" />
+				<reportElement x="370" y="5" width="140" height="1" uuid="074de5fb-fa5f-4642-b1dd-bff5ae9ed46c"/>
 			</line>
 			<staticText>
-				<reportElement x="390" y="25" width="80" height="15" />
+				<reportElement x="390" y="25" width="80" height="15" uuid="7d6c927d-358e-4653-870a-3a39b6f01ba1"/>
 				<textElement>
 					<font fontName="Lato Black"/>
 				</textElement>
