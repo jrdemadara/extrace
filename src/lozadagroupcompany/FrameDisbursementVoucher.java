@@ -1,5 +1,6 @@
 package lozadagroupcompany;
 
+import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,6 +22,11 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
     public FrameDisbursementVoucher() {
         initComponents();
         Refresh();
+        setIconImage();
+    }
+
+    private void setIconImage() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("ico.png")));
     }
 
     private void Refresh() {
@@ -220,7 +226,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
                 stmt.setString(8, netvat);
                 stmt.setString(9, lblcode.getText());
                 stmt.executeUpdate();
-                Refresh();
+
             } catch (SQLException ex) {
                 Logger.getLogger(FrameDisbursementVoucher.class.getName()).log(Level.SEVERE, null, ex);
             }

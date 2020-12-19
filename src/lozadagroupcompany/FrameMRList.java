@@ -1,5 +1,6 @@
 package lozadagroupcompany;
 
+import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,6 +21,11 @@ public final class FrameMRList extends javax.swing.JFrame {
     public FrameMRList() {
         initComponents();
         RetrieveData();
+        setIconImage();
+    }
+
+    private void setIconImage() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("ico.png")));
     }
 
     void RetrieveData() {

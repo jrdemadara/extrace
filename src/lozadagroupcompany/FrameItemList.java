@@ -1,5 +1,6 @@
 package lozadagroupcompany;
 
+import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,6 +20,11 @@ public class FrameItemList extends javax.swing.JFrame {
     public FrameItemList() {
         initComponents();
         RetrieveData();
+        setIconImage();
+    }
+
+    private void setIconImage() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("ico.png")));
     }
 
     private void RetrieveData() {

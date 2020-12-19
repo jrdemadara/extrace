@@ -297,7 +297,6 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
 
         jLabel8.setText("Unit Cost");
 
-        txtunitcost.setEditable(false);
         txtunitcost.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
         txtunitcost.setForeground(new java.awt.Color(0, 204, 0));
         txtunitcost.setText("0.00");
@@ -590,12 +589,14 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
         txtno.setText(table.getValueAt(row, 2).toString());
         txtpurpose.setText(table.getValueAt(row, 3).toString());
         txtdestination.setText(table.getValueAt(row, 4).toString());
-        spquantity.setValue(Integer.parseInt(table.getValueAt(row, 5).toString()));
         txtunit.setText(table.getValueAt(row, 6).toString());
         txtunitcost.setText(table.getValueAt(row, 7).toString());
         txttotal.setText(table.getValueAt(row, 8).toString());
         cbrequest.setSelectedItem(table.getValueAt(row, 9).toString());
         cbapprove.setSelectedItem(table.getValueAt(row, 10).toString());
+        if (!"".equals(txtmrcode.getText())) {
+            spquantity.setValue(Integer.parseInt(table.getValueAt(row, 5).toString()));
+        }
     }//GEN-LAST:event_tableMouseClicked
 
     private void btsaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btsaveActionPerformed

@@ -1,5 +1,6 @@
 package lozadagroupcompany;
 
+import java.awt.Toolkit;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -32,6 +33,11 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         retrieveDV();
         retrieveMR();
         retrieveMW();
+        setIconImage();
+    }
+
+    private void setIconImage() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("ico.png")));
     }
 
     private void SearchMR(String query) {

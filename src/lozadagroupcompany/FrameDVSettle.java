@@ -1,9 +1,16 @@
 package lozadagroupcompany;
 
+import java.awt.Toolkit;
+
 public class FrameDVSettle extends javax.swing.JFrame {
 
     public FrameDVSettle() {
         initComponents();
+        setIconImage();
+    }
+
+    private void setIconImage() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("ico.png")));
     }
 
     /**

@@ -246,9 +246,9 @@ public class FrameDVList extends javax.swing.JFrame {
                     String quantity = rs.getString("Quantity");
                     String unit = rs.getString("Unit");
                     String cost = rs.getString("UnitCost");
-                    String gross = rs.getString("GrossAmount");
-                    String vat = rs.getString("VAT");
-                    String netvat = rs.getString("NetVAT");
+                    String gross = rs.getString("PGrossAmount");
+                    String vat = rs.getString("PVAT");
+                    String netvat = rs.getString("PNetVAT");
                     TableModel2.addRow(new Object[]{code, particular, quantity, unit, cost, gross, vat, netvat});
                 }
             } catch (SQLException ex) {

@@ -1,5 +1,6 @@
 package lozadagroupcompany;
 
+import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,6 +22,11 @@ public class FrameItem extends javax.swing.JFrame {
     public FrameItem() {
         initComponents();
         Refresh();
+        setIconImage();
+    }
+
+    private void setIconImage() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("ico.png")));
     }
 
     private void Refresh() {
@@ -46,7 +52,7 @@ public class FrameItem extends javax.swing.JFrame {
                 String item = rs.getString("Item");
                 String unit = rs.getString("Unit");
                 String cost = rs.getString("UnitCost");
-                TableModel.addRow(new Object[]{sid,code, item, unit, cost});
+                TableModel.addRow(new Object[]{sid, code, item, unit, cost});
             }
         } catch (SQLException ex) {
             Logger.getLogger(FrameItem.class.getName()).log(Level.SEVERE, null, ex);
@@ -374,7 +380,7 @@ public class FrameItem extends javax.swing.JFrame {
     }//GEN-LAST:event_tableMouseClicked
 
     private void txtcostKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtcostKeyReleased
-                double x;
+        double x;
         try {
             x = Double.parseDouble(txtcost.getText());
         } catch (NumberFormatException nfe) {

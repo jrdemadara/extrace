@@ -1,5 +1,6 @@
 package lozadagroupcompany;
 
+import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,7 +24,12 @@ public final class FrameMain extends javax.swing.JFrame {
         retrieveMR();
         retrieveMW();
         retrieveDV();
+        setIconImage();
 
+    }
+
+    private void setIconImage() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("ico.png")));
     }
 
     public static void userDetails(String username, String usertype) {

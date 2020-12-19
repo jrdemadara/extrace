@@ -1,5 +1,6 @@
 package lozadagroupcompany;
 
+import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,6 +17,11 @@ public class FrameLogin extends javax.swing.JFrame {
 
     public FrameLogin() {
         initComponents();
+        setIconImage();
+    }
+
+    private void setIconImage() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("ico.png")));
     }
 
     private void login() {
@@ -30,9 +36,9 @@ public class FrameLogin extends javax.swing.JFrame {
         if (id == 0) {
             JOptionPane.showMessageDialog(this, "Access Denied \n Username or Password is incorrect", "Access Denied", JOptionPane.ERROR_MESSAGE);
         } else {
-                FrameMain frame = new FrameMain();
-                frame.setVisible(true);
-                dispose();
+            FrameMain frame = new FrameMain();
+            frame.setVisible(true);
+            dispose();
 
         }
     }
