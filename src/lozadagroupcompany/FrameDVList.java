@@ -41,10 +41,9 @@ public class FrameDVList extends javax.swing.JFrame {
                 String pre = rs.getString("PreparedBy");
                 String app = rs.getString("ApprovedBy");
                 String receive = rs.getString("ReceivedBy");
-                String status = rs.getString("Status");
                 String date = rs.getString("Date");
 
-                TableModel.addRow(new Object[]{code, payee, description, particular, grossamount, vat, netvat, fund, pre, app, receive, status, date});
+                TableModel.addRow(new Object[]{code, payee, description, particular, grossamount, vat, netvat, fund, pre, app, receive, date});
             }
         } catch (SQLException ex) {
             Logger.getLogger(FrameDVList.class.getName()).log(Level.SEVERE, null, ex);

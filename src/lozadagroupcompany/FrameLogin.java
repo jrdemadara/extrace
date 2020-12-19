@@ -43,9 +43,6 @@ public class FrameLogin extends javax.swing.JFrame {
             ResultSet rs = stmt.executeQuery("SELECT * FROM tbluser WHERE Username='" + username + "' AND Password='" + password + "'");
             if (rs.next()) {
                 id = rs.getInt("ID");
-                type = rs.getString("UserType");
-                user = rs.getString("Fullname");
-                FrameMain.userDetails(user, type);
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Access Denied \n Username or Password is incorrect", "ERROR", JOptionPane.ERROR_MESSAGE);

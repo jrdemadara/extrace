@@ -209,7 +209,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
             String gross = table.getValueAt(i, 5).toString();
             String vat = table.getValueAt(i, 6).toString();
             String netvat = table.getValueAt(i, 7).toString();
-            try (PreparedStatement stmt = connection.prepareStatement("UPDATE tbldisbursementvoucherparticular SET Code = ?, Particular = ?, Quantity = ?, Unit = ?, UnitCost = ?, GrossAmount = ?, VAT = ?, NetVAT = ? WHERE DisbursementCode = ?")) {
+            try (PreparedStatement stmt = connection.prepareStatement("UPDATE tbldisbursementvoucherparticular SET Code = ?, Particular = ?, Quantity = ?, Unit = ?, UnitCost = ?, PGrossAmount = ?, PVAT = ?, PNetVAT = ? WHERE DisbursementCode = ?")) {
                 stmt.setString(1, code);
                 stmt.setString(2, particular);
                 stmt.setString(3, quantity);

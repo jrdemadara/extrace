@@ -6,19 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
-import static jdk.nashorn.internal.objects.NativeRegExp.source;
-import net.sf.jasperreports.engine.JREmptyDataSource;
-import net.sf.jasperreports.engine.JRException;
+import javax.swing.table.TableRowSorter;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRTableModelDataSource;
 import net.sf.jasperreports.engine.design.JRDesignQuery;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
@@ -37,6 +32,27 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         retrieveDV();
         retrieveMR();
         retrieveMW();
+    }
+
+    private void SearchMR(String query) {
+        dm = (DefaultTableModel) tablemr.getModel();
+        TableRowSorter<DefaultTableModel> tr = new TableRowSorter<>(dm);
+        tablemr.setRowSorter(tr);
+        tr.setRowFilter(RowFilter.regexFilter(query));
+    }
+
+    private void SearchMW(String query) {
+        dm = (DefaultTableModel) tablemw.getModel();
+        TableRowSorter<DefaultTableModel> tr = new TableRowSorter<>(dm);
+        tablemw.setRowSorter(tr);
+        tr.setRowFilter(RowFilter.regexFilter(query));
+    }
+
+    private void SearchDV(String query) {
+        dm = (DefaultTableModel) tabledv.getModel();
+        TableRowSorter<DefaultTableModel> tr = new TableRowSorter<>(dm);
+        tabledv.setRowSorter(tr);
+        tr.setRowFilter(RowFilter.regexFilter(query));
     }
 
     void retrieveDV() {
@@ -133,20 +149,20 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         tabledv = new javax.swing.JTable();
-        jTextField3 = new javax.swing.JTextField();
+        txtsdv = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
-        jScrollPane5 = new javax.swing.JScrollPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
         tableparticular = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tablemw = new javax.swing.JTable();
-        jTextField2 = new javax.swing.JTextField();
+        txtsmw = new javax.swing.JTextField();
         jButton4 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
+        txtsmr = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablemr = new javax.swing.JTable();
         jButton3 = new javax.swing.JButton();
@@ -225,8 +241,13 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         });
         jScrollPane4.setViewportView(tabledv);
 
-        jTextField3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField3.setText("Search...");
+        txtsdv.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtsdv.setText("Search...");
+        txtsdv.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtsdvKeyReleased(evt);
+            }
+        });
 
         jButton1.setBackground(new java.awt.Color(45, 52, 66));
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
@@ -250,7 +271,7 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTextField3)
+            .addComponent(txtsdv)
             .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -262,7 +283,7 @@ public final class FrameMonitoring extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtsdv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -274,18 +295,18 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         jTabbedPane2.addTab("Voucher", jPanel5);
 
         tableparticular.setBackground(new java.awt.Color(107, 115, 131));
-        tableparticular.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        tableparticular.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 52, 66)));
         tableparticular.setForeground(new java.awt.Color(255, 255, 255));
         tableparticular.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "MW Code", "Business No", "Purpose", "Destination", "Quantity", "Unit", "Unit Cost", "Total Amount", "Requested By", "Approved By", "Date"
+                "Code", "Item", "Quantity", "Unit", "Unit Cost", "Total Amount", "VAT", "Net VAT"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -295,30 +316,17 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         tableparticular.setGridColor(new java.awt.Color(204, 204, 204));
         tableparticular.setSelectionBackground(new java.awt.Color(45, 52, 66));
         tableparticular.setSelectionForeground(new java.awt.Color(235, 235, 236));
-        tableparticular.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        tableparticular.setShowHorizontalLines(true);
-        tableparticular.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tableparticularMouseClicked(evt);
-            }
-        });
-        jScrollPane5.setViewportView(tableparticular);
+        jScrollPane2.setViewportView(tableparticular);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 978, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE)
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE)
         );
 
         jTabbedPane2.addTab("Particular", jPanel6);
@@ -375,8 +383,13 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(tablemw);
 
-        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField2.setText("Search...");
+        txtsmw.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtsmw.setText("Search...");
+        txtsmw.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtsmwKeyReleased(evt);
+            }
+        });
 
         jButton4.setBackground(new java.awt.Color(45, 52, 66));
         jButton4.setForeground(new java.awt.Color(255, 255, 255));
@@ -403,7 +416,7 @@ public final class FrameMonitoring extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE)
+                    .addComponent(txtsmw, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE)
                     .addComponent(jScrollPane3)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -416,7 +429,7 @@ public final class FrameMonitoring extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtsmw, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -430,8 +443,13 @@ public final class FrameMonitoring extends javax.swing.JFrame {
 
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(146, 152, 163)));
 
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField1.setText("Search...");
+        txtsmr.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtsmr.setText("Search...");
+        txtsmr.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtsmrKeyReleased(evt);
+            }
+        });
 
         tablemr.setBackground(new java.awt.Color(107, 115, 131));
         tablemr.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 52, 66)));
@@ -488,7 +506,7 @@ public final class FrameMonitoring extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE)
+                    .addComponent(txtsmr, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE)
                     .addComponent(jScrollPane1)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -501,7 +519,7 @@ public final class FrameMonitoring extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtsmr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -570,15 +588,15 @@ public final class FrameMonitoring extends javax.swing.JFrame {
             try (Statement stmt = connection.createStatement()) {
                 ResultSet rs = stmt.executeQuery("SELECT * FROM tbldisbursementvoucherparticular WHERE DisbursementCode = '" + lblcode.getText() + "' ");
                 while (rs.next()) {
-                    String dvcode = rs.getString("DisbursementCode");
                     String code = rs.getString("Code");
                     String particular = rs.getString("Particular");
                     String quantity = rs.getString("Quantity");
                     String unit = rs.getString("Unit");
-                    String gross = rs.getString("GrossAmount");
-                    String vat = rs.getString("VAT");
-                    String netvat = rs.getString("NetVAT");
-                    TableModel2.addRow(new Object[]{dvcode, code, particular, quantity, unit, gross, vat, netvat});
+                    String unitcost = rs.getString("UnitCost");
+                    String gross = rs.getString("PGrossAmount");
+                    String vat = rs.getString("PVAT");
+                    String netvat = rs.getString("PNetVAT");
+                    TableModel2.addRow(new Object[]{code, particular, quantity, unit, unitcost, gross, vat, netvat});
                 }
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(this, "Can't read record in system table!\nSystem detects changes in table entities!\nPlease contact the backend developer.", "ERROR 1012", JOptionPane.ERROR_MESSAGE);
@@ -588,36 +606,46 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tabledvMouseClicked
 
-    private void tableparticularMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableparticularMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tableparticularMouseClicked
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         int row = tabledv.getSelectedRow();
         if (row > -1) {
             try {
-                InputStream i = getClass().getResourceAsStream("/report/newReport.jrxml");
+                InputStream i = getClass().getResourceAsStream("/report/DVReport.jrxml");
                 JasperDesign jasdi = JRXmlLoader.load(i);
-                String sql = "SELECT `DisbursementCode`, `Payee`, `Description`, `GrossAmount` FROM `tbldisbursementvoucher` WHERE DisbursementCode = '" + lblcode.getText() + "'";
+                //String sql1 = "SELECT * FROM tbldisbursementvoucher WHERE DisbursementCode = '" + lblcode.getText() + "'";
+                String sql = "SELECT * FROM tbldisbursementvoucher dv INNER JOIN tbldisbursementvoucherparticular part ON dv.DisbursementCode = part.DisbursementCode WHERE dv.DisbursementCode = '" + lblcode.getText() + "'";
+
                 JRDesignQuery newQuery = new JRDesignQuery();
                 newQuery.setText(sql);
-
                 jasdi.setQuery(newQuery);
-
-                HashMap<String, Object> para = new HashMap<>();
-                para.put("dvcode", lblcode.getText());
-
+                HashMap<String, Object> object = new HashMap<>();
+                object.put("dvcode", lblcode.getText());
+                object.put("payee", tabledv.getValueAt(row, 1).toString());
+                object.put("description", tabledv.getValueAt(row, 2).toString());
+                object.put("grossamount", tabledv.getValueAt(row, 4).toString());
+                object.put("vat", tabledv.getValueAt(row, 5).toString());
+                object.put("netvat", tabledv.getValueAt(row, 6).toString());
+                object.put("preparedby", tabledv.getValueAt(row, 8).toString());
+                object.put("approvedby", tabledv.getValueAt(row, 9).toString());
+                object.put("receivedby", tabledv.getValueAt(row, 10).toString());
+                object.put("date", DateFunction.getFormattedDate());
+                for (int part = 0; part < tableparticular.getRowCount(); part++) {
+                    object.put("code", tableparticular.getValueAt(part, 0).toString());
+                    object.put("particular", tableparticular.getValueAt(part, 1).toString());
+                    object.put("quantity", tableparticular.getValueAt(part, 2).toString());
+                    object.put("unit", tableparticular.getValueAt(part, 3).toString());
+                    object.put("unitcost", tableparticular.getValueAt(part, 4).toString());
+                    object.put("pgrossamount", tableparticular.getValueAt(part, 5).toString());
+                    object.put("pvat", tableparticular.getValueAt(part, 6).toString());
+                    object.put("pnetvat", tableparticular.getValueAt(part, 7).toString());
+                }
                 JasperReport js = JasperCompileManager.compileReport(jasdi);
-                JasperPrint jp = JasperFillManager.fillReport(js, para, connection);
-                // JasperExportManager.exportReportToHtmlFile(jp ,ore);
-                JasperViewer.viewReport(jp);
+                JasperPrint jp = JasperFillManager.fillReport(js, object, connection);
+                JasperViewer.viewReport(jp, false);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(rootPane, e);
             }
-
         }
-
-
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -707,6 +735,18 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton7ActionPerformed
 
+    private void txtsdvKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtsdvKeyReleased
+        SearchDV(txtsdv.getText().toUpperCase());
+    }//GEN-LAST:event_txtsdvKeyReleased
+
+    private void txtsmwKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtsmwKeyReleased
+        SearchMW(txtsmw.getText().toUpperCase());
+    }//GEN-LAST:event_txtsmwKeyReleased
+
+    private void txtsmrKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtsmrKeyReleased
+        SearchMR(txtsmr.getText().toUpperCase());
+    }//GEN-LAST:event_txtsmrKeyReleased
+
     /**
      * @param args the command line arguments
      */
@@ -756,19 +796,19 @@ public final class FrameMonitoring extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
     private javax.swing.JLabel lblcode;
     private javax.swing.JLabel lbltype;
     private javax.swing.JTable tabledv;
     private javax.swing.JTable tablemr;
     private javax.swing.JTable tablemw;
-    private javax.swing.JTable tableparticular;
+    private static javax.swing.JTable tableparticular;
+    private javax.swing.JTextField txtsdv;
+    private javax.swing.JTextField txtsmr;
+    private javax.swing.JTextField txtsmw;
     // End of variables declaration//GEN-END:variables
 }
