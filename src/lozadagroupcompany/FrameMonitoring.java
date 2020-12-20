@@ -620,7 +620,6 @@ public final class FrameMonitoring extends javax.swing.JFrame {
                 JasperDesign jasdi = JRXmlLoader.load(i);
                 //String sql1 = "SELECT * FROM tbldisbursementvoucher WHERE DisbursementCode = '" + lblcode.getText() + "'";
                 String sql = "SELECT * FROM tbldisbursementvoucher dv INNER JOIN tbldisbursementvoucherparticular part ON dv.DisbursementCode = part.DisbursementCode WHERE dv.DisbursementCode = '" + lblcode.getText() + "'";
-
                 JRDesignQuery newQuery = new JRDesignQuery();
                 newQuery.setText(sql);
                 jasdi.setQuery(newQuery);
@@ -631,6 +630,7 @@ public final class FrameMonitoring extends javax.swing.JFrame {
                 object.put("grossamount", tabledv.getValueAt(row, 4).toString());
                 object.put("vat", tabledv.getValueAt(row, 5).toString());
                 object.put("netvat", tabledv.getValueAt(row, 6).toString());
+                object.put("fundsource", tabledv.getValueAt(row, 7).toString());
                 object.put("preparedby", tabledv.getValueAt(row, 8).toString());
                 object.put("approvedby", tabledv.getValueAt(row, 9).toString());
                 object.put("receivedby", tabledv.getValueAt(row, 10).toString());

@@ -35,7 +35,7 @@ public class FrameItem extends javax.swing.JFrame {
         btsave.setText("Save");
         txtname.setText("");
         txtcost.setText("");
-        cbunit.setSelectedIndex(0);
+        //cbunit.setSelectedIndex(0);
         id = 0;
     }
 

@@ -43,8 +43,8 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
         txtpurpose.setText("");
         txtdestination.setText("");
         txtunitcost.setText("");
-        cbrequest.setSelectedIndex(0);
-        cbapprove.setSelectedIndex(0);
+        //cbrequest.setSelectedIndex(0);
+        //cbapprove.setSelectedIndex(0);
         txtunit.setText("");
         txtmrcode.setText("");
     }

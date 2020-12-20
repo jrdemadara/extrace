@@ -41,11 +41,11 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         txtgrossamount.setText("0.00");
         txtvat.setText("0.00");
         txtnetvat.setText("0.00");
-        cbpayee.setSelectedIndex(0);
-        cbfundsource.setSelectedIndex(0);
-        cbprepare.setSelectedIndex(0);
-        cbapprove.setSelectedIndex(0);
-        cbreceive.setSelectedIndex(0);
+        //cbpayee.setSelectedIndex(0);
+        //cbfundsource.setSelectedIndex(0);
+        //cbprepare.setSelectedIndex(0);
+        //cbapprove.setSelectedIndex(0);
+        //cbreceive.setSelectedIndex(0);
         DefaultTableModel TableModel = (DefaultTableModel) table.getModel();
         while (TableModel.getRowCount() > 0) {
             TableModel.removeRow(0);

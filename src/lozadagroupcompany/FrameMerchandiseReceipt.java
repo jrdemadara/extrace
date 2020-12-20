@@ -42,10 +42,10 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
         spquantity.setValue(0);
         txtunitcost.setText("0.00");
         txttotal.setText("0.00");
-        cbsupplier.setSelectedIndex(0);
-        cbunit.setSelectedIndex(0);
-        cbrequest.setSelectedIndex(0);
-        cbapprove.setSelectedIndex(0);
+        //cbsupplier.setSelectedIndex(0);
+        //cbunit.setSelectedIndex(0);
+        //cbrequest.setSelectedIndex(0);
+        //cbapprove.setSelectedIndex(0);
 
     }
 

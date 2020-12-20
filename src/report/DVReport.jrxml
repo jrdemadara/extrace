@@ -9,9 +9,9 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<property name="ireport.zoom" value="2.143588810000008"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="217"/>
+	<property name="ireport.zoom" value="3.452271214393118"/>
+	<property name="ireport.x" value="814"/>
+	<property name="ireport.y" value="172"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -51,6 +51,7 @@
 	<field name="approvedby" class="java.lang.String"/>
 	<field name="receivedby" class="java.lang.String"/>
 	<field name="code" class="java.lang.String"/>
+	<field name="fundsource" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -123,7 +124,7 @@
 				<text><![CDATA[DESCRIPTION :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="415" y="1" width="36" height="21" uuid="42f9d583-894a-45e9-8a06-f07d947d2dab"/>
+				<reportElement x="326" y="21" width="36" height="21" uuid="42f9d583-894a-45e9-8a06-f07d947d2dab"/>
 				<textElement>
 					<font fontName="Lato Black" size="10"/>
 				</textElement>
@@ -150,11 +151,25 @@
 				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="451" y="1" width="100" height="21" uuid="2ab7ff35-8813-45d1-829b-2c54203a8321"/>
+				<reportElement x="426" y="21" width="129" height="22" uuid="2ab7ff35-8813-45d1-829b-2c54203a8321"/>
 				<textElement>
 					<font fontName="Lato" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="326" y="0" width="100" height="21" uuid="5a602a53-96ce-4923-8d23-c9dc77b3debf"/>
+				<textElement>
+					<font fontName="Lato Black" size="10"/>
+				</textElement>
+				<text><![CDATA[SOURCE OF FUND : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="426" y="0" width="129" height="21" uuid="faf9485c-6a99-453a-8ed8-c63176fba5a7"/>
+				<textElement>
+					<font fontName="Lato" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fundsource}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
