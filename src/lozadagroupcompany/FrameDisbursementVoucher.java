@@ -18,6 +18,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
     Connection connection = conn.getConnection();
     DefaultTableModel dm;
     int particulars;
+    String user;
 
     public FrameDisbursementVoucher() {
         initComponents();
@@ -33,7 +34,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         CodeGenerator();
         RetrieveChart();
         RetrieveSupplier();
-        RetrievePersonnel();
+        RetrieveCompany();
         btsave.setText("Save");
         btclose.setText("Close");
         txtdescription.setText("");
@@ -41,11 +42,6 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         txtgrossamount.setText("0.00");
         txtvat.setText("0.00");
         txtnetvat.setText("0.00");
-        //cbpayee.setSelectedIndex(0);
-        //cbfundsource.setSelectedIndex(0);
-        //cbprepare.setSelectedIndex(0);
-        //cbapprove.setSelectedIndex(0);
-        //cbreceive.setSelectedIndex(0);
         DefaultTableModel TableModel = (DefaultTableModel) table.getModel();
         while (TableModel.getRowCount() > 0) {
             TableModel.removeRow(0);
@@ -64,17 +60,13 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         }
     }
 
-    private void RetrievePersonnel() {
-        cbprepare.addItem("Select Personnel");
-        cbapprove.addItem("Select Personnel");
-        cbreceive.addItem("Select Personnel");
+    private void RetrieveCompany() {
+        cbpayee.addItem("Select Company");
         try (Statement stmt = connection.createStatement()) {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM tblpersonnel");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tblcompany");
             while (rs.next()) {
-                String person = rs.getString("Name");
-                cbprepare.addItem(person);
-                cbapprove.addItem(person);
-                cbreceive.addItem(person);
+                String chart = rs.getString("CompanyName");
+                cbchargeto.addItem(chart);
             }
         } catch (SQLException e) {
         }
@@ -98,7 +90,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         CountParticular();
     }
 
-    public static void LoadDV(String code, String payee, String description, String fundsource, String particular, String grossamount, String vat, String netvat, String prepare, String approve, String receive) {
+    public static void LoadDV(String code, String payee, String description, String fundsource, String particular, String grossamount, String vat, String netvat) {
         lblcode.setText(code);
         cbpayee.setSelectedItem(payee);
         txtdescription.setText(description);
@@ -107,9 +99,6 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         txtgrossamount.setText(grossamount);
         txtvat.setText(vat);
         txtnetvat.setText(netvat);
-        cbprepare.setSelectedItem(prepare);
-        cbapprove.setSelectedItem(approve);
-        cbreceive.setSelectedItem(receive);
         btsave.setText("Update");
         btclose.setText("Cancel");
     }
@@ -122,6 +111,16 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
     public static void ModifyQuantity(String quantity) {
         int row = table.getSelectedRow();
         table.setValueAt(quantity, row, 2);
+    }
+
+    public static void ModifyVATType(String vattype) {
+        int row = table.getSelectedRow();
+        table.setValueAt(vattype, row, 6);
+        if ("Non-VAT".equals(vattype)) {
+            table.setValueAt("0", row, 7);
+            table.setValueAt("0", row, 8);
+            CalculateParticular();
+        }
     }
 
     private static void CountParticular() {
@@ -137,17 +136,29 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         double totalvat = 0;
         double totalnetvat = 0;
         for (int i = 0; i < table.getRowCount(); i++) {
-            double quantity = Double.parseDouble(table.getValueAt(i, 2).toString());
-            double unitcost = Double.parseDouble(table.getValueAt(i, 4).toString());
-            double totalamount = Math.ceil(unitcost * quantity);
-            double vat = Math.ceil((totalamount / 1.12) * 0.12);
-            double netvat = Math.ceil(totalamount / 1.12);
-            table.setValueAt(totalamount, i, 5);
-            table.setValueAt(vat, i, 6);
-            table.setValueAt(netvat, i, 7);
-            grandtotal += totalamount;
-            totalvat += vat;
-            totalnetvat += netvat;
+            String vattype = table.getValueAt(i, 6).toString();
+            if ("VAT".equals(vattype)) {
+                double quantity = Double.parseDouble(table.getValueAt(i, 2).toString());
+                double unitcost = Double.parseDouble(table.getValueAt(i, 4).toString());
+                double totalamount = Math.ceil(unitcost * quantity);
+                double vat = Math.ceil((totalamount / 1.12) * 0.12);
+                double netvat = Math.ceil(totalamount / 1.12);
+                table.setValueAt(totalamount, i, 5);
+                table.setValueAt(vat, i, 7);
+                table.setValueAt(netvat, i, 8);
+                grandtotal += totalamount;
+                totalvat += vat;
+                totalnetvat += netvat;
+            } else {
+                double quantity = Double.parseDouble(table.getValueAt(i, 2).toString());
+                double unitcost = Double.parseDouble(table.getValueAt(i, 4).toString());
+                double totalamount = Math.ceil(unitcost * quantity);
+                table.setValueAt(totalamount, i, 5);
+                table.setValueAt("0", i, 7);
+                table.setValueAt("0", i, 8);
+                grandtotal += totalamount;
+            }
+
         }
         txtgrossamount.setText(Double.toString(grandtotal));
         txtvat.setText(Double.toString(totalvat));
@@ -163,9 +174,10 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
             String unit = table.getValueAt(i, 3).toString();
             String unitcost = table.getValueAt(i, 4).toString();
             String gross = table.getValueAt(i, 5).toString();
-            String vat = table.getValueAt(i, 6).toString();
-            String netvat = table.getValueAt(i, 7).toString();
-            try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tbldisbursementvoucherparticular VALUES(?,?,?,?,?,?,?,?,?,?)")) {
+            String pvattype = table.getValueAt(i, 6).toString();
+            String vat = table.getValueAt(i, 7).toString();
+            String netvat = table.getValueAt(i, 8).toString();
+            try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tbldisbursementvoucherparticular VALUES(?,?,?,?,?,?,?,?,?,?,?)")) {
                 stmt.setInt(1, 0);
                 stmt.setString(2, lblcode.getText());
                 stmt.setString(3, code);
@@ -174,8 +186,9 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
                 stmt.setString(6, unit);
                 stmt.setString(7, unitcost);
                 stmt.setString(8, gross);
-                stmt.setString(9, vat);
-                stmt.setString(10, netvat);
+                stmt.setString(9, pvattype);
+                stmt.setString(10, vat);
+                stmt.setString(11, netvat);
                 stmt.execute();
                 stmt.close();
             } catch (SQLException ex) {
@@ -183,20 +196,22 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
             }
         }
 
-        try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tbldisbursementvoucher VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
+        try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tbldisbursementvoucher VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
             stmt.setInt(1, 0);
             stmt.setString(2, lblcode.getText());
-            stmt.setString(3, cbpayee.getSelectedItem().toString());
-            stmt.setString(4, txtdescription.getText().toUpperCase());
-            stmt.setString(5, txtparticular.getText());
-            stmt.setString(6, txtgrossamount.getText());
-            stmt.setString(7, txtvat.getText());
-            stmt.setString(8, txtnetvat.getText());
-            stmt.setString(9, cbfundsource.getSelectedItem().toString());
-            stmt.setString(10, cbprepare.getSelectedItem().toString());
-            stmt.setString(11, cbapprove.getSelectedItem().toString());
-            stmt.setString(12, cbreceive.getSelectedItem().toString());
-            stmt.setString(13, DateFunction.getFormattedDate());
+            stmt.setString(3, cbchargeto.getSelectedItem().toString());
+            stmt.setString(4, cbpayee.getSelectedItem().toString());
+            stmt.setString(5, txtdescription.getText().toUpperCase());
+            stmt.setString(6, txtparticular.getText());
+            stmt.setString(7, txtgrossamount.getText());
+            stmt.setString(8, txtvat.getText());
+            stmt.setString(9, txtnetvat.getText());
+            stmt.setString(10, cbfundsource.getSelectedItem().toString());
+            stmt.setString(11, user);
+            stmt.setString(12, "");
+            stmt.setString(13, "");
+            stmt.setString(14, "PENDING");
+            stmt.setString(15, DateFunction.getFormattedDate());
             stmt.execute();
             stmt.close();
             JOptionPane.showMessageDialog(this, "Disbursement Voucher '" + lblcode.getText() + "' has been saved!", " System Information", JOptionPane.INFORMATION_MESSAGE);
@@ -232,7 +247,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
             }
         }
 
-        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tbldisbursementvoucher SET Payee = ?, Description = ?, Particulars = ?, GrossAmount = ?, VAT = ?, NetVAT = ?, FundSource = ?, PreparedBy = ?, ApprovedBy = ?, ReceivedBy = ? WHERE DisbursementCode = ?")) {
+        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tbldisbursementvoucher SET Payee = ?, Description = ?, Particulars = ?, GrossAmount = ?, VAT = ?, NetVAT = ?, FundSource = ? WHERE DisbursementCode = ?")) {
             stmt.setString(1, cbpayee.getSelectedItem().toString());
             stmt.setString(2, txtdescription.getText().toUpperCase());
             stmt.setString(3, txtparticular.getText());
@@ -240,10 +255,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
             stmt.setString(5, txtvat.getText());
             stmt.setString(6, txtnetvat.getText());
             stmt.setString(7, cbfundsource.getSelectedItem().toString());
-            stmt.setString(8, cbprepare.getSelectedItem().toString());
-            stmt.setString(9, cbapprove.getSelectedItem().toString());
-            stmt.setString(10, cbreceive.getSelectedItem().toString());
-            stmt.setString(11, lblcode.getText());
+            stmt.setString(8, lblcode.getText());
             stmt.executeUpdate();
             JOptionPane.showMessageDialog(this, "Disbursement Voucher '" + lblcode.getText() + "' has been updated!", " System Information", JOptionPane.INFORMATION_MESSAGE);
             Refresh();
@@ -297,6 +309,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
 
         jPopupMenu1 = new javax.swing.JPopupMenu();
         modifyquantity = new javax.swing.JMenuItem();
+        vattype = new javax.swing.JMenuItem();
         remove = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -316,12 +329,8 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         txtnetvat = new javax.swing.JTextField();
         cbpayee = new javax.swing.JComboBox();
-        jLabel10 = new javax.swing.JLabel();
-        cbprepare = new javax.swing.JComboBox();
-        jLabel11 = new javax.swing.JLabel();
-        cbapprove = new javax.swing.JComboBox();
-        jLabel12 = new javax.swing.JLabel();
-        cbreceive = new javax.swing.JComboBox();
+        jLabel6 = new javax.swing.JLabel();
+        cbchargeto = new javax.swing.JComboBox();
         btsave = new javax.swing.JButton();
         btclose = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -339,6 +348,14 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
             }
         });
         jPopupMenu1.add(modifyquantity);
+
+        vattype.setText("Modify VAT Type");
+        vattype.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                vattypeActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(vattype);
 
         remove.setText("Remove Item");
         remove.addActionListener(new java.awt.event.ActionListener() {
@@ -433,23 +450,13 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
             }
         });
 
-        jLabel10.setText("Prepared By");
+        jLabel6.setText("Charge To");
 
-        cbprepare.addActionListener(new java.awt.event.ActionListener() {
+        cbchargeto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbprepareActionPerformed(evt);
+                cbchargetoActionPerformed(evt);
             }
         });
-
-        jLabel11.setText("Approved By");
-
-        cbapprove.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbapproveActionPerformed(evt);
-            }
-        });
-
-        jLabel12.setText("Received By");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -458,37 +465,30 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cbfundsource, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(cbpayee, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(6, 6, 6)))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtdescription, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addGap(6, 6, 6))
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel6)
+                            .addComponent(cbchargeto, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel2)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(cbprepare, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(txtparticular, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE))
-                            .addComponent(jLabel10))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabel5)
+                            .addComponent(txtparticular, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cbapprove, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel7)
-                                    .addComponent(txtgrossamount, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel11))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                                .addGap(27, 27, 27)
+                                .addComponent(jLabel7))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtgrossamount, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(cbpayee, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cbfundsource, 0, 206, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -500,61 +500,52 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
                             .addComponent(txtnetvat, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel9)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel12))
+                        .addComponent(jLabel3)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(cbreceive, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(txtdescription))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtdescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbfundsource, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbpayee, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtdescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(cbpayee, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cbchargeto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtparticular, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtgrossamount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(txtgrossamount, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel8)
-                                    .addComponent(jLabel9))
+                                    .addComponent(jLabel7))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtvat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(txtvat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel10)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cbprepare, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel11)
-                                    .addComponent(jLabel12))
+                                .addComponent(jLabel9)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(cbapprove, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(cbreceive, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(txtnetvat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addComponent(txtnetvat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(14, Short.MAX_VALUE))
+                        .addComponent(jLabel6)
+                        .addGap(38, 38, 38)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbfundsource, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         btsave.setBackground(new java.awt.Color(45, 52, 66));
@@ -566,7 +557,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
             }
         });
 
-        btclose.setBackground(new java.awt.Color(107, 115, 131));
+        btclose.setBackground(new java.awt.Color(45, 52, 66));
         btclose.setForeground(new java.awt.Color(255, 255, 255));
         btclose.setText("Close");
         btclose.addActionListener(new java.awt.event.ActionListener() {
@@ -593,7 +584,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
             }
         });
 
-        jButton5.setBackground(new java.awt.Color(107, 115, 131));
+        jButton5.setBackground(new java.awt.Color(45, 52, 66));
         jButton5.setForeground(new java.awt.Color(255, 255, 255));
         jButton5.setText("View List");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
@@ -610,11 +601,11 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Code", "Item", "Quantity", "Unit", "Unit Cost", "Total Amount", "VAT", "Net VAT"
+                "Code", "Item", "Quantity", "Unit", "Unit Cost", "Total Amount", "VAT Type", "VAT", "Net VAT"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -664,13 +655,13 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
                     .addComponent(jButton3)
                     .addComponent(jButton4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btclose)
                     .addComponent(btsave)
                     .addComponent(jButton5))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -679,14 +670,14 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
 
     private void btsaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btsaveActionPerformed
         if ("Save".equals(btsave.getText())) {
-            if (!"Select Payee".equals(cbpayee.getSelectedItem()) && !"".equals(txtdescription.getText()) && !"Select Fund".equals(cbfundsource.getSelectedItem()) && !"Select Personnel".equals(cbprepare.getSelectedItem()) && !"Select Personnel".equals(cbapprove.getSelectedItem()) && !"Select Personnel".equals(cbreceive.getSelectedItem())) {
+            if (!"Select Payee".equals(cbpayee.getSelectedItem()) && !"".equals(txtdescription.getText()) && !"Select Fund".equals(cbfundsource.getSelectedItem())) {
                 Save();
                 Refresh();
             } else {
                 JOptionPane.showMessageDialog(this, "Please fill the required fields.", " System Warning", JOptionPane.WARNING_MESSAGE);
             }
         } else {
-            if (!"Select Payee".equals(cbpayee.getSelectedItem()) && !"".equals(txtdescription.getText()) && !"Select Fund".equals(cbfundsource.getSelectedItem()) && !"Select Personnel".equals(cbprepare.getSelectedItem()) && !"Select Personnel".equals(cbapprove.getSelectedItem()) && !"Select Personnel".equals(cbreceive.getSelectedItem())) {
+            if (!"Select Payee".equals(cbpayee.getSelectedItem()) && !"".equals(txtdescription.getText()) && !"Select Fund".equals(cbfundsource.getSelectedItem())) {
                 Update();
                 Refresh();
             } else {
@@ -769,13 +760,14 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_jButton5ActionPerformed
 
-    private void cbprepareActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbprepareActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cbprepareActionPerformed
+    private void vattypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vattypeActionPerformed
+        FrameDVVATType frame = new FrameDVVATType();
+        frame.setVisible(true);
+    }//GEN-LAST:event_vattypeActionPerformed
 
-    private void cbapproveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbapproveActionPerformed
+    private void cbchargetoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbchargetoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cbapproveActionPerformed
+    }//GEN-LAST:event_cbchargetoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -816,22 +808,18 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private static javax.swing.JButton btclose;
     private static javax.swing.JButton btsave;
-    private static javax.swing.JComboBox cbapprove;
+    private static javax.swing.JComboBox cbchargeto;
     private static javax.swing.JComboBox cbfundsource;
     private static javax.swing.JComboBox cbpayee;
-    private static javax.swing.JComboBox cbprepare;
-    private static javax.swing.JComboBox cbreceive;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -848,5 +836,6 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
     private static javax.swing.JTextField txtnetvat;
     private static javax.swing.JTextField txtparticular;
     private static javax.swing.JTextField txtvat;
+    private javax.swing.JMenuItem vattype;
     // End of variables declaration//GEN-END:variables
 }

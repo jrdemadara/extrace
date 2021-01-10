@@ -72,24 +72,15 @@ public class FrameItem extends javax.swing.JFrame {
     }
 
     private void Save() {
-        try (Statement stmt0 = connection.createStatement()) {
-            ResultSet rs = stmt0.executeQuery("SELECT * FROM tblitems WHERE Item = '" + txtname.getText().toUpperCase() + "'");
-            if (rs.next()) {
-                JOptionPane.showMessageDialog(this, "Item '" + txtname.getText() + "' is already exist!", " System Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tblitems VALUES(?,?,?,?,?)")) {
-                    stmt.setInt(1, 0);
-                    stmt.setString(2, txtcode.getText());
-                    stmt.setString(3, txtname.getText().toUpperCase());
-                    stmt.setString(4, cbunit.getSelectedItem().toString());
-                    stmt.setString(5, txtcost.getText());
-                    stmt.execute();
-                    stmt.close();
-                    JOptionPane.showMessageDialog(this, "Item '" + txtname.getText() + "' has been created!", " System Information", JOptionPane.INFORMATION_MESSAGE);
-                } catch (SQLException ex) {
-                    Logger.getLogger(FrameItem.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+        try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tblitems VALUES(?,?,?,?,?)")) {
+            stmt.setInt(1, 0);
+            stmt.setString(2, txtcode.getText());
+            stmt.setString(3, txtname.getText().toUpperCase());
+            stmt.setString(4, cbunit.getSelectedItem().toString());
+            stmt.setString(5, txtcost.getText());
+            stmt.execute();
+            stmt.close();
+            JOptionPane.showMessageDialog(this, "Item '" + txtname.getText() + "' has been created!", " System Information", JOptionPane.INFORMATION_MESSAGE);
         } catch (SQLException ex) {
             Logger.getLogger(FrameItem.class.getName()).log(Level.SEVERE, null, ex);
         }

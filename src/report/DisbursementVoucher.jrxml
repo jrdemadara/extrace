@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="421" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fd6deb8a-397c-4221-89e5-087677a2c5b4">
+	<property name="ireport.zoom" value="1.363636363636366"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="89" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="42" height="37" uuid="d2f4852d-4f0c-420c-9ff1-46100f680269"/>
+				<imageExpression><![CDATA["C:\\Program Files\\LGCMerch\\logo-64.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="46" y="20" width="298" height="13" uuid="58361b27-e5ea-4cb6-b5ca-67e9f0cc984d"/>
+				<textElement>
+					<font fontName="Cambria" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Fishcode Village, 314 Skydeck Building, Calinan, Davao City]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="42" width="555" height="1" uuid="2dd386d7-c5e4-459c-adcc-0e74ca7c0312"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="45" width="90" height="13" uuid="118963fe-de57-4216-a836-109f7dfec125"/>
+				<textElement>
+					<font fontName="Cambria" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[PAYEE		:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="344" y="58" width="127" height="13" uuid="19090bf2-041a-4719-9958-3176811e7386"/>
+				<textElement>
+					<font fontName="Cambria" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[DATE			:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="71" width="90" height="13" uuid="ad75efd4-d287-4a41-a445-9741b1e4f9ec"/>
+				<textElement>
+					<font fontName="Cambria" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[CHARGE TO	:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="58" width="90" height="13" uuid="eec864a8-3274-435b-aaeb-b123a28af720"/>
+				<textElement>
+					<font fontName="Cambria" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[DESCRIPTION	:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="344" y="45" width="127" height="13" uuid="732753c5-4fc5-4122-9c79-e399edf00e9f"/>
+				<textElement>
+					<font fontName="Cambria" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[SOURCE OF FUND		: ]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="87" width="555" height="1" uuid="4d219340-e3e0-4946-a96d-5cd0c6d55a35"/>
+			</line>
+			<staticText>
+				<reportElement x="355" y="4" width="200" height="19" forecolor="#FF9900" uuid="97358bce-4353-4eec-8a7c-90c9c1f904a5"/>
+				<textElement>
+					<font fontName="Cambria" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DISBURSEMENT VOUCHER]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="46" y="0" width="298" height="24" uuid="86d44665-cc18-4307-8273-5c34afd2947b"/>
+				<textElement>
+					<font fontName="Cambria" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LOZADA GROUP OF COMPANIES]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="16" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="50" y="2" width="190" height="13" forecolor="#FFFFFF" backcolor="#FF9900" uuid="ac783fa1-5b9e-4425-838e-f1a117e45f92"/>
+				<textElement>
+					<font fontName="Cambria Math" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PARTICULARS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="273" y="2" width="44" height="13" forecolor="#FFFFFF" backcolor="#FF9900" uuid="306068b8-fadb-4744-907d-13e24f0e378f"/>
+				<textElement>
+					<font fontName="Cambria Math" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[UNIT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="377" y="2" width="59" height="13" forecolor="#FFFFFF" backcolor="#FF9900" uuid="b3d196a2-e55b-411b-ac35-c9350076a3e5"/>
+				<textElement>
+					<font fontName="Cambria Math" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="436" y="2" width="54" height="13" forecolor="#FFFFFF" backcolor="#FF9900" uuid="a106cfde-ad60-4171-af53-79ae716e188e"/>
+				<textElement>
+					<font fontName="Cambria Math" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VAT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="240" y="2" width="33" height="13" forecolor="#FFFFFF" backcolor="#FF9900" uuid="23fa9303-e567-4598-9e01-ff9161b23b85"/>
+				<textElement>
+					<font fontName="Cambria Math" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[QTY]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="490" y="2" width="65" height="13" forecolor="#FFFFFF" backcolor="#FF9900" uuid="baa5a469-af2d-446c-aff6-eceed4cf348a"/>
+				<textElement>
+					<font fontName="Cambria Math" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NET VAT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="2" width="50" height="13" forecolor="#FFFFFF" backcolor="#FF9900" uuid="055a5f17-058f-40b3-aea3-8105597c8324"/>
+				<textElement>
+					<font fontName="Cambria Math" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CODE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="317" y="2" width="60" height="13" forecolor="#FFFFFF" backcolor="#FF9900" uuid="7e9f8f32-553e-46e1-8550-f88db6c93f3d"/>
+				<textElement>
+					<font fontName="Cambria Math" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[UNIT COST]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="33" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="6" width="90" height="13" uuid="7664e315-060e-4882-9c7e-d4bab6167ee2"/>
+				<textElement>
+					<font fontName="Cambria" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[GROSS AMOUNT	:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="308" y="6" width="47" height="13" uuid="bff11177-4b34-4944-a098-280a98653ee6"/>
+				<textElement>
+					<font fontName="Cambria" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[VAT	:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="423" y="6" width="48" height="13" uuid="f531c7fc-86cf-4584-884d-390bdf637fc4"/>
+				<textElement>
+					<font fontName="Cambria" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[NET VAT	:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="1" width="555" height="1" uuid="24886158-15cd-45af-b3d6-e42219b0c406"/>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="66" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="44" width="173" height="1" uuid="1ded43b8-c943-4576-aa35-9c1f1335ff05"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="5" width="78" height="13" uuid="6cd9d581-9259-442a-8e29-5c56696164f3"/>
+				<textElement>
+					<font fontName="Cambria" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[PREPARED BY:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="192" y="5" width="81" height="13" uuid="0a5ec1ca-2b38-4360-b78c-3dcc156c32da"/>
+				<textElement>
+					<font fontName="Cambria" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[APPROVED BY:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="377" y="5" width="77" height="13" uuid="fb5778d6-418d-4849-95a4-24818945f642"/>
+				<textElement>
+					<font fontName="Cambria" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[RECEIVED BY:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="45" width="173" height="13" uuid="0a89aa34-f1b4-43ee-aa9b-40dcdcd4078f"/>
+				<textElement textAlignment="Center">
+					<font fontName="Cambria" size="8"/>
+				</textElement>
+				<text><![CDATA[Signature Over Printed Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="192" y="44" width="173" height="13" uuid="f80e2cdf-da56-4f47-bd2c-daf3b64d8423"/>
+				<textElement textAlignment="Center">
+					<font fontName="Cambria" size="8"/>
+				</textElement>
+				<text><![CDATA[Signature Over Printed Name]]></text>
+			</staticText>
+			<line>
+				<reportElement x="192" y="43" width="173" height="1" uuid="0981beef-2ec8-4de3-87f8-e14efe739bb5"/>
+			</line>
+			<staticText>
+				<reportElement x="377" y="44" width="173" height="13" uuid="2e0f782f-0f3b-4c39-92c0-cb5adfa92408"/>
+				<textElement textAlignment="Center">
+					<font fontName="Cambria" size="8"/>
+				</textElement>
+				<text><![CDATA[Signature Over Printed Name]]></text>
+			</staticText>
+			<line>
+				<reportElement x="377" y="43" width="173" height="1" uuid="2f72e17a-79b0-4d7e-ae36-66d89b5dcba3"/>
+			</line>
+		</band>
+	</pageFooter>
+</jasperReport>

@@ -34,32 +34,32 @@
 			<staticText>
 				<reportElement x="80" y="0" width="280" height="20" uuid="e7323a31-f909-46f4-b6fe-e021e1fe2b38"/>
 				<textElement>
-					<font fontName="Lato Black" size="16" isBold="true"/>
+					<font fontName="Tahoma" size="16" isBold="true"/>
 				</textElement>
 				<text><![CDATA[LOZADA GROUP OF COMPANIES]]></text>
 			</staticText>
 			<image>
 				<reportElement x="20" y="0" width="45" height="40" uuid="b3a72dc9-526a-4a33-849f-279230dc5451"/>
-				<imageExpression><![CDATA["J:/Dev Project/lozadacompany/src/lozadagroupcompany/logo-64.png"]]></imageExpression>
+				<imageExpression><![CDATA["E:/Dev Project/lozadacompany/src/lozadagroupcompany/logo-64.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="80" y="20" width="280" height="10" uuid="120bfce5-316d-47b6-bdce-c9f04262e987"/>
 				<textElement>
-					<font fontName="Lato" size="8"/>
+					<font fontName="Tahoma" size="8"/>
 				</textElement>
 				<text><![CDATA[Fishcode Village, 314 Skydeck Building, Brgy Talomo River, Calinan, Davao City]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="80" y="31" width="93" height="19" uuid="05d6dff2-b78e-4d03-805d-882361dd7132"/>
 				<textElement>
-					<font fontName="Lato" size="8"/>
+					<font fontName="Tahoma" size="8"/>
 				</textElement>
 				<text><![CDATA[Calinan, Davao City]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="393" y="10" width="162" height="20" uuid="bba9269e-120a-49de-b9db-24d7ad068bc2"/>
 				<textElement>
-					<font fontName="Lato Black" size="10" isBold="true"/>
+					<font fontName="Tahoma" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[MERCHANDISE WITHDRAWAL]]></text>
 			</staticText>
@@ -72,7 +72,7 @@
 			<staticText>
 				<reportElement x="183" y="69" width="187" height="21" uuid="a3e79149-f984-49f0-b343-32a141b3de11"/>
 				<textElement>
-					<font fontName="Lato Black" size="10"/>
+					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[MERCHANDISE WITHDRAWAL FORM (FUEL)]]></text>
 			</staticText>
@@ -90,28 +90,28 @@
 			<staticText>
 				<reportElement x="0" y="0" width="70" height="20" uuid="fad5ce65-0a11-4ba6-a6ef-40bf077517c1"/>
 				<textElement>
-					<font fontName="Lato Black" size="10"/>
+					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[BUSINESS NO :]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="393" y="0" width="70" height="21" uuid="5a40ef74-72c9-4593-a65c-53d030d58791"/>
 				<textElement>
-					<font fontName="Lato Black" size="10"/>
+					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[DATE :]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="-1" y="20" width="70" height="14" uuid="38e2ca2e-ec97-4953-8bcf-6449a23bc21f"/>
 				<textElement>
-					<font fontName="Lato Black" size="10"/>
+					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[PURPOSE :]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="-1" y="40" width="80" height="14" uuid="e4713e79-6705-4403-bbc0-f69c0b6cdb67"/>
 				<textElement>
-					<font fontName="Lato Black" size="10"/>
+					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[DESTINATION :]]></text>
 			</staticText>
@@ -156,28 +156,28 @@
 			<staticText>
 				<reportElement x="4" y="0" width="70" height="21" uuid="faa38ade-ea06-440e-abc6-ddd0624ba93d"/>
 				<textElement>
-					<font fontName="Lato Black" size="10"/>
+					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[Quantity]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="300" y="0" width="70" height="21" uuid="aaa0ae05-1a76-4202-9f39-983c94655537"/>
 				<textElement>
-					<font fontName="Lato Black" size="10"/>
+					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[Unit Cost]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="453" y="0" width="70" height="21" uuid="2af17738-36e8-4e7f-b07f-58b7d7d64efb"/>
 				<textElement>
-					<font fontName="Lato Black" size="10"/>
+					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[Amount]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="140" y="0" width="70" height="21" uuid="446dfc4d-867e-4442-af02-b31999ecb839"/>
 				<textElement>
-					<font fontName="Lato Black" size="10"/>
+					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[Unit]]></text>
 			</staticText>
@@ -217,14 +217,14 @@
 			<staticText>
 				<reportElement x="109" y="22" width="70" height="21" uuid="479358fb-0582-4ed5-9c4b-0a80284b6955"/>
 				<textElement>
-					<font fontName="Lato Black" size="10"/>
+					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[Requested By]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="369" y="22" width="70" height="21" uuid="ee6f6d48-23f9-4f3d-8e8f-b5dd8a94a7d3"/>
 				<textElement>
-					<font fontName="Lato Black" size="10"/>
+					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[Approved By]]></text>
 			</staticText>

@@ -74,7 +74,7 @@ public class FrameDVList extends javax.swing.JFrame {
         setAlwaysOnTop(true);
         setResizable(false);
 
-        jButton2.setBackground(new java.awt.Color(107, 115, 131));
+        jButton2.setBackground(new java.awt.Color(45, 52, 66));
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("Close");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -272,10 +272,7 @@ public class FrameDVList extends javax.swing.JFrame {
             String vat = tabledv.getValueAt(row, 5).toString();
             String netvat = tabledv.getValueAt(row, 6).toString();
             String fund = tabledv.getValueAt(row, 7).toString();
-            String prepare = tabledv.getValueAt(row, 8).toString();
-            String approve = tabledv.getValueAt(row, 9).toString();
-            String receive = tabledv.getValueAt(row, 10).toString();
-            FrameDisbursementVoucher.LoadDV(code, payee, des, fund, part, gross, vat, netvat, prepare, approve, receive);
+            FrameDisbursementVoucher.LoadDV(code, payee, des, fund, part, gross, vat, netvat);
             for (int i = 0; i < tableparticular.getRowCount(); i++) {
                 String pcode = tableparticular.getValueAt(i, 0).toString();
                 String ppart = tableparticular.getValueAt(i, 1).toString();

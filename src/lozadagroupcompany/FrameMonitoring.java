@@ -7,10 +7,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -615,42 +618,19 @@ public final class FrameMonitoring extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         int row = tabledv.getSelectedRow();
         if (row > -1) {
+            HashMap<String, Object> parameters = new HashMap<>();
+            parameters.put("dvcode", lblcode.getText());
             try {
-                InputStream i = getClass().getResourceAsStream("/report/DVReport.jrxml");
+                InputStream i = getClass().getResourceAsStream("/report/DisbursementVoucher.jrxml");
                 JasperDesign jasdi = JRXmlLoader.load(i);
-                //String sql1 = "SELECT * FROM tbldisbursementvoucher WHERE DisbursementCode = '" + lblcode.getText() + "'";
-                String sql = "SELECT * FROM tbldisbursementvoucher dv INNER JOIN tbldisbursementvoucherparticular part ON dv.DisbursementCode = part.DisbursementCode WHERE dv.DisbursementCode = '" + lblcode.getText() + "'";
-                JRDesignQuery newQuery = new JRDesignQuery();
-                newQuery.setText(sql);
-                jasdi.setQuery(newQuery);
-                HashMap<String, Object> object = new HashMap<>();
-                object.put("dvcode", lblcode.getText());
-                object.put("payee", tabledv.getValueAt(row, 1).toString());
-                object.put("description", tabledv.getValueAt(row, 2).toString());
-                object.put("grossamount", tabledv.getValueAt(row, 4).toString());
-                object.put("vat", tabledv.getValueAt(row, 5).toString());
-                object.put("netvat", tabledv.getValueAt(row, 6).toString());
-                object.put("fundsource", tabledv.getValueAt(row, 7).toString());
-                object.put("preparedby", tabledv.getValueAt(row, 8).toString());
-                object.put("approvedby", tabledv.getValueAt(row, 9).toString());
-                object.put("receivedby", tabledv.getValueAt(row, 10).toString());
-                object.put("date", DateFunction.getFormattedDate());
-                for (int part = 0; part < tableparticular.getRowCount(); part++) {
-                    object.put("code", tableparticular.getValueAt(part, 0).toString());
-                    object.put("particular", tableparticular.getValueAt(part, 1).toString());
-                    object.put("quantity", tableparticular.getValueAt(part, 2).toString());
-                    object.put("unit", tableparticular.getValueAt(part, 3).toString());
-                    object.put("unitcost", tableparticular.getValueAt(part, 4).toString());
-                    object.put("pgrossamount", tableparticular.getValueAt(part, 5).toString());
-                    object.put("pvat", tableparticular.getValueAt(part, 6).toString());
-                    object.put("pnetvat", tableparticular.getValueAt(part, 7).toString());
-                }
                 JasperReport js = JasperCompileManager.compileReport(jasdi);
-                JasperPrint jp = JasperFillManager.fillReport(js, object, connection);
+                JasperPrint jp = JasperFillManager.fillReport(js, parameters, connection);
                 JasperViewer.viewReport(jp, false);
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(rootPane, e);
+            } catch (JRException ex) {
+                Logger.getLogger(FrameMonitoring.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select data from the table.", " System Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
