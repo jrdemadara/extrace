@@ -239,7 +239,7 @@ public class FramePersonnel extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(107, 115, 131));
+        jButton2.setBackground(new java.awt.Color(45, 52, 66));
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("Close");
         jButton2.addActionListener(new java.awt.event.ActionListener() {

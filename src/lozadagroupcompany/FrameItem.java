@@ -81,8 +81,10 @@ public class FrameItem extends javax.swing.JFrame {
             stmt.execute();
             stmt.close();
             JOptionPane.showMessageDialog(this, "Item '" + txtname.getText() + "' has been created!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+            Refresh();
         } catch (SQLException ex) {
-            Logger.getLogger(FrameItem.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(FrameItem.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex, " System Information", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -94,8 +96,8 @@ public class FrameItem extends javax.swing.JFrame {
             stmt.setString(3, cbunit.getSelectedItem().toString());
             stmt.setString(4, txtcost.getText());
             stmt.executeUpdate();
-            Refresh();
             JOptionPane.showMessageDialog(this, "Item '" + txtname.getText() + "' has been updated!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+            Refresh();
         } catch (SQLException ex) {
             Logger.getLogger(FrameItem.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -284,7 +286,7 @@ public class FrameItem extends javax.swing.JFrame {
             }
         });
 
-        btclose.setBackground(new java.awt.Color(107, 115, 131));
+        btclose.setBackground(new java.awt.Color(45, 52, 66));
         btclose.setForeground(new java.awt.Color(255, 255, 255));
         btclose.setText("Close");
         btclose.addActionListener(new java.awt.event.ActionListener() {
@@ -338,14 +340,12 @@ public class FrameItem extends javax.swing.JFrame {
         if ("Save".equals(btsave.getText())) {
             if (!"".equals(txtname.getText()) && !"".equals(txtcost.getText())) {
                 Save();
-                Refresh();
             } else {
                 JOptionPane.showMessageDialog(this, "Please fill the required fields.", " System Warning", JOptionPane.WARNING_MESSAGE);
             }
         } else {
             if (!"".equals(txtname.getText()) && !"".equals(txtcost.getText())) {
                 Update();
-                Refresh();
             } else {
                 JOptionPane.showMessageDialog(this, "Please fill the required fields.", " System Warning", JOptionPane.WARNING_MESSAGE);
             }

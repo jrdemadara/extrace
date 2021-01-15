@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-public class FrameDVList extends javax.swing.JFrame {
+public class FrameRVList extends javax.swing.JFrame {
 
     DatabaseConnection conn = new DatabaseConnection();
     DefaultTableModel tablemodel;
@@ -17,38 +17,37 @@ public class FrameDVList extends javax.swing.JFrame {
     DefaultTableModel dm;
     int particulars;
 
-    public FrameDVList() {
+    public FrameRVList() {
         initComponents();
         RetrieveData();
     }
 
     private void RetrieveData() {
-        DefaultTableModel TableModel = (DefaultTableModel) tabledv.getModel();
+        DefaultTableModel TableModel = (DefaultTableModel) tablerv.getModel();
         while (TableModel.getRowCount() > 0) {
             TableModel.removeRow(0);
         }
         try (Statement stmt = connection.createStatement()) {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM tbldisbursementvoucher");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tblreceiptvoucher");
             while (rs.next()) {
-                String code = rs.getString("DisbursementCode");
-                String payee = rs.getString("Payee");
+                String code = rs.getString("ReceiptCode");
+                String payor = rs.getString("Payor");
+                String tin = rs.getString("TINNumber");
+                String deposited = rs.getString("DepositedTo");
                 String description = rs.getString("Description");
-                String particular = rs.getString("Particulars");
-                String grossamount = rs.getString("GrossAmount");
+                String pparticulars = rs.getString("Particulars");
+                String gross = rs.getString("GrossAmount");
                 String vat = rs.getString("VAT");
                 String netvat = rs.getString("NetVAT");
-                String fund = rs.getString("FundSource");
-                String pre = rs.getString("PreparedBy");
-                String ver = rs.getString("VerifiedBy");
-                String app = rs.getString("ApprovedBy");
-                String receive = rs.getString("ReceivedBy");
+                String prepared = rs.getString("PreparedBy");
+                String verified = rs.getString("VerifiedBy");
+                String approved = rs.getString("ApprovedBy");
+                String received = rs.getString("ReceivedBy");
                 String status = rs.getString("Status");
                 String date = rs.getString("Date");
-
-                TableModel.addRow(new Object[]{code, payee, description, particular, grossamount, vat, netvat, fund, pre, ver, app, receive, status, date});
+                TableModel.addRow(new Object[]{code, payor, tin, deposited, description, pparticulars, gross, vat, netvat, prepared, verified, approved, received, status, date});
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(FrameDVList.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException e) {
         }
     }
 
@@ -68,9 +67,9 @@ public class FrameDVList extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jScrollPane6 = new javax.swing.JScrollPane();
         tableparticular = new javax.swing.JTable();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        tabledv = new javax.swing.JTable();
         jTextField3 = new javax.swing.JTextField();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        tablerv = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -88,7 +87,7 @@ public class FrameDVList extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(45, 52, 66));
 
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("DISBURSEMENT VOUCHER LIST");
+        jLabel1.setText("RECEIPT VOUCHER LIST");
 
         lblcode.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
         lblcode.setForeground(new java.awt.Color(255, 153, 0));
@@ -154,38 +153,39 @@ public class FrameDVList extends javax.swing.JFrame {
         });
         jScrollPane6.setViewportView(tableparticular);
 
-        tabledv.setBackground(new java.awt.Color(107, 115, 131));
-        tabledv.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        tabledv.setForeground(new java.awt.Color(255, 255, 255));
-        tabledv.setModel(new javax.swing.table.DefaultTableModel(
+        jTextField3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField3.setText("Search...");
+
+        tablerv.setBackground(new java.awt.Color(107, 115, 131));
+        tablerv.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        tablerv.setForeground(new java.awt.Color(255, 255, 255));
+        tablerv.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "DV Code", "Payee", "Description", "Particulars", "Gross Amount", "VAT", "NetVAT", "Fund Source", "Prepared By", "Verified By", "Approved By", "Received By", "Status", "Date"
+                "RV Code", "Payor", "TIN", "Deposited To", "Description", "Particulars", "Gross Amount", "VAT", "NetVAT", "Prepared By", "Verified By", "Approved By", "Received By", "Status", "Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        tabledv.setGridColor(new java.awt.Color(204, 204, 204));
-        tabledv.setSelectionBackground(new java.awt.Color(45, 52, 66));
-        tabledv.setSelectionForeground(new java.awt.Color(235, 235, 236));
-        tabledv.setShowHorizontalLines(true);
-        tabledv.addMouseListener(new java.awt.event.MouseAdapter() {
+        tablerv.setGridColor(new java.awt.Color(204, 204, 204));
+        tablerv.setSelectionBackground(new java.awt.Color(45, 52, 66));
+        tablerv.setSelectionForeground(new java.awt.Color(235, 235, 236));
+        tablerv.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tablerv.setShowHorizontalLines(true);
+        tablerv.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tabledvMouseClicked(evt);
+                tablervMouseClicked(evt);
             }
         });
-        jScrollPane4.setViewportView(tabledv);
-
-        jTextField3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField3.setText("Search...");
+        jScrollPane7.setViewportView(tablerv);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -204,10 +204,10 @@ public class FrameDVList extends javax.swing.JFrame {
                         .addComponent(jTextField3))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1003, Short.MAX_VALUE))
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 1003, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 1003, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane7)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -217,7 +217,7 @@ public class FrameDVList extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -231,52 +231,22 @@ public class FrameDVList extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void tabledvMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledvMouseClicked
-        int row = tabledv.getSelectedRow();
-        if (row > -1) {
-            DefaultTableModel TableModel1 = (DefaultTableModel) tabledv.getModel();
-            DefaultTableModel TableModel2 = (DefaultTableModel) tableparticular.getModel();
-            lblcode.setText(TableModel1.getValueAt(row, 0).toString());
-            while (TableModel2.getRowCount() > 0) {
-                TableModel2.removeRow(0);
-            }
-            try (Statement stmt = connection.createStatement()) {
-                ResultSet rs = stmt.executeQuery("SELECT * FROM tbldisbursementvoucherparticular WHERE DisbursementCode = '" + lblcode.getText() + "' ");
-                while (rs.next()) {
-                    String code = rs.getString("Code");
-                    String particular = rs.getString("Particular");
-                    String quantity = rs.getString("Quantity");
-                    String unit = rs.getString("Unit");
-                    String cost = rs.getString("UnitCost");
-                    String gross = rs.getString("PGrossAmount");
-                    String vattype = rs.getString("VATType");
-                    String vat = rs.getString("PVAT");
-                    String netvat = rs.getString("PNetVAT");
-                    TableModel2.addRow(new Object[]{code, particular, quantity, unit, cost, gross, vattype, vat, netvat});
-                }
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Can't read record in system table!\nSystem detects changes in table entities!\nPlease contact the backend developer.", "ERROR 1012", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            //Do nothing!
-        }
-    }//GEN-LAST:event_tabledvMouseClicked
-
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        FrameDisbursementVoucher frame = new FrameDisbursementVoucher();
+        FrameReceiptVoucher frame = new FrameReceiptVoucher();
         frame.setVisible(true);
-        int row = tabledv.getSelectedRow();
+        int row = tablerv.getSelectedRow();
         if (row > -1) {
-            String code = tabledv.getValueAt(row, 0).toString();
-            String payee = tabledv.getValueAt(row, 1).toString();
-            String des = tabledv.getValueAt(row, 2).toString();
-            String part = tabledv.getValueAt(row, 3).toString();
-            String gross = tabledv.getValueAt(row, 4).toString();
-            String vat = tabledv.getValueAt(row, 5).toString();
-            String netvat = tabledv.getValueAt(row, 6).toString();
-            String fund = tabledv.getValueAt(row, 7).toString();
-            String receive = tabledv.getValueAt(row, 11).toString();
-            FrameDisbursementVoucher.LoadDV(code, payee, des, fund, part, gross, vat, netvat, receive);
+            String code = tablerv.getValueAt(row, 0).toString();
+            String payor = tablerv.getValueAt(row, 1).toString();
+            String tin = tablerv.getValueAt(row, 2).toString();
+            String deposit = tablerv.getValueAt(row, 3).toString();
+            String des = tablerv.getValueAt(row, 4).toString();
+            String part = tablerv.getValueAt(row, 5).toString();
+            String gross = tablerv.getValueAt(row, 6).toString();
+            String vat = tablerv.getValueAt(row, 7).toString();
+            String netvat = tablerv.getValueAt(row, 8).toString();
+            String receive = tablerv.getValueAt(row, 12).toString();
+            FrameReceiptVoucher.LoadRV(code, payor, tin, deposit, des, part, gross, vat, netvat, receive);
             for (int i = 0; i < tableparticular.getRowCount(); i++) {
                 String pcode = tableparticular.getValueAt(i, 0).toString();
                 String ppart = tableparticular.getValueAt(i, 1).toString();
@@ -287,7 +257,7 @@ public class FrameDVList extends javax.swing.JFrame {
                 String vattype = tableparticular.getValueAt(i, 6).toString();
                 String pvat = tableparticular.getValueAt(i, 7).toString();
                 String pnetvat = tableparticular.getValueAt(i, 8).toString();
-                FrameDisbursementVoucher.LoadDVParticular(new Object[]{
+                FrameReceiptVoucher.LoadRVParticular(new Object[]{
                     pcode,
                     ppart,
                     pquantity,
@@ -298,7 +268,7 @@ public class FrameDVList extends javax.swing.JFrame {
                     pvat,
                     pnetvat,});
             }
-            JOptionPane.showMessageDialog(this, "Disbursement Voucher '" + lblcode.getText() + "' is added to the list.", " System Information", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Receipt Voucher '" + lblcode.getText() + "' is added to the list.", " System Information", JOptionPane.INFORMATION_MESSAGE);
 
             dispose();
         } else {
@@ -315,6 +285,35 @@ public class FrameDVList extends javax.swing.JFrame {
         frame.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void tablervMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablervMouseClicked
+        int row = tablerv.getSelectedRow();
+        if (row > -1) {
+            DefaultTableModel TableModel1 = (DefaultTableModel) tablerv.getModel();
+            DefaultTableModel TableModel2 = (DefaultTableModel) tableparticular.getModel();
+            lblcode.setText(TableModel1.getValueAt(row, 0).toString());
+            while (TableModel2.getRowCount() > 0) {
+                TableModel2.removeRow(0);
+            }
+            try (Statement stmt = connection.createStatement()) {
+                ResultSet rs = stmt.executeQuery("SELECT * FROM tblreceiptvoucherparticular WHERE ReceiptCode = '" + lblcode.getText() + "' ");
+                while (rs.next()) {
+                    String rvcode = rs.getString("ReceiptCode");
+                    String code = rs.getString("Code");
+                    String particular = rs.getString("Particular");
+                    String quantity = rs.getString("Quantity");
+                    String unit = rs.getString("Unit");
+                    String unitcost = rs.getString("UnitCost");
+                    String gross = rs.getString("PGrossAmount");
+                    String vat = rs.getString("PVAT");
+                    String netvat = rs.getString("PNetVAT");
+                    TableModel2.addRow(new Object[]{rvcode, code, particular, quantity, unit, unitcost, gross, vat, netvat});
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Can't read record in system table!\nSystem detects changes in table entities!\nPlease contact the backend developer.", "ERROR 1012", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_tablervMouseClicked
 
     /**
      * @param args the command line arguments
@@ -333,19 +332,20 @@ public class FrameDVList extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrameDVList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrameRVList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrameDVList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrameRVList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrameDVList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrameRVList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrameDVList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrameRVList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new FrameDVList().setVisible(true);
+            new FrameRVList().setVisible(true);
         });
     }
 
@@ -354,11 +354,11 @@ public class FrameDVList extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JLabel lblcode;
-    private javax.swing.JTable tabledv;
     private javax.swing.JTable tableparticular;
+    private javax.swing.JTable tablerv;
     // End of variables declaration//GEN-END:variables
 }

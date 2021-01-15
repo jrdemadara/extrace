@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-public class FrameDisbursementVoucher extends javax.swing.JFrame {
+public class FrameReceiptVoucher extends javax.swing.JFrame {
 
     DatabaseConnection conn = new DatabaseConnection();
     DefaultTableModel tablemodel;
@@ -20,7 +20,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
     int particulars;
     String user;
 
-    public FrameDisbursementVoucher() {
+    public FrameReceiptVoucher() {
         initComponents();
         Refresh();
         setIconImage();
@@ -36,13 +36,11 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
 
     private void Refresh() {
         CodeGenerator();
-        RetrieveChart();
-        RetrieveSupplier();
-        RetrieveCompany();
+        RetrieveBank();
+        RetrieveClient();
         btsave.setText("Save");
         btclose.setText("Close");
         txtdescription.setText("");
-        txtreceive.setText("");
         txtparticular.setText("");
         txtgrossamount.setText("0.00");
         txtvat.setText("0.00");
@@ -53,13 +51,25 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         }
     }
 
-    private void RetrieveSupplier() {
-        cbpayee.addItem("Select Payee");
+    private void RetrieveClient() {
+        cbpayor.addItem("Select Payor");
         try (Statement stmt = connection.createStatement()) {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM tblsupplier");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tblclient");
             while (rs.next()) {
-                String chart = rs.getString("SupplierName");
-                cbpayee.addItem(chart);
+                String chart = rs.getString("ClientName");
+                cbpayor.addItem(chart);
+            }
+        } catch (SQLException e) {
+        }
+    }
+
+    private void RetrieveBank() {
+        cbdepositedto.addItem("Select Bank");
+        try (Statement stmt = connection.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tblbank");
+            while (rs.next()) {
+                String chart = rs.getString("BankName");
+                cbdepositedto.addItem(chart);
             }
         } catch (SQLException e) {
         }
@@ -67,34 +77,10 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
 
     private void RetrieveTin() {
         try (Statement stmt = connection.createStatement()) {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM tblsupplier WHERE SupplierName = '" + cbpayee.getSelectedItem() + "'");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tblclient WHERE ClientName = '" + cbpayor.getSelectedItem() + "'");
             while (rs.next()) {
                 String chart = rs.getString("TIN");
                 txttin.setText(chart);
-            }
-        } catch (SQLException e) {
-        }
-    }
-
-    private void RetrieveCompany() {
-        cbchargeto.addItem("Select Company");
-        try (Statement stmt = connection.createStatement()) {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM tblcompany");
-            while (rs.next()) {
-                String chart = rs.getString("CompanyName");
-                cbchargeto.addItem(chart);
-            }
-        } catch (SQLException e) {
-        }
-    }
-
-    private void RetrieveChart() {
-        cbfundsource.addItem("Select Fund");
-        try (Statement stmt = connection.createStatement()) {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM tblchartofaccount");
-            while (rs.next()) {
-                String chart = rs.getString("ChartName");
-                cbfundsource.addItem(chart);
             }
         } catch (SQLException e) {
         }
@@ -106,21 +92,22 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         CountParticular();
     }
 
-    public static void LoadDV(String code, String payee, String description, String fundsource, String particular, String grossamount, String vat, String netvat, String received) {
+    public static void LoadRV(String code, String payor, String tin, String deposit, String description, String particular, String grossamount, String vat, String netvat, String receive) {
         lblcode.setText(code);
-        cbpayee.setSelectedItem(payee);
+        cbpayor.setSelectedItem(payor);
+        txttin.setText(tin);
+        cbdepositedto.setSelectedItem(deposit);
         txtdescription.setText(description);
-        cbfundsource.setSelectedItem(fundsource);
         txtparticular.setText(particular);
         txtgrossamount.setText(grossamount);
         txtvat.setText(vat);
         txtnetvat.setText(netvat);
-        txtreceive.setText(received);
+        txtreceive.setText(receive);
         btsave.setText("Update");
         btclose.setText("Cancel");
     }
 
-    public static void LoadDVParticular(Object[] dataRow) {
+    public static void LoadRVParticular(Object[] dataRow) {
         DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
         tableModel.addRow(dataRow);
     }
@@ -195,7 +182,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
             String pvattype = table.getValueAt(i, 6).toString();
             String vat = table.getValueAt(i, 7).toString();
             String netvat = table.getValueAt(i, 8).toString();
-            try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tbldisbursementvoucherparticular VALUES(?,?,?,?,?,?,?,?,?,?,?)")) {
+            try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tblreceiptvoucherparticular VALUES(?,?,?,?,?,?,?,?,?,?,?)")) {
                 stmt.setInt(1, 0);
                 stmt.setString(2, lblcode.getText());
                 stmt.setString(3, code);
@@ -208,36 +195,37 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
                 stmt.setString(10, vat);
                 stmt.setString(11, netvat);
                 stmt.execute();
-                //stmt.close();
+                stmt.close();
             } catch (SQLException ex) {
-                Logger.getLogger(FrameDisbursementVoucher.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(FrameReceiptVoucher.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
-        try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tbldisbursementvoucher VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
+        try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tblreceiptvoucher VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
             stmt.setInt(1, 0);
             stmt.setString(2, lblcode.getText());
-            stmt.setString(3, cbchargeto.getSelectedItem().toString());
-            stmt.setString(4, cbpayee.getSelectedItem().toString());
-            stmt.setString(5, txttin.getText().toUpperCase());
+            stmt.setString(3, cbpayor.getSelectedItem().toString());
+            stmt.setString(4, txttin.getText());
+            stmt.setString(5, cbdepositedto.getSelectedItem().toString());
             stmt.setString(6, txtdescription.getText().toUpperCase());
             stmt.setString(7, txtparticular.getText());
             stmt.setString(8, txtgrossamount.getText());
             stmt.setString(9, txtvat.getText());
             stmt.setString(10, txtnetvat.getText());
-            stmt.setString(11, cbfundsource.getSelectedItem().toString());
-            stmt.setString(12, user);
-            stmt.setString(13, "NOT-VERIFIED");
-            stmt.setString(14, "NOT-APPROVED");
-            stmt.setString(15, txtreceive.getText());
-            stmt.setString(16, "PENDING");
-            stmt.setString(17, DateFunction.getFormattedDate());
+            stmt.setString(11, user);
+            stmt.setString(12, "NOT-VERIFIED");
+            stmt.setString(13, "NOT-APPROVED");
+            stmt.setString(14, txtreceive.getText());
+            stmt.setString(15, "PENDING");
+            stmt.setString(16, DateFunction.getFormattedDate());
             stmt.execute();
-            //stmt.close();
+            stmt.close();
+            JOptionPane.showMessageDialog(this, "Receipt Voucher '" + lblcode.getText() + "' has been saved!", " System Information", JOptionPane.INFORMATION_MESSAGE);
             Refresh();
-            JOptionPane.showMessageDialog(this, "Disbursement Voucher '" + lblcode.getText() + "' has been saved!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+            FrameMain frame = new FrameMain();
+            frame.setVisible(true);
         } catch (SQLException ex) {
-            Logger.getLogger(FrameDisbursementVoucher.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FrameReceiptVoucher.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -249,41 +237,44 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
             String unit = table.getValueAt(i, 3).toString();
             String unitcost = table.getValueAt(i, 4).toString();
             String gross = table.getValueAt(i, 5).toString();
+            String pvattype = table.getValueAt(i, 6).toString();
             String vat = table.getValueAt(i, 7).toString();
             String netvat = table.getValueAt(i, 8).toString();
-            try (PreparedStatement stmt = connection.prepareStatement("UPDATE tbldisbursementvoucherparticular SET Code = ?, Particular = ?, Quantity = ?, Unit = ?, UnitCost = ?, PGrossAmount = ?, PVAT = ?, PNetVAT = ? WHERE DisbursementCode = ? AND Particular = ?")) {
+            try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblreceiptvoucherparticular SET Code = ?, Particular = ?, Quantity = ?, Unit = ?, UnitCost = ?, PGrossAmount = ?, VATType = ?, PVAT = ?, PNetVAT = ? WHERE ReceiptCode = ? AND Particular = ?")) {
                 stmt.setString(1, code);
                 stmt.setString(2, particular);
                 stmt.setString(3, quantity);
                 stmt.setString(4, unit);
                 stmt.setString(5, unitcost);
                 stmt.setString(6, gross);
-                stmt.setString(7, vat);
-                stmt.setString(8, netvat);
-                stmt.setString(9, lblcode.getText());
-                stmt.setString(10, particular);
+                stmt.setString(7, pvattype);
+                stmt.setString(8, vat);
+                stmt.setString(9, netvat);
+                stmt.setString(10, lblcode.getText());
+                stmt.setString(11, particular);
                 stmt.executeUpdate();
-                Refresh();
+
             } catch (SQLException ex) {
-                Logger.getLogger(FrameDisbursementVoucher.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(FrameReceiptVoucher.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
-        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tbldisbursementvoucher SET Payee = ?, Description = ?, Particulars = ?, GrossAmount = ?, VAT = ?, NetVAT = ?, FundSource = ?, ReceivedBy = ? WHERE DisbursementCode = ?")) {
-            stmt.setString(1, cbpayee.getSelectedItem().toString());
-            stmt.setString(2, txtdescription.getText().toUpperCase());
-            stmt.setString(3, txtparticular.getText());
-            stmt.setString(4, txtgrossamount.getText());
-            stmt.setString(5, txtvat.getText());
-            stmt.setString(6, txtnetvat.getText());
-            stmt.setString(7, cbfundsource.getSelectedItem().toString());
-            stmt.setString(8, txtreceive.getText());
-            stmt.setString(9, lblcode.getText());
+        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblreceiptvoucher SET Payor = ?, TINNumber = ?,DepositedTo = ?, Description = ?, Particulars = ?, GrossAmount = ?, VAT = ?, NetVAT = ?, ReceivedBy = ? WHERE ReceiptCode = ?")) {
+            stmt.setString(1, cbpayor.getSelectedItem().toString());
+            stmt.setString(2, txttin.getText().toUpperCase());
+            stmt.setString(3, cbdepositedto.getSelectedItem().toString());
+            stmt.setString(4, txtdescription.getText().toUpperCase());
+            stmt.setString(5, txtparticular.getText());
+            stmt.setString(6, txtgrossamount.getText());
+            stmt.setString(7, txtvat.getText());
+            stmt.setString(8, txtnetvat.getText());
+            stmt.setString(9, txtreceive.getText());
+            stmt.setString(10, lblcode.getText());
             stmt.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Disbursement Voucher '" + lblcode.getText() + "' has been updated!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Receipt Voucher '" + lblcode.getText() + "' has been updated!", " System Information", JOptionPane.INFORMATION_MESSAGE);
             Refresh();
         } catch (SQLException ex) {
-            Logger.getLogger(FrameDisbursementVoucher.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FrameReceiptVoucher.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -292,7 +283,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         String code = null;
         try {
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT Max(ID) FROM tbldisbursementvoucher");
+            ResultSet rs = stmt.executeQuery("SELECT Max(ID) FROM tblreceiptvoucher");
             if (rs.next()) {
                 code = rs.getString("Max(ID)");
             }
@@ -303,7 +294,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
             if (code == null) {
                 String date = lozadagroupcompany.DateFunction.getFormattedYearMonth();
                 String dateout = date.replaceAll("-", "");
-                String newcode = "DVC" + dateout + "1";
+                String newcode = "RVC" + dateout + "1";
                 code = newcode;
                 lblcode.setText(code);
 
@@ -313,7 +304,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
                 String output = Integer.toString(temp);
                 String date = lozadagroupcompany.DateFunction.getFormattedYearMonth();
                 String dateout = date.replaceAll("-", "");
-                String newcode = "DVC" + dateout + output;
+                String newcode = "RVC" + dateout + output;
                 code = newcode;
                 lblcode.setText(code);
             }
@@ -331,7 +322,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
     private void initComponents() {
 
         jPopupMenu1 = new javax.swing.JPopupMenu();
-        modifyquantity = new javax.swing.JMenuItem();
+        modifyparticular = new javax.swing.JMenuItem();
         vattype = new javax.swing.JMenuItem();
         remove = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
@@ -344,18 +335,16 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         txtparticular = new javax.swing.JTextField();
-        cbfundsource = new javax.swing.JComboBox();
+        cbdepositedto = new javax.swing.JComboBox();
         jLabel7 = new javax.swing.JLabel();
         txtgrossamount = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         txtvat = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         txtnetvat = new javax.swing.JTextField();
-        cbpayee = new javax.swing.JComboBox();
-        jLabel6 = new javax.swing.JLabel();
-        cbchargeto = new javax.swing.JComboBox();
-        jLabel10 = new javax.swing.JLabel();
+        cbpayor = new javax.swing.JComboBox();
         txttin = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
         txtreceive = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
         btsave = new javax.swing.JButton();
@@ -368,13 +357,13 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
 
         jPopupMenu1.setInvoker(table);
 
-        modifyquantity.setText("Modify Quantity");
-        modifyquantity.addActionListener(new java.awt.event.ActionListener() {
+        modifyparticular.setText("Modify Particular");
+        modifyparticular.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                modifyquantityActionPerformed(evt);
+                modifyparticularActionPerformed(evt);
             }
         });
-        jPopupMenu1.add(modifyquantity);
+        jPopupMenu1.add(modifyparticular);
 
         vattype.setText("Modify VAT Type");
         vattype.addActionListener(new java.awt.event.ActionListener() {
@@ -399,7 +388,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(45, 52, 66));
 
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("DISBURSEMENT VOUCHER CODE:");
+        jLabel1.setText("RECEIPT VOUCHER CODE:");
 
         lblcode.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
         lblcode.setForeground(new java.awt.Color(255, 153, 0));
@@ -428,7 +417,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 52, 66)));
 
-        jLabel2.setText("Payee");
+        jLabel2.setText("Payor");
 
         txtdescription.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -438,16 +427,16 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
 
         jLabel3.setText("Description");
 
-        jLabel4.setText("Fund Source");
+        jLabel4.setText("Deposited To");
 
         jLabel5.setText("Particular");
 
         txtparticular.setEditable(false);
         txtparticular.setBackground(new java.awt.Color(238, 238, 238));
 
-        cbfundsource.addActionListener(new java.awt.event.ActionListener() {
+        cbdepositedto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbfundsourceActionPerformed(evt);
+                cbdepositedtoActionPerformed(evt);
             }
         });
 
@@ -471,21 +460,11 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         txtnetvat.setEditable(false);
         txtnetvat.setBackground(new java.awt.Color(238, 238, 238));
 
-        cbpayee.addActionListener(new java.awt.event.ActionListener() {
+        cbpayor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbpayeeActionPerformed(evt);
+                cbpayorActionPerformed(evt);
             }
         });
-
-        jLabel6.setText("Charge To");
-
-        cbchargeto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbchargetoActionPerformed(evt);
-            }
-        });
-
-        jLabel10.setText("TIN Number");
 
         txttin.setEditable(false);
         txttin.setBackground(new java.awt.Color(238, 238, 238));
@@ -494,6 +473,8 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
                 txttinKeyReleased(evt);
             }
         });
+
+        jLabel10.setText("TIN Number");
 
         txtreceive.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -511,96 +492,97 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(0, 109, Short.MAX_VALUE))
-                            .addComponent(txtparticular))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtgrossamount, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtvat, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel8))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtnetvat, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel9))
-                        .addContainerGap())
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel6)
-                            .addComponent(cbchargeto, 0, 227, Short.MAX_VALUE)
-                            .addComponent(cbfundsource, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtdescription)
+                            .addComponent(cbpayor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(170, 170, 170))
+                            .addComponent(txtgrossamount))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(txtdescription, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(cbpayee, javax.swing.GroupLayout.Alignment.LEADING, 0, 247, Short.MAX_VALUE))
-                            .addComponent(jLabel3))
+                                .addComponent(txtreceive, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
+                                .addComponent(txttin, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING))
+                            .addComponent(jLabel11))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cbdepositedto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtparticular)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel5))
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8)
+                            .addComponent(txtvat, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel10)
-                                    .addComponent(txttin, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(9, 9, 9))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel11)
-                                    .addComponent(txtreceive))
-                                .addContainerGap())))))
+                                .addComponent(jLabel9)
+                                .addGap(0, 162, Short.MAX_VALUE))
+                            .addComponent(txtnetvat))))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(7, 7, 7)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addGap(38, 38, 38)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbfundsource, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtdescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(cbchargeto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel10))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cbpayee, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(cbpayor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txttin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel10)
+                                .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txttin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(cbdepositedto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtreceive, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addComponent(jLabel3)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtdescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtparticular, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel11)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtgrossamount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtnetvat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtreceive, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtparticular, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel9))
-                        .addGap(34, 34, 34))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtnetvat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtvat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtgrossamount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtvat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -657,7 +639,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Code", "Item", "Quantity", "Unit", "Unit Cost", "Total Amount", "VAT Type", "VAT", "Net VAT"
+                "Code", "Particular", "Quantity", "Unit", "Unit Cost", "Total Amount", "VAT Type", "VAT", "Net VAT"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -711,7 +693,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
                     .addComponent(jButton3)
                     .addComponent(jButton4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btclose)
@@ -726,15 +708,14 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
 
     private void btsaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btsaveActionPerformed
         if ("Save".equals(btsave.getText())) {
-            if (!"Select Payee".equals(cbpayee.getSelectedItem()) && !"".equals(txtdescription.getText()) && !"Select Fund".equals(cbfundsource.getSelectedItem())) {
+            if (!"Select Payee".equals(cbpayor.getSelectedItem()) && !"".equals(txtdescription.getText()) && !"Select Fund".equals(cbdepositedto.getSelectedItem())) {
                 Save();
             } else {
                 JOptionPane.showMessageDialog(this, "Please fill the required fields.", " System Warning", JOptionPane.WARNING_MESSAGE);
             }
         } else {
-            if (!"Select Payee".equals(cbpayee.getSelectedItem()) && !"".equals(txtdescription.getText()) && !"Select Fund".equals(cbfundsource.getSelectedItem())) {
+            if (!"Select Payee".equals(cbpayor.getSelectedItem()) && !"".equals(txtdescription.getText()) && !"Select Fund".equals(cbdepositedto.getSelectedItem())) {
                 Update();
-
             } else {
                 JOptionPane.showMessageDialog(this, "Please fill the required fields.", " System Warning", JOptionPane.WARNING_MESSAGE);
             }
@@ -762,18 +743,18 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         FrameItemList frame = new FrameItemList();
         frame.setVisible(true);
-        frame.SetImport("dv");
+        frame.SetImport("rv");
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void modifyquantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyquantityActionPerformed
+    private void modifyparticularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyparticularActionPerformed
         int row = table.getSelectedRow();
         String unitcost = table.getValueAt(row, 4).toString();
         String quantity = table.getValueAt(row, 2).toString();
         FrameModifyParticular frame = new FrameModifyParticular();
         frame.setVisible(true);
         frame.SetDetails(unitcost, quantity);
-        frame.SetType("DV");
-    }//GEN-LAST:event_modifyquantityActionPerformed
+        frame.SetType("RV");
+    }//GEN-LAST:event_modifyparticularActionPerformed
 
     private void removeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeActionPerformed
         int row = table.getSelectedRow();
@@ -803,20 +784,20 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void cbpayeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbpayeeActionPerformed
+    private void cbpayorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbpayorActionPerformed
         RetrieveTin();
-    }//GEN-LAST:event_cbpayeeActionPerformed
+    }//GEN-LAST:event_cbpayorActionPerformed
 
-    private void cbfundsourceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbfundsourceActionPerformed
+    private void cbdepositedtoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbdepositedtoActionPerformed
 
-    }//GEN-LAST:event_cbfundsourceActionPerformed
+    }//GEN-LAST:event_cbdepositedtoActionPerformed
 
     private void txtdescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtdescriptionActionPerformed
 
     }//GEN-LAST:event_txtdescriptionActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        FrameDVList frame = new FrameDVList();
+        FrameRVList frame = new FrameRVList();
         frame.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton5ActionPerformed
@@ -824,12 +805,8 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
     private void vattypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vattypeActionPerformed
         FrameModifyVATType frame = new FrameModifyVATType();
         frame.setVisible(true);
-        frame.SetType("DV");
+        frame.SetType("RV");
     }//GEN-LAST:event_vattypeActionPerformed
-
-    private void cbchargetoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbchargetoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cbchargetoActionPerformed
 
     private void txttinKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txttinKeyReleased
         // TODO add your handling code here:
@@ -856,14 +833,18 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrameDisbursementVoucher.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrameReceiptVoucher.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrameDisbursementVoucher.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrameReceiptVoucher.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrameDisbursementVoucher.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrameReceiptVoucher.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrameDisbursementVoucher.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrameReceiptVoucher.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -871,16 +852,15 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new FrameDisbursementVoucher().setVisible(true);
+            new FrameReceiptVoucher().setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private static javax.swing.JButton btclose;
     private static javax.swing.JButton btsave;
-    private static javax.swing.JComboBox cbchargeto;
-    private static javax.swing.JComboBox cbfundsource;
-    private static javax.swing.JComboBox cbpayee;
+    private static javax.swing.JComboBox cbdepositedto;
+    private static javax.swing.JComboBox cbpayor;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
@@ -891,7 +871,6 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -900,7 +879,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane2;
     private static javax.swing.JLabel lblcode;
-    private javax.swing.JMenuItem modifyquantity;
+    private javax.swing.JMenuItem modifyparticular;
     private javax.swing.JMenuItem remove;
     private static javax.swing.JTable table;
     private static javax.swing.JTextField txtdescription;

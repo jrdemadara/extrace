@@ -3,15 +3,26 @@ package lozadagroupcompany;
 import java.awt.Toolkit;
 import javax.swing.JOptionPane;
 
-public class FrameDVVATType extends javax.swing.JFrame {
+public class FrameModifyParticular extends javax.swing.JFrame {
 
-    public FrameDVVATType() {
+    String type;
+
+    public FrameModifyParticular() {
         initComponents();
         setIconImage();
     }
 
     private void setIconImage() {
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("ico.png")));
+    }
+
+    public void SetDetails(String unitcost, String quantity) {
+        txtcost.setText(unitcost);
+        spquantity.setValue(Integer.parseInt(quantity));
+    }
+
+    public void SetType(String datatype) {
+        type = datatype;
     }
 
     /**
@@ -27,7 +38,9 @@ public class FrameDVVATType extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        cbtype = new javax.swing.JComboBox();
+        spquantity = new javax.swing.JSpinner();
+        jLabel4 = new javax.swing.JLabel();
+        txtcost = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -37,7 +50,7 @@ public class FrameDVVATType extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(45, 52, 66));
 
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("MODIFY VAT TYPE");
+        jLabel1.setText("SETTLE QUNTITY");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -58,9 +71,9 @@ public class FrameDVVATType extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 52, 66)));
 
-        jLabel3.setText("VAT Type");
+        jLabel3.setText("Quantity");
 
-        cbtype.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "VAT", "Non-VAT" }));
+        jLabel4.setText("Unit Cost");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -69,20 +82,29 @@ public class FrameDVVATType extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(spquantity, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
+                        .addComponent(jLabel4)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(cbtype, 0, 313, Short.MAX_VALUE))
+                    .addComponent(txtcost))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtcost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbtype, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(8, Short.MAX_VALUE))
+                .addComponent(spquantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jButton1.setBackground(new java.awt.Color(45, 52, 66));
@@ -113,10 +135,10 @@ public class FrameDVVATType extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
-                .addContainerGap(8, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -124,10 +146,18 @@ public class FrameDVVATType extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        FrameDisbursementVoucher.ModifyVATType(cbtype.getSelectedItem().toString());
-        FrameDisbursementVoucher.CalculateParticular();
-        JOptionPane.showMessageDialog(this, "Quantity has been modified!", " System Information", JOptionPane.INFORMATION_MESSAGE);
-        dispose();
+        if ("DV".equals(type)) {
+            FrameDisbursementVoucher.ModifyQuantity(txtcost.getText(), spquantity.getValue().toString());
+            FrameDisbursementVoucher.CalculateParticular();
+            JOptionPane.showMessageDialog(this, "Quantity has been modified!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
+        } else {
+            FrameReceiptVoucher.ModifyQuantity(txtcost.getText(), spquantity.getValue().toString());
+            FrameReceiptVoucher.CalculateParticular();
+            JOptionPane.showMessageDialog(this, "Quantity has been modified!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
+        }
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -147,13 +177,13 @@ public class FrameDVVATType extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrameDVVATType.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrameModifyParticular.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrameDVVATType.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrameModifyParticular.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrameDVVATType.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrameModifyParticular.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrameDVVATType.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrameModifyParticular.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -166,16 +196,18 @@ public class FrameDVVATType extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new FrameDVVATType().setVisible(true);
+            new FrameModifyParticular().setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox cbtype;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JSpinner spquantity;
+    private javax.swing.JTextField txtcost;
     // End of variables declaration//GEN-END:variables
 }

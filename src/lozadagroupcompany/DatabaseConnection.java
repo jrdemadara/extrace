@@ -5,9 +5,12 @@
  */
 package lozadagroupcompany;
 
+import static com.sun.deploy.uitoolkit.ToolkitStore.dispose;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -15,27 +18,34 @@ import javax.swing.JOptionPane;
  * @author Johnny Roger
  */
 public class DatabaseConnection {
+
     private Connection conn;
-    
-    public DatabaseConnection(){
+
+    public DatabaseConnection() {
         try {
             Connection connect;
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/schema_lgcmerch", "root", "Slasher15");
+            connect = DriverManager.getConnection("jdbc:mysql://slicksoftcoder.mysql.database.azure.com:3306/lozadadb?useSSL=true&requireSSL=false&serverTimezone=UTC", "slicksoft@slicksoftcoder", "Tsiafytwiafm7677");
             connect.setAutoCommit(true);
             setConnection(connect);
         } catch (ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+            try {
+                dispose();
+            } catch (Exception ex1) {
+                Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex1);
+            }
         }
     }
-    
-    private void setConnection(Connection conn){
+
+    private void setConnection(Connection conn) {
         this.conn = conn;
     }
-    
-    public Connection getConnection(){
+
+    public Connection getConnection() {
         return conn;
     }
 }

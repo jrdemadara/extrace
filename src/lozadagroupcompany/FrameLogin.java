@@ -18,6 +18,7 @@ public class FrameLogin extends javax.swing.JFrame {
     public FrameLogin() {
         initComponents();
         setIconImage();
+        RetrieveUsername();
     }
 
     private void setIconImage() {
@@ -32,14 +33,14 @@ public class FrameLogin extends javax.swing.JFrame {
         }
         PasswordHash passHash = new PasswordHash();
         String hashedPassword = passHash.getSecurePassword(password);
-        getid(txtusername.getText(), hashedPassword);
+        getid(cbuser.getSelectedItem().toString(), hashedPassword);
         if (id == 0) {
             JOptionPane.showMessageDialog(this, "Access Denied \n Username or Password is incorrect", "Access Denied", JOptionPane.ERROR_MESSAGE);
         } else {
             FrameMain frame = new FrameMain();
             frame.setVisible(true);
+            frame.GetUser(type, user);
             dispose();
-
         }
     }
 
@@ -49,10 +50,24 @@ public class FrameLogin extends javax.swing.JFrame {
             ResultSet rs = stmt.executeQuery("SELECT * FROM tbluser WHERE Username='" + username + "' AND Password='" + password + "'");
             if (rs.next()) {
                 id = rs.getInt("ID");
+                type = rs.getString("UserType");
+                user = rs.getString("Username");
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Access Denied \n Username or Password is incorrect", "ERROR", JOptionPane.ERROR_MESSAGE);
 
+        }
+    }
+
+    private void RetrieveUsername() {
+        cbuser.addItem("Select User");
+        try (Statement stmt = conn.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tbluser");
+            while (rs.next()) {
+                String chart = rs.getString("Username");
+                cbuser.addItem(chart);
+            }
+        } catch (SQLException e) {
         }
     }
 
@@ -70,10 +85,10 @@ public class FrameLogin extends javax.swing.JFrame {
         lblcode = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        txtusername = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         txtpassword = new javax.swing.JPasswordField();
+        cbuser = new javax.swing.JComboBox();
         btlogin = new javax.swing.JButton();
         btclose = new javax.swing.JButton();
 
@@ -118,12 +133,6 @@ public class FrameLogin extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(103, 111, 128)));
 
-        txtusername.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtusernameActionPerformed(evt);
-            }
-        });
-
         jLabel3.setText("USERNAME");
 
         jLabel4.setText("PASSWORD");
@@ -135,13 +144,13 @@ public class FrameLogin extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtusername)
+                    .addComponent(txtpassword)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
                             .addComponent(jLabel3))
                         .addGap(0, 255, Short.MAX_VALUE))
-                    .addComponent(txtpassword))
+                    .addComponent(cbuser, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -150,8 +159,8 @@ public class FrameLogin extends javax.swing.JFrame {
                 .addGap(17, 17, 17)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtusername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addComponent(cbuser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtpassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -167,7 +176,7 @@ public class FrameLogin extends javax.swing.JFrame {
             }
         });
 
-        btclose.setBackground(new java.awt.Color(107, 115, 131));
+        btclose.setBackground(new java.awt.Color(45, 52, 66));
         btclose.setForeground(new java.awt.Color(255, 255, 255));
         btclose.setText("CLOSE");
         btclose.addActionListener(new java.awt.event.ActionListener() {
@@ -216,10 +225,6 @@ public class FrameLogin extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_btcloseActionPerformed
 
-    private void txtusernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtusernameActionPerformed
-
-    }//GEN-LAST:event_txtusernameActionPerformed
-
     /**
      * @param args the command line arguments
      */
@@ -256,6 +261,7 @@ public class FrameLogin extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btclose;
     private javax.swing.JButton btlogin;
+    private javax.swing.JComboBox cbuser;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -264,6 +270,5 @@ public class FrameLogin extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblcode;
     private javax.swing.JPasswordField txtpassword;
-    private javax.swing.JTextField txtusername;
     // End of variables declaration//GEN-END:variables
 }

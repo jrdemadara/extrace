@@ -228,7 +228,7 @@ public final class FrameChartofAccount extends javax.swing.JFrame {
             }
         });
 
-        btclose.setBackground(new java.awt.Color(107, 115, 131));
+        btclose.setBackground(new java.awt.Color(45, 52, 66));
         btclose.setForeground(new java.awt.Color(255, 255, 255));
         btclose.setText("Close");
         btclose.addActionListener(new java.awt.event.ActionListener() {

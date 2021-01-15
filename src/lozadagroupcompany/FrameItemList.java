@@ -16,6 +16,7 @@ public class FrameItemList extends javax.swing.JFrame {
     DefaultTableModel tablemodel;
     Connection connection = conn.getConnection();
     DefaultTableModel dm;
+    String importtype;
 
     public FrameItemList() {
         initComponents();
@@ -25,6 +26,10 @@ public class FrameItemList extends javax.swing.JFrame {
 
     private void setIconImage() {
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("ico.png")));
+    }
+
+    public void SetImport(String type) {
+        importtype = type;
     }
 
     private void RetrieveData() {
@@ -166,29 +171,54 @@ public class FrameItemList extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        DefaultTableModel model = (DefaultTableModel) table.getModel();
-        int row = table.getSelectedRow();
-        if (row > -1) {
-            String code = (model.getValueAt(row, 0).toString());
-            String item = (model.getValueAt(row, 1).toString());
-            String unit = (model.getValueAt(row, 2).toString());
-            String cost = (model.getValueAt(row, 3).toString());
-            String quantity = "1";
-            String totalamount = "0.00";
-            FrameDisbursementVoucher.LoadParticular(new Object[]{
-                code,
-                item,
-                quantity,
-                unit,
-                cost,
-                totalamount,
-                "VAT",});
-            JOptionPane.showMessageDialog(this, "Item '" + item + "' is added to the list.", " System Information", JOptionPane.INFORMATION_MESSAGE);
-            FrameDisbursementVoucher.CalculateParticular();
-            dispose();
+        if ("dv".equals(importtype)) {
+            DefaultTableModel model = (DefaultTableModel) table.getModel();
+            int row = table.getSelectedRow();
+            if (row > -1) {
+                String code = (model.getValueAt(row, 0).toString());
+                String item = (model.getValueAt(row, 1).toString());
+                String unit = (model.getValueAt(row, 2).toString());
+                String cost = (model.getValueAt(row, 3).toString());
+                String quantity = "1";
+                String totalamount = "0.00";
+                FrameDisbursementVoucher.LoadParticular(new Object[]{
+                    code,
+                    item,
+                    quantity,
+                    unit,
+                    cost,
+                    totalamount,
+                    "VAT",});
+                JOptionPane.showMessageDialog(this, "Item '" + item + "' is added to the list.", " System Information", JOptionPane.INFORMATION_MESSAGE);
+                FrameDisbursementVoucher.CalculateParticular();
+            } else {
+                JOptionPane.showMessageDialog(this, "Please select an item.", " System Information", JOptionPane.INFORMATION_MESSAGE);
+            }
         } else {
-            JOptionPane.showMessageDialog(this, "Please select an item.", " System Information", JOptionPane.INFORMATION_MESSAGE);
+            DefaultTableModel model = (DefaultTableModel) table.getModel();
+            int row = table.getSelectedRow();
+            if (row > -1) {
+                String code = (model.getValueAt(row, 0).toString());
+                String item = (model.getValueAt(row, 1).toString());
+                String unit = (model.getValueAt(row, 2).toString());
+                String cost = (model.getValueAt(row, 3).toString());
+                String quantity = "1";
+                String totalamount = "0.00";
+                FrameReceiptVoucher.LoadParticular(new Object[]{
+                    code,
+                    item,
+                    quantity,
+                    unit,
+                    cost,
+                    totalamount,
+                    "VAT",});
+                JOptionPane.showMessageDialog(this, "Item '" + item + "' is added to the list.", " System Information", JOptionPane.INFORMATION_MESSAGE);
+                FrameReceiptVoucher.CalculateParticular();
+            } else {
+                JOptionPane.showMessageDialog(this, "Please select an item.", " System Information", JOptionPane.INFORMATION_MESSAGE);
+            }
         }
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

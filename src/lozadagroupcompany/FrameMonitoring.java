@@ -18,7 +18,6 @@ import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.design.JRDesignQuery;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.view.JasperViewer;
@@ -30,9 +29,11 @@ public final class FrameMonitoring extends javax.swing.JFrame {
     Connection connection = conn.getConnection();
     DefaultTableModel dm;
     String user;
+    String reporttype;
 
     public FrameMonitoring() {
         initComponents();
+        retrieveRV();
         retrieveDV();
         retrieveMR();
         retrieveMW();
@@ -64,7 +65,43 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         tr.setRowFilter(RowFilter.regexFilter(query));
     }
 
-    void retrieveDV() {
+    private void SearchRV(String query) {
+        dm = (DefaultTableModel) tabledv.getModel();
+        TableRowSorter<DefaultTableModel> tr = new TableRowSorter<>(dm);
+        tabledv.setRowSorter(tr);
+        tr.setRowFilter(RowFilter.regexFilter(query));
+    }
+
+    private void retrieveRV() {
+        DefaultTableModel tableModel = (DefaultTableModel) tabledv.getModel();
+        while (tableModel.getRowCount() > 0) {
+            tableModel.removeRow(0);
+        }
+        try (Statement stmt = connection.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tblreceiptvoucher");
+            while (rs.next()) {
+                String code = rs.getString("ReceiptCode");
+                String charge = rs.getString("ChargeTo");
+                String payor = rs.getString("Payor");
+                String tin = rs.getString("TINNumber");
+                String deposited = rs.getString("DepositedTo");
+                String description = rs.getString("Description");
+                String particulars = rs.getString("Particulars");
+                String gross = rs.getString("GrossAmount");
+                String vat = rs.getString("VAT");
+                String netvat = rs.getString("NetVAT");
+                String prepared = rs.getString("PreparedBy");
+                String approved = rs.getString("ApprovedBy");
+                String received = rs.getString("ReceivedBy");
+                String status = rs.getString("Status");
+                String date = rs.getString("Date");
+                tableModel.addRow(new Object[]{code, charge, payor, tin, deposited, description, particulars, gross, vat, netvat, prepared, approved, received, status, date});
+            }
+        } catch (SQLException e) {
+        }
+    }
+
+    private void retrieveDV() {
         DefaultTableModel tableModel = (DefaultTableModel) tabledv.getModel();
         while (tableModel.getRowCount() > 0) {
             tableModel.removeRow(0);
@@ -73,24 +110,27 @@ public final class FrameMonitoring extends javax.swing.JFrame {
             ResultSet rs = stmt.executeQuery("SELECT * FROM tbldisbursementvoucher");
             while (rs.next()) {
                 String code = rs.getString("DisbursementCode");
+                String charge = rs.getString("ChargeTo");
                 String payee = rs.getString("Payee");
+                String tin = rs.getString("TINNumber");
                 String des = rs.getString("Description");
                 String part = rs.getString("Particulars");
                 String gross = rs.getString("GrossAmount");
                 String vat = rs.getString("VAT");
                 String netvat = rs.getString("NetVAT");
                 String fund = rs.getString("FundSource");
-                String pre = rs.getString("PreparedBy");
+                String prepared = rs.getString("PreparedBy");
                 String approved = rs.getString("ApprovedBy");
-                String receive = rs.getString("ReceivedBy");
+                String received = rs.getString("ReceivedBy");
+                String status = rs.getString("Status");
                 String date = rs.getString("Date");
-                tableModel.addRow(new Object[]{code, payee, des, part, gross, vat, netvat, fund, pre, approved, receive, date});
+                tableModel.addRow(new Object[]{code, charge, payee, tin, des, part, gross, vat, netvat, fund, prepared, approved, received, status, date});
             }
         } catch (SQLException e) {
         }
     }
 
-    void retrieveMR() {
+    private void retrieveMR() {
         DefaultTableModel tableModel = (DefaultTableModel) tablemr.getModel();
         while (tableModel.getRowCount() > 0) {
             tableModel.removeRow(0);
@@ -113,7 +153,7 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         }
     }
 
-    void retrieveMW() {
+    private void retrieveMW() {
         DefaultTableModel tableModel = (DefaultTableModel) tablemw.getModel();
         while (tableModel.getRowCount() > 0) {
             tableModel.removeRow(0);
@@ -139,6 +179,82 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         }
     }
 
+    private void PrintRV() {
+        int row = tablerv.getSelectedRow();
+        if (row > -1) {
+            HashMap<String, Object> parameters = new HashMap<>();
+            parameters.put("rvcode", lblcode.getText());
+            try {
+                InputStream i = getClass().getResourceAsStream("/report/ReceiptVoucher.jrxml");
+                JasperDesign jasdi = JRXmlLoader.load(i);
+                JasperReport js = JasperCompileManager.compileReport(jasdi);
+                JasperPrint jp = JasperFillManager.fillReport(js, parameters, connection);
+                JasperViewer.viewReport(jp, false);
+            } catch (JRException ex) {
+                Logger.getLogger(FrameMonitoring.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select data from the table.", " System Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void PrintDV() {
+        int row = tabledv.getSelectedRow();
+        if (row > -1) {
+            HashMap<String, Object> parameters = new HashMap<>();
+            parameters.put("dvcode", lblcode.getText());
+            try {
+                InputStream i = getClass().getResourceAsStream("/report/DisbursementVoucher.jrxml");
+                JasperDesign jasdi = JRXmlLoader.load(i);
+                JasperReport js = JasperCompileManager.compileReport(jasdi);
+                JasperPrint jp = JasperFillManager.fillReport(js, parameters, connection);
+                JasperViewer.viewReport(jp, false);
+            } catch (JRException ex) {
+                Logger.getLogger(FrameMonitoring.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select data from the table.", " System Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void PrintMR() {
+        int row = tabledv.getSelectedRow();
+        if (row > -1) {
+            HashMap<String, Object> parameters = new HashMap<>();
+            parameters.put("mrcode", lblcode.getText());
+            try {
+                InputStream i = getClass().getResourceAsStream("/report/MerchandiseReceipt.jrxml");
+                JasperDesign jasdi = JRXmlLoader.load(i);
+                JasperReport js = JasperCompileManager.compileReport(jasdi);
+                JasperPrint jp = JasperFillManager.fillReport(js, parameters, connection);
+                JasperViewer.viewReport(jp, false);
+            } catch (JRException ex) {
+                Logger.getLogger(FrameMonitoring.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select data from the table.", " System Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void PrintMW() {
+        int row = tabledv.getSelectedRow();
+        if (row > -1) {
+            HashMap<String, Object> parameters = new HashMap<>();
+            parameters.put("mwcode", lblcode.getText());
+            try {
+                InputStream i = getClass().getResourceAsStream("/report/MerchandiseWithdrawal.jrxml");
+                JasperDesign jasdi = JRXmlLoader.load(i);
+                JasperReport js = JasperCompileManager.compileReport(jasdi);
+                JasperPrint jp = JasperFillManager.fillReport(js, parameters, connection);
+                JasperViewer.viewReport(jp, false);
+            } catch (JRException ex) {
+                Logger.getLogger(FrameMonitoring.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select data from the table.", " System Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -153,14 +269,21 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         lblcode = new javax.swing.JLabel();
         lbltype = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel7 = new javax.swing.JPanel();
+        jTabbedPane3 = new javax.swing.JTabbedPane();
+        jPanel8 = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        tablerv = new javax.swing.JTable();
+        txtsrv = new javax.swing.JTextField();
+        jPanel9 = new javax.swing.JPanel();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        tablervparticular = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         tabledv = new javax.swing.JTable();
         txtsdv = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableparticular = new javax.swing.JTable();
@@ -168,15 +291,13 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         tablemw = new javax.swing.JTable();
         txtsmw = new javax.swing.JTextField();
-        jButton4 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         txtsmr = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablemr = new javax.swing.JTable();
-        jButton3 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -217,6 +338,122 @@ public final class FrameMonitoring extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        jPanel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(146, 152, 163)));
+
+        tablerv.setBackground(new java.awt.Color(107, 115, 131));
+        tablerv.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        tablerv.setForeground(new java.awt.Color(255, 255, 255));
+        tablerv.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "RV Code", "Charge To", "Payor", "TIN", "Deposited To", "Description", "Particulars", "Gross Amount", "VAT", "NetVAT", "Prepared By", "Approved By", "Received By", "Status", "Date"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tablerv.setGridColor(new java.awt.Color(204, 204, 204));
+        tablerv.setSelectionBackground(new java.awt.Color(45, 52, 66));
+        tablerv.setSelectionForeground(new java.awt.Color(235, 235, 236));
+        tablerv.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tablerv.setShowHorizontalLines(true);
+        tablerv.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tablervMouseClicked(evt);
+            }
+        });
+        jScrollPane6.setViewportView(tablerv);
+
+        txtsrv.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtsrv.setText("Search...");
+        txtsrv.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtsrvKeyReleased(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(txtsrv)
+            .addComponent(jScrollPane6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE)
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(txtsrv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE))
+        );
+
+        jTabbedPane3.addTab("Voucher", jPanel8);
+
+        tablervparticular.setBackground(new java.awt.Color(107, 115, 131));
+        tablervparticular.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 52, 66)));
+        tablervparticular.setForeground(new java.awt.Color(255, 255, 255));
+        tablervparticular.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "RV Code", "Code", "Particular", "Quantity", "Unit", "Unit Cost", "Total Amount", "VAT Type", "VAT", "Net VAT"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tablervparticular.setGridColor(new java.awt.Color(204, 204, 204));
+        tablervparticular.setSelectionBackground(new java.awt.Color(45, 52, 66));
+        tablervparticular.setSelectionForeground(new java.awt.Color(235, 235, 236));
+        tablervparticular.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane7.setViewportView(tablervparticular);
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE)
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE)
+        );
+
+        jTabbedPane3.addTab("Particular", jPanel9);
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTabbedPane3)
+                .addContainerGap())
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTabbedPane3)
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Receipt Voucher", jPanel7);
+
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(146, 152, 163)));
 
         tabledv.setBackground(new java.awt.Color(107, 115, 131));
@@ -227,11 +464,11 @@ public final class FrameMonitoring extends javax.swing.JFrame {
 
             },
             new String [] {
-                "DV Code", "Payee", "Description", "Particulars", "Gross Amount", "VAT", "NetVAT", "Fund Source", "Prepared By", "Approved By", "Received By", "Date"
+                "DV Code", "Charge To", "Payee", "TIN", "Description", "Particulars", "Gross Amount", "VAT", "NetVAT", "Fund Source", "Prepared By", "Approved By", "Received By", "Status", "Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -258,35 +495,12 @@ public final class FrameMonitoring extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setBackground(new java.awt.Color(45, 52, 66));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Print");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton5.setBackground(new java.awt.Color(45, 52, 66));
-        jButton5.setForeground(new java.awt.Color(255, 255, 255));
-        jButton5.setText("Export Exel");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(txtsdv)
             .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -294,11 +508,7 @@ public final class FrameMonitoring extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(txtsdv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton5)))
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Voucher", jPanel5);
@@ -311,11 +521,11 @@ public final class FrameMonitoring extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Code", "Item", "Quantity", "Unit", "Unit Cost", "Total Amount", "VAT", "Net VAT"
+                "DV Code", "Code", "Particular", "Quantity", "Unit", "Unit Cost", "Total Amount", "VAT Type", "VAT", "Net VAT"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -369,11 +579,11 @@ public final class FrameMonitoring extends javax.swing.JFrame {
 
             },
             new String [] {
-                "MW Code", "Business No", "Purpose", "Destination", "Quantity", "Unit", "Unit Cost", "Total Amount", "Requested By", "Approved By", "Date"
+                "MW Code", "Charge To", "Purpose", "Destination", "Quantity", "Unit", "Unit Cost", "Total Amount", "Requested By", "Approved By", "Status", "Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -400,24 +610,6 @@ public final class FrameMonitoring extends javax.swing.JFrame {
             }
         });
 
-        jButton4.setBackground(new java.awt.Color(45, 52, 66));
-        jButton4.setForeground(new java.awt.Color(255, 255, 255));
-        jButton4.setText("Print");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-
-        jButton6.setBackground(new java.awt.Color(45, 52, 66));
-        jButton6.setForeground(new java.awt.Color(255, 255, 255));
-        jButton6.setText("Export Exel");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -426,12 +618,7 @@ public final class FrameMonitoring extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtsmw, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane3))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -440,11 +627,7 @@ public final class FrameMonitoring extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(txtsmw, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton4)
-                    .addComponent(jButton6))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -468,11 +651,11 @@ public final class FrameMonitoring extends javax.swing.JFrame {
 
             },
             new String [] {
-                "MR Code", "Supplier", "Quantity", "Unit", "Unit Cost", "Total Amount", "Requested By", "Approved By", "Date"
+                "MR Code", "Supplier", "Quantity", "Unit", "Unit Cost", "Total Amount", "Requested By", "Approved By", "Status", "Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -490,24 +673,6 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tablemr);
 
-        jButton3.setBackground(new java.awt.Color(45, 52, 66));
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setText("Print");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
-        jButton7.setBackground(new java.awt.Color(45, 52, 66));
-        jButton7.setForeground(new java.awt.Color(255, 255, 255));
-        jButton7.setText("Export Exel");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -516,12 +681,7 @@ public final class FrameMonitoring extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtsmr, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane1))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -530,19 +690,33 @@ public final class FrameMonitoring extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(txtsmr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3)
-                    .addComponent(jButton7))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jTabbedPane1.addTab("Merchandise Receipt", jPanel4);
 
-        jButton2.setBackground(new java.awt.Color(107, 115, 131));
+        jButton2.setBackground(new java.awt.Color(45, 52, 66));
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("Close");
+
+        jButton9.setBackground(new java.awt.Color(45, 52, 66));
+        jButton9.setForeground(new java.awt.Color(255, 255, 255));
+        jButton9.setText("Export Exel");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+
+        jButton1.setBackground(new java.awt.Color(45, 52, 66));
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("Print");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -554,7 +728,11 @@ public final class FrameMonitoring extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTabbedPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -565,7 +743,10 @@ public final class FrameMonitoring extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2)
+                    .addComponent(jButton9)
+                    .addComponent(jButton1))
                 .addContainerGap())
         );
 
@@ -597,6 +778,7 @@ public final class FrameMonitoring extends javax.swing.JFrame {
             try (Statement stmt = connection.createStatement()) {
                 ResultSet rs = stmt.executeQuery("SELECT * FROM tbldisbursementvoucherparticular WHERE DisbursementCode = '" + lblcode.getText() + "' ");
                 while (rs.next()) {
+                    String dvcode = rs.getString("DisbursementCode");
                     String code = rs.getString("Code");
                     String particular = rs.getString("Particular");
                     String quantity = rs.getString("Quantity");
@@ -605,65 +787,34 @@ public final class FrameMonitoring extends javax.swing.JFrame {
                     String gross = rs.getString("PGrossAmount");
                     String vat = rs.getString("PVAT");
                     String netvat = rs.getString("PNetVAT");
-                    TableModel2.addRow(new Object[]{code, particular, quantity, unit, unitcost, gross, vat, netvat});
+                    TableModel2.addRow(new Object[]{dvcode, code, particular, quantity, unit, unitcost, gross, vat, netvat});
                 }
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(this, "Can't read record in system table!\nSystem detects changes in table entities!\nPlease contact the backend developer.", "ERROR 1012", JOptionPane.ERROR_MESSAGE);
             }
-        } else {
-            //Do nothing!
         }
     }//GEN-LAST:event_tabledvMouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        int row = tabledv.getSelectedRow();
-        if (row > -1) {
-            HashMap<String, Object> parameters = new HashMap<>();
-            parameters.put("dvcode", lblcode.getText());
-            try {
-                InputStream i = getClass().getResourceAsStream("/report/DisbursementVoucher.jrxml");
-                JasperDesign jasdi = JRXmlLoader.load(i);
-                JasperReport js = JasperCompileManager.compileReport(jasdi);
-                JasperPrint jp = JasperFillManager.fillReport(js, parameters, connection);
-                JasperViewer.viewReport(jp, false);
-            } catch (JRException ex) {
-                Logger.getLogger(FrameMonitoring.class.getName()).log(Level.SEVERE, null, ex);
+        if (null != reporttype) {
+            switch (reporttype) {
+                case "RV":
+                    PrintRV();
+                    break;
+                case "DV":
+                    PrintDV();
+                    break;
+                case "MW":
+                    PrintMW();
+                    break;
+                case "MR":
+                    PrintMR();
+                    break;
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Please select data from the table.", " System Error", JOptionPane.ERROR_MESSAGE);
         }
+
+
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        int row = tablemr.getSelectedRow();
-        if (row > -1) {
-            try {
-                InputStream i = getClass().getResourceAsStream("/report/MRReport.jrxml");
-                JasperDesign jasdi = JRXmlLoader.load(i);
-                String sql = "SELECT * FROM tblmerchandisereceipt WHERE MerchReceiptCode = '" + lblcode.getText() + "'";
-                JRDesignQuery newQuery = new JRDesignQuery();
-                newQuery.setText(sql);
-
-                jasdi.setQuery(newQuery);
-
-                HashMap<String, Object> object = new HashMap<>();
-                object.put("mrcode", lblcode.getText());
-                object.put("supplier", tablemr.getValueAt(row, 1).toString());
-                object.put("date", tablemr.getValueAt(row, 8).toString());
-                object.put("quantity", tablemr.getValueAt(row, 2).toString());
-                object.put("unit", tablemr.getValueAt(row, 3).toString());
-                object.put("unitcost", tablemr.getValueAt(row, 4).toString());
-                object.put("totalamount", tablemr.getValueAt(row, 5).toString());
-                object.put("requestedby", tablemr.getValueAt(row, 6).toString());
-                object.put("approvedby", tablemr.getValueAt(row, 7).toString());
-                JasperReport js = JasperCompileManager.compileReport(jasdi);
-                JasperPrint jp = JasperFillManager.fillReport(js, object, connection);
-                JasperViewer.viewReport(jp, false);
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(rootPane, e);
-            }
-        }
-    }//GEN-LAST:event_jButton3ActionPerformed
 
     private void tablemrMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablemrMouseClicked
         int row = tablemr.getSelectedRow();
@@ -676,51 +827,6 @@ public final class FrameMonitoring extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tablemrMouseClicked
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        int row = tablemw.getSelectedRow();
-        if (row > -1) {
-            try {
-                InputStream i = getClass().getResourceAsStream("/report/MWReport.jrxml");
-                JasperDesign jasdi = JRXmlLoader.load(i);
-                String sql = "SELECT * FROM tblmerchandisewithdrawal WHERE MerchWithdrawalCode = '" + lblcode.getText() + "'";
-                JRDesignQuery newQuery = new JRDesignQuery();
-                newQuery.setText(sql);
-
-                jasdi.setQuery(newQuery);
-
-                HashMap<String, Object> object = new HashMap<>();
-                object.put("mwcode", lblcode.getText());
-                object.put("businessno", tablemw.getValueAt(row, 1).toString());
-                object.put("purpose", tablemw.getValueAt(row, 8).toString());
-                object.put("destination", tablemw.getValueAt(row, 2).toString());
-                object.put("quantity", tablemw.getValueAt(row, 3).toString());
-                object.put("unit", tablemw.getValueAt(row, 3).toString());
-                object.put("unitcost", tablemw.getValueAt(row, 4).toString());
-                object.put("totalamount", tablemw.getValueAt(row, 5).toString());
-                object.put("requestedby", tablemw.getValueAt(row, 6).toString());
-                object.put("approvedby", tablemw.getValueAt(row, 7).toString());
-                object.put("date", DateFunction.getFormattedDate());
-                JasperReport js = JasperCompileManager.compileReport(jasdi);
-                JasperPrint jp = JasperFillManager.fillReport(js, object, connection);
-                JasperViewer.viewReport(jp, false);
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(rootPane, e);
-            }
-        }
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton6ActionPerformed
-
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton7ActionPerformed
-
     private void txtsdvKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtsdvKeyReleased
         SearchDV(txtsdv.getText().toUpperCase());
     }//GEN-LAST:event_txtsdvKeyReleased
@@ -732,6 +838,44 @@ public final class FrameMonitoring extends javax.swing.JFrame {
     private void txtsmrKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtsmrKeyReleased
         SearchMR(txtsmr.getText().toUpperCase());
     }//GEN-LAST:event_txtsmrKeyReleased
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void tablervMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablervMouseClicked
+        int row = tabledv.getSelectedRow();
+        if (row > -1) {
+            DefaultTableModel TableModel1 = (DefaultTableModel) tablerv.getModel();
+            DefaultTableModel TableModel2 = (DefaultTableModel) tablervparticular.getModel();
+            lblcode.setText(TableModel1.getValueAt(row, 0).toString());
+            lbltype.setText("RECEIPT VOUCHER CODE:");
+            while (TableModel2.getRowCount() > 0) {
+                TableModel2.removeRow(0);
+            }
+            try (Statement stmt = connection.createStatement()) {
+                ResultSet rs = stmt.executeQuery("SELECT * FROM tblreceiptvoucherparticular WHERE ReceiptCode = '" + lblcode.getText() + "' ");
+                while (rs.next()) {
+                    String rvcode = rs.getString("ReceiptCode");
+                    String code = rs.getString("Code");
+                    String particular = rs.getString("Particular");
+                    String quantity = rs.getString("Quantity");
+                    String unit = rs.getString("Unit");
+                    String unitcost = rs.getString("UnitCost");
+                    String gross = rs.getString("PGrossAmount");
+                    String vat = rs.getString("PVAT");
+                    String netvat = rs.getString("PNetVAT");
+                    TableModel2.addRow(new Object[]{rvcode, code, particular, quantity, unit, unitcost, gross, vat, netvat});
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Can't read record in system table!\nSystem detects changes in table entities!\nPlease contact the backend developer.", "ERROR 1012", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_tablervMouseClicked
+
+    private void txtsrvKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtsrvKeyReleased
+        SearchRV(txtsdv.getText().toUpperCase());
+    }//GEN-LAST:event_txtsrvKeyReleased
 
     /**
      * @param args the command line arguments
@@ -769,11 +913,7 @@ public final class FrameMonitoring extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -781,20 +921,29 @@ public final class FrameMonitoring extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
+    private javax.swing.JTabbedPane jTabbedPane3;
     private javax.swing.JLabel lblcode;
     private javax.swing.JLabel lbltype;
     private javax.swing.JTable tabledv;
     private javax.swing.JTable tablemr;
     private javax.swing.JTable tablemw;
     private static javax.swing.JTable tableparticular;
+    private javax.swing.JTable tablerv;
+    private static javax.swing.JTable tablervparticular;
     private javax.swing.JTextField txtsdv;
     private javax.swing.JTextField txtsmr;
     private javax.swing.JTextField txtsmw;
+    private javax.swing.JTextField txtsrv;
     // End of variables declaration//GEN-END:variables
 }
