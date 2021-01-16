@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9a304fbc-44e7-4344-9ef2-b8cae314b976">
-	<property name="ireport.zoom" value="1.9487171000000125"/>
-	<property name="ireport.x" value="21"/>
+	<property name="ireport.zoom" value="2.5937424601000187"/>
+	<property name="ireport.x" value="700"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="datefrom" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -13,24 +13,27 @@
 	<parameter name="vat" class="java.lang.String"/>
 	<parameter name="netvat" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT * FROM lozadadb.tbldisbursementvoucher WHERE Status = 'APPROVED' AND Date BETWEEN $P{datefrom} AND $P{dateto};]]>
+		<![CDATA[SELECT * FROM lozadadb.tblreceiptvoucher WHERE Status = 'APPROVED' AND Date BETWEEN $P{datefrom} AND $P{dateto};]]>
 	</queryString>
 	<field name="ID" class="java.lang.Integer">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="DisbursementCode" class="java.lang.String">
+	<field name="ReceiptCode" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="ChargeTo" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="Payee" class="java.lang.String">
+	<field name="Payor" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="TINNumber" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
+	<field name="DepositedTo" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<field name="Description" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Account" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="Particulars" class="java.lang.String">
@@ -43,9 +46,6 @@
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="NetVAT" class="java.math.BigDecimal">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="FundSource" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="PreparedBy" class="java.lang.String">
@@ -93,11 +93,11 @@
 				<text><![CDATA[LOZADA GROUP OF COMPANIES]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="265" y="48" width="266" height="17" uuid="b6965780-a766-4794-9a12-eef3f10a00b3"/>
+				<reportElement x="245" y="48" width="302" height="17" uuid="b6965780-a766-4794-9a12-eef3f10a00b3"/>
 				<textElement textAlignment="Center">
 					<font fontName="Cambria" size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[DISBURSEMENT VOUCHER REPORT]]></text>
+				<text><![CDATA[RECEIPT VOUCHER REPORT]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="82" width="94" height="12" uuid="8a4fedeb-97af-494a-a87f-3f246af9598a"/>
@@ -138,187 +138,187 @@
 				<textFieldExpression><![CDATA[$P{dateto}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="94" y="82" width="105" height="12" uuid="40f045ad-3877-4dc6-af72-19f83acfdff8"/>
+				<reportElement x="94" y="82" width="116" height="12" uuid="40f045ad-3877-4dc6-af72-19f83acfdff8"/>
 				<textElement>
 					<font fontName="Cambria" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{overallamount}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="94" y="94" width="78" height="12" uuid="0f55b1df-3462-4a90-99fc-d13840b74765"/>
-				<textElement>
-					<font fontName="Cambria" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{vat}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="218" y="94" width="71" height="12" uuid="80e8fdd1-7943-4b7e-a756-391b8a9c5317"/>
+				<reportElement x="199" y="94" width="79" height="12" uuid="7471d369-de16-4dd9-9cd3-95eada9e2f15"/>
 				<textElement>
 					<font fontName="Cambria" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{netvat}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="-1" y="94" width="95" height="12" uuid="7f494e9b-8a3e-47e8-875e-361b4df7495f"/>
+			<textField>
+				<reportElement x="94" y="94" width="58" height="12" uuid="ab5ed422-3d16-499e-9170-cfb4e472a6b0"/>
 				<textElement>
-					<font fontName="Cambria" size="10" isBold="false"/>
+					<font fontName="Cambria" isBold="true"/>
 				</textElement>
-				<text><![CDATA[VAT		:]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[$P{vat}]]></textFieldExpression>
+			</textField>
 			<staticText>
-				<reportElement x="172" y="94" width="46" height="12" uuid="e476007b-3b7e-4b00-9f9d-ae0c23b8c0c2"/>
+				<reportElement x="152" y="94" width="47" height="12" uuid="06c2dd07-20da-4a6e-bbcd-776493610546"/>
 				<textElement>
 					<font fontName="Cambria" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[NET VAT	:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="94" width="94" height="12" uuid="56fba68e-a58a-4ff0-90ef-9e73978f5b64"/>
+				<textElement>
+					<font fontName="Cambria" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[VAT		:]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="15" splitType="Stretch">
 			<staticText>
-				<reportElement mode="Opaque" x="345" y="0" width="125" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="ef0bb75b-7936-4427-ad01-c7ed85b10a0e"/>
+				<reportElement mode="Opaque" x="588" y="0" width="40" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="83801e22-f9ce-406b-a8c7-cb5e99acbe8f"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<text><![CDATA[DESCRIPTION]]></text>
+				<text><![CDATA[PART]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="470" y="0" width="61" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="83801e22-f9ce-406b-a8c7-cb5e99acbe8f"/>
+				<reportElement mode="Opaque" x="-1" y="0" width="95" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="c89ce780-d321-431b-8d3d-de51e87a8fca"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<text><![CDATA[PARTICULAR]]></text>
+				<text><![CDATA[RV CODE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="-1" y="0" width="75" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="c89ce780-d321-431b-8d3d-de51e87a8fca"/>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<text><![CDATA[DV CODE]]></text>
-			</staticText>
-			<staticText>
-				<reportElement mode="Opaque" x="729" y="0" width="72" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="8c6c3587-6a40-4956-a673-8cddf974b738"/>
+				<reportElement mode="Opaque" x="719" y="0" width="82" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="8c6c3587-6a40-4956-a673-8cddf974b738"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
 				<text><![CDATA[TOTAL AMOUNT]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="74" y="0" width="98" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="61586d5a-730a-44b3-bde1-a19f85ca8b4e"/>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<text><![CDATA[CHARGE TO]]></text>
-			</staticText>
-			<staticText>
-				<reportElement mode="Opaque" x="269" y="0" width="76" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="6c13f98b-c612-4de2-ad7e-d2d5a1fb0406"/>
+				<reportElement mode="Opaque" x="199" y="0" width="70" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="6c13f98b-c612-4de2-ad7e-d2d5a1fb0406"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
 				<text><![CDATA[TIN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="172" y="0" width="97" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="13de02bc-3b1d-4f70-8cff-9025caa815e3"/>
+				<reportElement mode="Opaque" x="94" y="0" width="105" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="13de02bc-3b1d-4f70-8cff-9025caa815e3"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<text><![CDATA[PAYEE]]></text>
+				<text><![CDATA[PAYOR]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="645" y="0" width="37" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="239b398e-73e7-4bb3-b3f4-8bff7e5e5d48"/>
+				<reportElement mode="Opaque" x="628" y="0" width="39" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="239b398e-73e7-4bb3-b3f4-8bff7e5e5d48"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
 				<text><![CDATA[VAT]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="682" y="0" width="47" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="66e286e6-749c-4abc-bb54-bd163719b09e"/>
+				<reportElement mode="Opaque" x="667" y="0" width="52" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="66e286e6-749c-4abc-bb54-bd163719b09e"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
 				<text><![CDATA[NET VAT]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="531" y="0" width="114" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="fc3f59de-b7ff-495b-a6e5-b718b42c7852"/>
+				<reportElement mode="Opaque" x="269" y="0" width="98" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="5489ae81-38da-43e2-9d89-f5e06c8fabac"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<text><![CDATA[FUND SOURCE]]></text>
+				<text><![CDATA[DEPOSITED TO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="367" y="0" width="96" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="ef0bb75b-7936-4427-ad01-c7ed85b10a0e"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[DESCRIPTION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="463" y="0" width="125" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="4c0f0e6f-dbcb-4bbc-93af-c978dacab727"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[ACCOUNT]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="12" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="74" height="12" uuid="503e06a4-f883-443b-9d94-a8ac3d979b21"/>
-				<textElement>
-					<font fontName="Cambria" size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{DisbursementCode}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="74" y="0" width="98" height="12" uuid="f679f0ce-4512-4d1f-8cf7-8b06cc88dc92"/>
-				<textElement>
-					<font fontName="Cambria" size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{ChargeTo}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="172" y="0" width="97" height="12" uuid="b5b61a7b-0907-424e-be50-0b71bba8af72"/>
-				<textElement>
-					<font fontName="Cambria" size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{Payee}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="269" y="0" width="76" height="12" uuid="43bb9f90-bead-44e7-a266-bd3b1d627fef"/>
+				<reportElement x="199" y="0" width="70" height="12" uuid="43bb9f90-bead-44e7-a266-bd3b1d627fef"/>
 				<textElement>
 					<font fontName="Cambria" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{TINNumber}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="345" y="0" width="125" height="12" uuid="0aef335d-c90b-4a50-9252-e3112d12f1a8"/>
-				<textElement>
-					<font fontName="Cambria" size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{Description}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="470" y="0" width="61" height="12" uuid="de5d6e9b-f13c-462d-971f-b1d3fe9a27a7"/>
-				<textElement>
-					<font fontName="Cambria" size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{Particulars}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="531" y="0" width="114" height="12" uuid="457e59df-f164-4f39-9209-244a702760ec"/>
-				<textElement>
-					<font fontName="Cambria" size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{FundSource}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="645" y="0" width="37" height="12" uuid="ea7061eb-0db1-4666-ae69-68a9f4147501"/>
+				<reportElement x="628" y="0" width="39" height="12" uuid="ea7061eb-0db1-4666-ae69-68a9f4147501"/>
 				<textElement>
 					<font fontName="Cambria" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{VAT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="682" y="0" width="47" height="12" uuid="20e41004-d642-4e3c-b6d5-3e1986003008"/>
+				<reportElement x="667" y="0" width="52" height="12" uuid="20e41004-d642-4e3c-b6d5-3e1986003008"/>
 				<textElement>
 					<font fontName="Cambria" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{NetVAT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="729" y="0" width="73" height="12" uuid="ff1afa43-3984-48e5-98af-51f2fed1edcb"/>
+				<reportElement x="719" y="0" width="83" height="12" uuid="ff1afa43-3984-48e5-98af-51f2fed1edcb"/>
 				<textElement>
 					<font fontName="Cambria" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{GrossAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="94" height="12" uuid="2450f80c-cef1-490e-abb0-b43875a61909"/>
+				<textElement>
+					<font fontName="Cambria" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ReceiptCode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="94" y="0" width="105" height="12" uuid="1b6664bb-fcfc-4634-a009-44f363d1d068"/>
+				<textElement>
+					<font fontName="Cambria" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Payor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="269" y="0" width="98" height="12" uuid="a7b4b57f-f9c0-4280-9542-a4cc86e738f7"/>
+				<textElement>
+					<font fontName="Cambria" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DepositedTo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="588" y="0" width="40" height="12" uuid="de5d6e9b-f13c-462d-971f-b1d3fe9a27a7"/>
+				<textElement>
+					<font fontName="Cambria" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Particulars}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="367" y="0" width="96" height="12" uuid="0aef335d-c90b-4a50-9252-e3112d12f1a8"/>
+				<textElement>
+					<font fontName="Cambria" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Description}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="463" y="0" width="125" height="12" uuid="42900c1d-160e-4372-955c-050b4d812108"/>
+				<textElement>
+					<font fontName="Cambria" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Account}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

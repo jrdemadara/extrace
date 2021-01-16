@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -31,6 +29,7 @@ public class FrameRVList extends javax.swing.JFrame {
             ResultSet rs = stmt.executeQuery("SELECT * FROM tblreceiptvoucher");
             while (rs.next()) {
                 String code = rs.getString("ReceiptCode");
+                String acc = rs.getString("Account");
                 String payor = rs.getString("Payor");
                 String tin = rs.getString("TINNumber");
                 String deposited = rs.getString("DepositedTo");
@@ -45,7 +44,7 @@ public class FrameRVList extends javax.swing.JFrame {
                 String received = rs.getString("ReceivedBy");
                 String status = rs.getString("Status");
                 String date = rs.getString("Date");
-                TableModel.addRow(new Object[]{code, payor, tin, deposited, description, pparticulars, gross, vat, netvat, prepared, verified, approved, received, status, date});
+                TableModel.addRow(new Object[]{code, acc, payor, tin, deposited, description, pparticulars, gross, vat, netvat, prepared, verified, approved, received, status, date});
             }
         } catch (SQLException e) {
         }
@@ -164,11 +163,11 @@ public class FrameRVList extends javax.swing.JFrame {
 
             },
             new String [] {
-                "RV Code", "Payor", "TIN", "Deposited To", "Description", "Particulars", "Gross Amount", "VAT", "NetVAT", "Prepared By", "Verified By", "Approved By", "Received By", "Status", "Date"
+                "RV Code", "Account", "Payor", "TIN", "Deposited To", "Description", "Particulars", "Gross Amount", "VAT", "NetVAT", "Prepared By", "Verified By", "Approved By", "Received By", "Status", "Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -237,16 +236,17 @@ public class FrameRVList extends javax.swing.JFrame {
         int row = tablerv.getSelectedRow();
         if (row > -1) {
             String code = tablerv.getValueAt(row, 0).toString();
-            String payor = tablerv.getValueAt(row, 1).toString();
-            String tin = tablerv.getValueAt(row, 2).toString();
-            String deposit = tablerv.getValueAt(row, 3).toString();
-            String des = tablerv.getValueAt(row, 4).toString();
-            String part = tablerv.getValueAt(row, 5).toString();
-            String gross = tablerv.getValueAt(row, 6).toString();
-            String vat = tablerv.getValueAt(row, 7).toString();
-            String netvat = tablerv.getValueAt(row, 8).toString();
-            String receive = tablerv.getValueAt(row, 12).toString();
-            FrameReceiptVoucher.LoadRV(code, payor, tin, deposit, des, part, gross, vat, netvat, receive);
+            String acc = tablerv.getValueAt(row, 1).toString();
+            String payor = tablerv.getValueAt(row, 2).toString();
+            String tin = tablerv.getValueAt(row, 3).toString();
+            String deposit = tablerv.getValueAt(row, 4).toString();
+            String des = tablerv.getValueAt(row, 5).toString();
+            String part = tablerv.getValueAt(row, 6).toString();
+            String gross = tablerv.getValueAt(row, 7).toString();
+            String vat = tablerv.getValueAt(row, 8).toString();
+            String netvat = tablerv.getValueAt(row, 9).toString();
+            String receive = tablerv.getValueAt(row, 11).toString();
+            FrameReceiptVoucher.LoadRV(code, acc, payor, tin, deposit, des, part, gross, vat, netvat, receive);
             for (int i = 0; i < tableparticular.getRowCount(); i++) {
                 String pcode = tableparticular.getValueAt(i, 0).toString();
                 String ppart = tableparticular.getValueAt(i, 1).toString();

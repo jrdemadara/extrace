@@ -12,11 +12,11 @@
 	<parameter name="overallamount" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<parameter name="chargeto" class="java.lang.String">
+	<parameter name="account" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT * FROM lozadadb.tblmerchandisewithdrawal WHERE Status = 'APPROVED' AND ChargeTo = $P{chargeto} AND Date BETWEEN $P{datefrom} AND $P{dateto};]]>
+		<![CDATA[SELECT * FROM lozadadb.tblmerchandisewithdrawal WHERE Status = 'APPROVED' AND Account = $P{account} AND Date BETWEEN $P{datefrom} AND $P{dateto};]]>
 	</queryString>
 	<field name="ID" class="java.lang.Integer">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -96,11 +96,11 @@
 				<text><![CDATA[LOZADA GROUP OF COMPANIES]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="98" y="49" width="340" height="17" uuid="b6965780-a766-4794-9a12-eef3f10a00b3"/>
+				<reportElement x="120" y="49" width="327" height="17" uuid="b6965780-a766-4794-9a12-eef3f10a00b3"/>
 				<textElement textAlignment="Center">
 					<font fontName="Cambria" size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[MERCHANDISE WITHDRAWAL REPORT (Company)]]></text>
+				<text><![CDATA[MERCHANDISE WITHDRAWAL REPORT (Accounts)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="82" width="94" height="12" uuid="8a4fedeb-97af-494a-a87f-3f246af9598a"/>
@@ -152,14 +152,14 @@
 				<textElement>
 					<font fontName="Cambria" size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[CHARGE TO	 :]]></text>
+				<text><![CDATA[ACCOUNT	 :]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="94" y="94" width="185" height="12" uuid="a21d54e8-2de4-47a2-b75a-dc373e8f6108"/>
+				<reportElement x="94" y="94" width="135" height="12" uuid="c6a551dc-3810-4169-be9d-946bf868145d"/>
 				<textElement>
 					<font fontName="Cambria" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{chargeto}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{account}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

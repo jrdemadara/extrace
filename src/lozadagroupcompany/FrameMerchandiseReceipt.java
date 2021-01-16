@@ -25,6 +25,7 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
         initComponents();
         RetrieveUnit();
         RetrieveSupplier();
+        RetrieveChart();
         Refresh();
         setIconImage();
     }
@@ -58,6 +59,7 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
             ResultSet rs = stmt.executeQuery("SELECT * FROM tblmerchandisereceipt");
             while (rs.next()) {
                 String code = rs.getString("MerchReceiptCode");
+                String acc = rs.getString("Account");
                 String supplier = rs.getString("Supplier");
                 String quantity = rs.getString("Quantity");
                 String unit = rs.getString("Unit");
@@ -69,7 +71,7 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
                 String receivedby = rs.getString("ReceivedBy");
                 String status = rs.getString("Status");
                 String date = rs.getString("Date");
-                tableModel.addRow(new Object[]{code, supplier, quantity, unit, unitcost, totalamount, requestedby, verifiedby, approvedby, receivedby, status, date});
+                tableModel.addRow(new Object[]{code, acc, supplier, quantity, unit, unitcost, totalamount, requestedby, verifiedby, approvedby, receivedby, status, date});
             }
         } catch (SQLException e) {
         }
@@ -94,6 +96,18 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
         }
     }
 
+    private void RetrieveChart() {
+        cbchart.addItem("Select Account");
+        try (Statement stmt = connection.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tblchartofaccount");
+            while (rs.next()) {
+                String chart = rs.getString("ChartName");
+                cbchart.addItem(chart);
+            }
+        } catch (SQLException e) {
+        }
+    }
+
     private void RetrieveUnit() {
         cbunit.addItem("Select Unit");
         try (Statement stmt = connection.createStatement()) {
@@ -107,20 +121,21 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
     }
 
     private void Save() {
-        try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tblmerchandisereceipt VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
+        try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tblmerchandisereceipt VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
             stmt.setInt(1, 0);
             stmt.setString(2, lblcode.getText());
-            stmt.setString(3, cbsupplier.getSelectedItem().toString());
-            stmt.setString(4, spquantity.getValue().toString());
-            stmt.setString(5, cbunit.getSelectedItem().toString());
-            stmt.setString(6, txtunitcost.getText());
-            stmt.setString(7, txttotal.getText());
-            stmt.setString(8, user);
-            stmt.setString(9, "NOT-VERIFIED");
-            stmt.setString(10, "NOT-APPROVED");
-            stmt.setString(11, txtreceive.getText().toUpperCase());
-            stmt.setString(12, "PENDING");
-            stmt.setString(13, DateFunction.getFormattedDate());
+            stmt.setString(3, cbchart.getSelectedItem().toString());
+            stmt.setString(4, cbsupplier.getSelectedItem().toString());
+            stmt.setString(5, spquantity.getValue().toString());
+            stmt.setString(6, cbunit.getSelectedItem().toString());
+            stmt.setString(7, txtunitcost.getText());
+            stmt.setString(8, txttotal.getText());
+            stmt.setString(9, user);
+            stmt.setString(10, "NOT-VERIFIED");
+            stmt.setString(11, "NOT-APPROVED");
+            stmt.setString(12, txtreceive.getText().toUpperCase());
+            stmt.setString(13, "PENDING");
+            stmt.setString(14, DateFunction.getFormattedDate());
             stmt.execute();
             stmt.close();
             Refresh();
@@ -131,14 +146,15 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
     }
 
     private void Update() {
-        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblmerchandisereceipt SET Supplier = ?, Quantity = ?, Unit = ?, UnitCost = ?, TotalAmount = ?, ReceivedBy = ? WHERE MerchReceiptCode = ?")) {
-            stmt.setString(7, lblcode.getText());
-            stmt.setString(1, cbsupplier.getSelectedItem().toString());
-            stmt.setInt(2, Integer.parseInt(spquantity.getValue().toString()));
-            stmt.setString(3, cbunit.getSelectedItem().toString());
-            stmt.setString(4, txtunitcost.getText());
-            stmt.setString(5, txttotal.getText());
-            stmt.setString(6, txtreceive.getText());
+        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblmerchandisereceipt SET Account = ?, Supplier = ?, Quantity = ?, Unit = ?, UnitCost = ?, TotalAmount = ?, ReceivedBy = ? WHERE MerchReceiptCode = ?")) {
+            stmt.setString(8, lblcode.getText());
+            stmt.setString(1, cbchart.getSelectedItem().toString());
+            stmt.setString(2, cbsupplier.getSelectedItem().toString());
+            stmt.setInt(3, Integer.parseInt(spquantity.getValue().toString()));
+            stmt.setString(4, cbunit.getSelectedItem().toString());
+            stmt.setString(5, txtunitcost.getText());
+            stmt.setString(6, txttotal.getText());
+            stmt.setString(7, txtreceive.getText());
             stmt.executeUpdate();
             Refresh();
             JOptionPane.showMessageDialog(this, "Merchandise Receipt '" + lblcode.getText() + "' has been updated!", " System Information", JOptionPane.INFORMATION_MESSAGE);
@@ -227,6 +243,8 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
         spquantity = new javax.swing.JSpinner();
         txtreceive = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        cbchart = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         btsave = new javax.swing.JButton();
@@ -245,7 +263,7 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
 
         lblcode.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
         lblcode.setForeground(new java.awt.Color(255, 153, 0));
-        lblcode.setText("MRC2020111");
+        lblcode.setText("000000");
 
         jLabel6.setForeground(new java.awt.Color(255, 153, 0));
         jLabel6.setText("FUEL");
@@ -303,26 +321,33 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
 
         jLabel8.setText("Receive By");
 
+        jLabel12.setText("Account");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(183, 183, 183))
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cbsupplier, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(spquantity))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel2)
+                    .addComponent(cbsupplier, 0, 227, Short.MAX_VALUE)
+                    .addComponent(jLabel12)
+                    .addComponent(cbchart, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(txttotal, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(cbunit, javax.swing.GroupLayout.Alignment.LEADING, 0, 245, Short.MAX_VALUE)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING))
-                    .addComponent(jLabel7))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(cbunit, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(spquantity))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7)
+                            .addComponent(txttotal, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -356,19 +381,24 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
                             .addComponent(cbunit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtunitcost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(jLabel8)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtreceive, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(jLabel3)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(spquantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel8))
+                        .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txttotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtreceive, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txttotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
+                        .addComponent(jLabel12)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spquantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cbchart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -380,17 +410,18 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
 
             },
             new String [] {
-                "MR Code", "Supplier", "Quantity", "Unit", "Unit Cost", "Total Amount", "Requested By", "Verified By", "Approved By", "Received By", "Status", "Date"
+                "MR Code", "Account", "Supplier", "Quantity", "Unit", "Unit Cost", "Total Amount", "Requested By", "Verified By", "Approved By", "Received By", "Status", "Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+        table.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         table.setGridColor(new java.awt.Color(204, 204, 204));
         table.setSelectionBackground(new java.awt.Color(45, 52, 66));
         table.setSelectionForeground(new java.awt.Color(235, 235, 236));
@@ -400,6 +431,17 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
             }
         });
         jScrollPane1.setViewportView(table);
+        if (table.getColumnModel().getColumnCount() > 0) {
+            table.getColumnModel().getColumn(1).setPreferredWidth(200);
+            table.getColumnModel().getColumn(2).setPreferredWidth(200);
+            table.getColumnModel().getColumn(5).setPreferredWidth(100);
+            table.getColumnModel().getColumn(6).setPreferredWidth(150);
+            table.getColumnModel().getColumn(7).setPreferredWidth(200);
+            table.getColumnModel().getColumn(8).setPreferredWidth(200);
+            table.getColumnModel().getColumn(9).setPreferredWidth(200);
+            table.getColumnModel().getColumn(10).setPreferredWidth(200);
+            table.getColumnModel().getColumn(11).setPreferredWidth(100);
+        }
 
         btsave.setBackground(new java.awt.Color(45, 52, 66));
         btsave.setForeground(new java.awt.Color(255, 255, 255));
@@ -452,10 +494,10 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btclose, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1)
+                    .addComponent(txtsearch)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(txtsearch))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -528,12 +570,13 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
         btclose.setText("Cancel");
         int row = table.getSelectedRow();
         lblcode.setText(table.getValueAt(row, 0).toString());
-        cbsupplier.setSelectedItem(table.getValueAt(row, 1).toString());
-        spquantity.setValue(Integer.parseInt(table.getValueAt(row, 2).toString()));
-        cbunit.setSelectedItem(table.getValueAt(row, 3).toString());
-        txtunitcost.setText(table.getValueAt(row, 4).toString());
-        txttotal.setText(table.getValueAt(row, 5).toString());
-        txtreceive.setText(table.getValueAt(row, 9).toString());
+        cbchart.setSelectedItem(table.getValueAt(row, 1).toString());
+        cbsupplier.setSelectedItem(table.getValueAt(row, 2).toString());
+        spquantity.setValue(Integer.parseInt(table.getValueAt(row, 3).toString()));
+        cbunit.setSelectedItem(table.getValueAt(row, 4).toString());
+        txtunitcost.setText(table.getValueAt(row, 5).toString());
+        txttotal.setText(table.getValueAt(row, 6).toString());
+        txtreceive.setText(table.getValueAt(row, 10).toString());
     }//GEN-LAST:event_tableMouseClicked
 
     /**
@@ -580,9 +623,11 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
     private javax.swing.JButton btclose;
     private javax.swing.JButton btdelete;
     private javax.swing.JButton btsave;
+    private javax.swing.JComboBox cbchart;
     private javax.swing.JComboBox cbsupplier;
     private javax.swing.JComboBox cbunit;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

@@ -160,6 +160,7 @@ public final class FrameMain extends javax.swing.JFrame {
                 String tin = rs.getString("TINNumber");
                 String deposited = rs.getString("DepositedTo");
                 String description = rs.getString("Description");
+                String acc = rs.getString("Account");
                 String particulars = rs.getString("Particulars");
                 String gross = rs.getString("GrossAmount");
                 String vat = rs.getString("VAT");
@@ -170,7 +171,7 @@ public final class FrameMain extends javax.swing.JFrame {
                 String received = rs.getString("ReceivedBy");
                 String status = rs.getString("Status");
                 String date = rs.getString("Date");
-                tableModel.addRow(new Object[]{code, payor, tin, deposited, description, particulars, gross, vat, netvat, prepared, verified, approved, received, status, date});
+                tableModel.addRow(new Object[]{code, payor, tin, deposited, description, acc, particulars, gross, vat, netvat, prepared, verified, approved, received, status, date});
             }
         } catch (SQLException e) {
         }
@@ -214,6 +215,7 @@ public final class FrameMain extends javax.swing.JFrame {
             ResultSet rs = stmt.executeQuery("SELECT * FROM tblmerchandisereceipt");
             while (rs.next()) {
                 String code = rs.getString("MerchReceiptCode");
+                String acc = rs.getString("Account");
                 String supplier = rs.getString("Supplier");
                 String quantity = rs.getString("Quantity");
                 String unit = rs.getString("Unit");
@@ -225,7 +227,7 @@ public final class FrameMain extends javax.swing.JFrame {
                 String status = rs.getString("Status");
                 String rec = rs.getString("ReceivedBy");
                 String date = rs.getString("Date");
-                tableModel.addRow(new Object[]{code, supplier, quantity, unit, unitcost, totalamount, reqby,ver, approvedby,rec,status, date});
+                tableModel.addRow(new Object[]{code, acc, supplier, quantity, unit, unitcost, totalamount, reqby, ver, approvedby, rec, status, date});
             }
         } catch (SQLException e) {
         }
@@ -244,6 +246,7 @@ public final class FrameMain extends javax.swing.JFrame {
                 String charge = rs.getString("ChargeTo");
                 String purpose = rs.getString("Purpose");
                 String destination = rs.getString("Destination");
+                String acc = rs.getString("Account");
                 String quantity = rs.getString("Quantity");
                 String unit = rs.getString("Unit");
                 String unitcost = rs.getString("UnitCost");
@@ -254,7 +257,7 @@ public final class FrameMain extends javax.swing.JFrame {
                 String rec = rs.getString("ReceivedBy");
                 String status = rs.getString("Status");
                 String date = rs.getString("Date");
-                tableModel.addRow(new Object[]{code, mrcode, charge, purpose, destination, quantity, unit, unitcost, totalamount, req, ver, approved, rec, status, date});
+                tableModel.addRow(new Object[]{code, mrcode, charge, purpose, destination, acc, quantity, unit, unitcost, totalamount, req, ver, approved, rec, status, date});
             }
         } catch (SQLException e) {
         }
@@ -504,6 +507,198 @@ public final class FrameMain extends javax.swing.JFrame {
                         break;
                     case "PENDING":
                         JOptionPane.showMessageDialog(this, "Receipt Voucher " + rvcode + " is not yet verified!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        break;
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No data selected!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void DVVerifyRequest() {
+        DefaultTableModel TableModel = (DefaultTableModel) tabledv.getModel();
+        int row = tabledv.getSelectedRow();
+        String rvcode = TableModel.getValueAt(row, 0).toString();
+        if (row > -1) {
+            if (null != TableModel.getValueAt(row, 13).toString()) {
+                switch (TableModel.getValueAt(row, 13).toString()) {
+                    case "PENDING":
+                        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tbldisbursementvoucher SET VerifiedBy = ?, Status = ? WHERE DisbursementCode = ?")) {
+                            stmt.setString(1, lbluser.getText());
+                            stmt.setString(2, "VERIFIED");
+                            stmt.setString(3, rvcode);
+                            stmt.executeUpdate();
+                            retrieveRV();
+                            JOptionPane.showMessageDialog(this, "Disbursement Voucher " + rvcode + " has been verified!.", " System Information", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (SQLException ex) {
+                            JOptionPane.showMessageDialog(this, "Can't read record in system table!\nSystem detects changes in table entities!\nPlease contact the backend developer.", "ERROR 1012", JOptionPane.ERROR_MESSAGE);
+                        }
+                        break;
+                    case "VERIFIED":
+                        JOptionPane.showMessageDialog(this, "Disbursement Voucher " + rvcode + " is already verified!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        break;
+                    case "APPROVED":
+                        JOptionPane.showMessageDialog(this, "Disbursement Voucher " + rvcode + " is already approved!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        break;
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No data selected!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void DVApproveRequest() {
+        DefaultTableModel TableModel = (DefaultTableModel) tabledv.getModel();
+        int row = tabledv.getSelectedRow();
+        String rvcode = TableModel.getValueAt(row, 0).toString();
+        if (row > -1) {
+            if (null != TableModel.getValueAt(row, 13).toString()) {
+                switch (TableModel.getValueAt(row, 13).toString()) {
+                    case "VERIFIED":
+                        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tbldisbursementvoucher SET ApprovedBy = ?, Status = ? WHERE DisbursementCode = ?")) {
+                            stmt.setString(1, lbluser.getText());
+                            stmt.setString(2, "APPROVED");
+                            stmt.setString(3, rvcode);
+                            stmt.executeUpdate();
+                            retrieveRV();
+                            JOptionPane.showMessageDialog(this, "Disbursement Voucher " + rvcode + " has been approved!.", " System Information", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (SQLException ex) {
+                            JOptionPane.showMessageDialog(this, "Can't read record in system table!\nSystem detects changes in table entities!\nPlease contact the backend developer.", "ERROR 1012", JOptionPane.ERROR_MESSAGE);
+                        }
+                        break;
+                    case "APPROVED":
+                        JOptionPane.showMessageDialog(this, "Disbursement Voucher " + rvcode + " is already approved!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        break;
+                    case "PENDING":
+                        JOptionPane.showMessageDialog(this, "Disbursement Voucher " + rvcode + " is not yet verified!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        break;
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No data selected!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void MWVerifyRequest() {
+        DefaultTableModel TableModel = (DefaultTableModel) tablemw.getModel();
+        int row = tablemw.getSelectedRow();
+        String rvcode = TableModel.getValueAt(row, 0).toString();
+        if (row > -1) {
+            if (null != TableModel.getValueAt(row, 14).toString()) {
+                switch (TableModel.getValueAt(row, 14).toString()) {
+                    case "PENDING":
+                        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblmerchandisewithdrawal SET VerifiedBy = ?, Status = ? WHERE MerchWithdrawalCode = ?")) {
+                            stmt.setString(1, lbluser.getText());
+                            stmt.setString(2, "VERIFIED");
+                            stmt.setString(3, rvcode);
+                            stmt.executeUpdate();
+                            retrieveRV();
+                            JOptionPane.showMessageDialog(this, "Merchandise Withdrawal " + rvcode + " has been verified!.", " System Information", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (SQLException ex) {
+                            JOptionPane.showMessageDialog(this, "Can't read record in system table!\nSystem detects changes in table entities!\nPlease contact the backend developer.", "ERROR 1012", JOptionPane.ERROR_MESSAGE);
+                        }
+                        break;
+                    case "VERIFIED":
+                        JOptionPane.showMessageDialog(this, "Merchandise Withdrawal " + rvcode + " is already verified!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        break;
+                    case "APPROVED":
+                        JOptionPane.showMessageDialog(this, "Merchandise Withdrawal " + rvcode + " is already approved!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        break;
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No data selected!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void MWApproveRequest() {
+        DefaultTableModel TableModel = (DefaultTableModel) tablemw.getModel();
+        int row = tablemw.getSelectedRow();
+        String rvcode = TableModel.getValueAt(row, 0).toString();
+        if (row > -1) {
+            if (null != TableModel.getValueAt(row, 14).toString()) {
+                switch (TableModel.getValueAt(row, 14).toString()) {
+                    case "VERIFIED":
+                        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblmerchandisewithdrawal SET ApprovedBy = ?, Status = ? WHERE MerchWithdrawalCode = ?")) {
+                            stmt.setString(1, lbluser.getText());
+                            stmt.setString(2, "APPROVED");
+                            stmt.setString(3, rvcode);
+                            stmt.executeUpdate();
+                            retrieveRV();
+                            JOptionPane.showMessageDialog(this, "Merchandise Withdrawal " + rvcode + " has been approved!.", " System Information", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (SQLException ex) {
+                            JOptionPane.showMessageDialog(this, "Can't read record in system table!\nSystem detects changes in table entities!\nPlease contact the backend developer.", "ERROR 1012", JOptionPane.ERROR_MESSAGE);
+                        }
+                        break;
+                    case "APPROVED":
+                        JOptionPane.showMessageDialog(this, "Merchandise Withdrawal " + rvcode + " is already approved!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        break;
+                    case "PENDING":
+                        JOptionPane.showMessageDialog(this, "Merchandise Withdrawal " + rvcode + " is not yet verified!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        break;
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No data selected!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void MRVerifyRequest() {
+        DefaultTableModel TableModel = (DefaultTableModel) tablemr.getModel();
+        int row = tablemr.getSelectedRow();
+        String rvcode = TableModel.getValueAt(row, 0).toString();
+        if (row > -1) {
+            if (null != TableModel.getValueAt(row, 11).toString()) {
+                switch (TableModel.getValueAt(row, 11).toString()) {
+                    case "PENDING":
+                        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblmerchandisereceipt SET VerifiedBy = ?, Status = ? WHERE MerchReceiptCode = ?")) {
+                            stmt.setString(1, lbluser.getText());
+                            stmt.setString(2, "VERIFIED");
+                            stmt.setString(3, rvcode);
+                            stmt.executeUpdate();
+                            retrieveRV();
+                            JOptionPane.showMessageDialog(this, "Merchandise Receipt " + rvcode + " has been verified!.", " System Information", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (SQLException ex) {
+                            JOptionPane.showMessageDialog(this, "Can't read record in system table!\nSystem detects changes in table entities!\nPlease contact the backend developer.", "ERROR 1012", JOptionPane.ERROR_MESSAGE);
+                        }
+                        break;
+                    case "VERIFIED":
+                        JOptionPane.showMessageDialog(this, "Merchandise Receipt " + rvcode + " is already verified!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        break;
+                    case "APPROVED":
+                        JOptionPane.showMessageDialog(this, "Merchandise Receipt " + rvcode + " is already approved!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        break;
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No data selected!", " System Information", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void MRApproveRequest() {
+        DefaultTableModel TableModel = (DefaultTableModel) tablemr.getModel();
+        int row = tablemr.getSelectedRow();
+        String rvcode = TableModel.getValueAt(row, 0).toString();
+        if (row > -1) {
+            if (null != TableModel.getValueAt(row, 11).toString()) {
+                switch (TableModel.getValueAt(row, 11).toString()) {
+                    case "VERIFIED":
+                        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblmerchandisereceipt SET ApprovedBy = ?, Status = ? WHERE MerchReceiptCode = ?")) {
+                            stmt.setString(1, lbluser.getText());
+                            stmt.setString(2, "APPROVED");
+                            stmt.setString(3, rvcode);
+                            stmt.executeUpdate();
+                            retrieveRV();
+                            JOptionPane.showMessageDialog(this, "Merchandise Receipt " + rvcode + " has been approved!.", " System Information", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (SQLException ex) {
+                            JOptionPane.showMessageDialog(this, "Can't read record in system table!\nSystem detects changes in table entities!\nPlease contact the backend developer.", "ERROR 1012", JOptionPane.ERROR_MESSAGE);
+                        }
+                        break;
+                    case "APPROVED":
+                        JOptionPane.showMessageDialog(this, "Merchandise Receipt " + rvcode + " is already approved!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        break;
+                    case "PENDING":
+                        JOptionPane.showMessageDialog(this, "Merchandise Receipt " + rvcode + " is not yet verified!.", " System Warning", JOptionPane.ERROR_MESSAGE);
                         break;
                 }
             }
@@ -852,11 +1047,11 @@ public final class FrameMain extends javax.swing.JFrame {
 
             },
             new String [] {
-                "RV Code", "Payor", "TIN", "Deposited To", "Description", "Particulars", "Gross Amount", "VAT", "NetVAT", "Prepared By", "Verified By", "Approved By", "Received By", "Status", "Date"
+                "RV Code", "Payor", "TIN", "Deposited To", "Description", "Account", "Particulars", "Gross Amount", "VAT", "NetVAT", "Prepared By", "Verified By", "Approved By", "Received By", "Status", "Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -1142,11 +1337,11 @@ public final class FrameMain extends javax.swing.JFrame {
 
             },
             new String [] {
-                "MW Code", "MR Code", "Charge To", "Purpose", "Destination", "Quantity", "Unit", "Unit Cost", "Total Amount", "Requested By", "Verified By", "Approved By", "Received By", "Status", "Date"
+                "MW Code", "MR Code", "Charge To", "Purpose", "Destination", "Account", "Quantity", "Unit", "Unit Cost", "Total Amount", "Requested By", "Verified By", "Approved By", "Received By", "Status", "Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -1242,11 +1437,11 @@ public final class FrameMain extends javax.swing.JFrame {
 
             },
             new String [] {
-                "MR Code", "Supplier", "Quantity", "Unit", "Unit Cost", "Total Amount", "Requested By", "Verified By", "Approved By", "Received By", "Status", "Date"
+                "MR Code", "Account", "Supplier", "Quantity", "Unit", "Unit Cost", "Total Amount", "Requested By", "Verified By", "Approved By", "Received By", "Status", "Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {

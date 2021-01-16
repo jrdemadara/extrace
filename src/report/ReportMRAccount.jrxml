@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9a304fbc-44e7-4344-9ef2-b8cae314b976">
-	<property name="ireport.zoom" value="1.4641000000000013"/>
+	<property name="ireport.zoom" value="1.7715610000000022"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="datefrom" class="java.lang.String">
@@ -12,31 +12,22 @@
 	<parameter name="overallamount" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
-	<parameter name="chargeto" class="java.lang.String">
+	<parameter name="account" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT * FROM lozadadb.tblmerchandisewithdrawal WHERE Status = 'APPROVED' AND ChargeTo = $P{chargeto} AND Date BETWEEN $P{datefrom} AND $P{dateto};]]>
+		<![CDATA[SELECT * FROM lozadadb.tblmerchandisereceipt WHERE Status = 'APPROVED' AND Account = $P{account} AND Date BETWEEN $P{datefrom} AND $P{dateto};]]>
 	</queryString>
 	<field name="ID" class="java.lang.Integer">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="MerchWithdrawalCode" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="MRCode" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="ChargeTo" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="Purpose" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="Destination" class="java.lang.String">
+	<field name="MerchReceiptCode" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="Account" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Supplier" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="Quantity" class="java.lang.Integer">
@@ -96,11 +87,11 @@
 				<text><![CDATA[LOZADA GROUP OF COMPANIES]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="98" y="49" width="340" height="17" uuid="b6965780-a766-4794-9a12-eef3f10a00b3"/>
+				<reportElement x="120" y="49" width="327" height="17" uuid="b6965780-a766-4794-9a12-eef3f10a00b3"/>
 				<textElement textAlignment="Center">
 					<font fontName="Cambria" size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[MERCHANDISE WITHDRAWAL REPORT (Company)]]></text>
+				<text><![CDATA[MERCHANDISE RECEIPT REPORT (Accounts)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="82" width="94" height="12" uuid="8a4fedeb-97af-494a-a87f-3f246af9598a"/>
@@ -152,14 +143,14 @@
 				<textElement>
 					<font fontName="Cambria" size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[CHARGE TO	 :]]></text>
+				<text><![CDATA[ACCOUNT	 :]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="94" y="94" width="185" height="12" uuid="a21d54e8-2de4-47a2-b75a-dc373e8f6108"/>
+				<reportElement x="94" y="94" width="135" height="12" uuid="c6a551dc-3810-4169-be9d-946bf868145d"/>
 				<textElement>
 					<font fontName="Cambria" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{chargeto}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{account}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -184,7 +175,7 @@
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<text><![CDATA[MW CODE]]></text>
+				<text><![CDATA[MR CODE]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="482" y="0" width="73" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="8c6c3587-6a40-4956-a673-8cddf974b738"/>
@@ -198,7 +189,7 @@
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<text><![CDATA[PURPOSE]]></text>
+				<text><![CDATA[ACCOUNT]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="364" y="0" width="29" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="6c13f98b-c612-4de2-ad7e-d2d5a1fb0406"/>
@@ -212,26 +203,12 @@
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<text><![CDATA[DESTINATION]]></text>
+				<text><![CDATA[SUPPLIER]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="12" splitType="Stretch">
-			<textField>
-				<reportElement x="0" y="0" width="74" height="12" uuid="bdbb0d7e-6574-447e-a01b-f17ca62455c7"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Cambria" size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{MerchWithdrawalCode}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="74" y="0" width="129" height="12" uuid="efe24f0c-35c3-4a14-b3f5-0f21e79fd904"/>
-				<textElement verticalAlignment="Middle">
-					<font fontName="Cambria" size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{Purpose}]]></textFieldExpression>
-			</textField>
 			<textField>
 				<reportElement x="364" y="0" width="29" height="12" uuid="4aa7781c-ca98-4cfd-b198-2e4e3afae100"/>
 				<textElement verticalAlignment="Middle">
@@ -261,11 +238,25 @@
 				<textFieldExpression><![CDATA[$F{TotalAmount}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="203" y="0" width="161" height="12" uuid="c0c62ae2-3f03-4914-a0d8-4c8f29fc0ca4"/>
-				<textElement verticalAlignment="Middle">
+				<reportElement x="0" y="0" width="74" height="12" uuid="8809ed0b-3821-4a2b-92df-01aade5d9cff"/>
+				<textElement>
 					<font fontName="Cambria" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{Destination}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{MerchReceiptCode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="74" y="0" width="129" height="12" uuid="cbf5d76b-2495-434f-b533-74fdab7728e3"/>
+				<textElement>
+					<font fontName="Cambria" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Account}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="203" y="0" width="161" height="12" uuid="327d7ca3-a0bf-42a7-955d-79c73d4e37d9"/>
+				<textElement>
+					<font fontName="Cambria" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Supplier}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

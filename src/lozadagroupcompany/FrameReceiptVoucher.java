@@ -24,6 +24,9 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
         initComponents();
         Refresh();
         setIconImage();
+        RetrieveChart();
+        RetrieveBank();
+        RetrieveClient();
     }
 
     public void GetUser(String name) {
@@ -36,8 +39,6 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
 
     private void Refresh() {
         CodeGenerator();
-        RetrieveBank();
-        RetrieveClient();
         btsave.setText("Save");
         btclose.setText("Close");
         txtdescription.setText("");
@@ -58,6 +59,18 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
             while (rs.next()) {
                 String chart = rs.getString("ClientName");
                 cbpayor.addItem(chart);
+            }
+        } catch (SQLException e) {
+        }
+    }
+
+    private void RetrieveChart() {
+        cbchart.addItem("Select Account");
+        try (Statement stmt = connection.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tblchartofaccount");
+            while (rs.next()) {
+                String chart = rs.getString("ChartName");
+                cbchart.addItem(chart);
             }
         } catch (SQLException e) {
         }
@@ -92,8 +105,9 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
         CountParticular();
     }
 
-    public static void LoadRV(String code, String payor, String tin, String deposit, String description, String particular, String grossamount, String vat, String netvat, String receive) {
+    public static void LoadRV(String code,String account, String payor, String tin, String deposit, String description, String particular, String grossamount, String vat, String netvat, String receive) {
         lblcode.setText(code);
+        cbchart.setSelectedItem(account);
         cbpayor.setSelectedItem(payor);
         txttin.setText(tin);
         cbdepositedto.setSelectedItem(deposit);
@@ -201,23 +215,24 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
             }
         }
 
-        try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tblreceiptvoucher VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
+        try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tblreceiptvoucher VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
             stmt.setInt(1, 0);
             stmt.setString(2, lblcode.getText());
-            stmt.setString(3, cbpayor.getSelectedItem().toString());
-            stmt.setString(4, txttin.getText());
-            stmt.setString(5, cbdepositedto.getSelectedItem().toString());
-            stmt.setString(6, txtdescription.getText().toUpperCase());
-            stmt.setString(7, txtparticular.getText());
-            stmt.setString(8, txtgrossamount.getText());
-            stmt.setString(9, txtvat.getText());
-            stmt.setString(10, txtnetvat.getText());
-            stmt.setString(11, user);
-            stmt.setString(12, "NOT-VERIFIED");
-            stmt.setString(13, "NOT-APPROVED");
-            stmt.setString(14, txtreceive.getText());
-            stmt.setString(15, "PENDING");
-            stmt.setString(16, DateFunction.getFormattedDate());
+            stmt.setString(3, cbchart.getSelectedItem().toString());
+            stmt.setString(4, cbpayor.getSelectedItem().toString());
+            stmt.setString(5, txttin.getText());
+            stmt.setString(6, cbdepositedto.getSelectedItem().toString());
+            stmt.setString(7, txtdescription.getText().toUpperCase());
+            stmt.setString(8, txtparticular.getText());
+            stmt.setString(9, txtgrossamount.getText());
+            stmt.setString(10, txtvat.getText());
+            stmt.setString(11, txtnetvat.getText());
+            stmt.setString(12, user);
+            stmt.setString(13, "NOT-VERIFIED");
+            stmt.setString(14, "NOT-APPROVED");
+            stmt.setString(15, txtreceive.getText());
+            stmt.setString(16, "PENDING");
+            stmt.setString(17, DateFunction.getFormattedDate());
             stmt.execute();
             stmt.close();
             JOptionPane.showMessageDialog(this, "Receipt Voucher '" + lblcode.getText() + "' has been saved!", " System Information", JOptionPane.INFORMATION_MESSAGE);
@@ -259,17 +274,18 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
             }
         }
 
-        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblreceiptvoucher SET Payor = ?, TINNumber = ?,DepositedTo = ?, Description = ?, Particulars = ?, GrossAmount = ?, VAT = ?, NetVAT = ?, ReceivedBy = ? WHERE ReceiptCode = ?")) {
-            stmt.setString(1, cbpayor.getSelectedItem().toString());
-            stmt.setString(2, txttin.getText().toUpperCase());
-            stmt.setString(3, cbdepositedto.getSelectedItem().toString());
-            stmt.setString(4, txtdescription.getText().toUpperCase());
-            stmt.setString(5, txtparticular.getText());
-            stmt.setString(6, txtgrossamount.getText());
-            stmt.setString(7, txtvat.getText());
-            stmt.setString(8, txtnetvat.getText());
-            stmt.setString(9, txtreceive.getText());
-            stmt.setString(10, lblcode.getText());
+        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblreceiptvoucher SET Account = ?, Payor = ?, TINNumber = ?,DepositedTo = ?, Description = ?, Particulars = ?, GrossAmount = ?, VAT = ?, NetVAT = ?, ReceivedBy = ? WHERE ReceiptCode = ?")) {
+            stmt.setString(1, cbchart.getSelectedItem().toString());
+            stmt.setString(2, cbpayor.getSelectedItem().toString());
+            stmt.setString(3, txttin.getText().toUpperCase());
+            stmt.setString(4, cbdepositedto.getSelectedItem().toString());
+            stmt.setString(5, txtdescription.getText().toUpperCase());
+            stmt.setString(6, txtparticular.getText());
+            stmt.setString(7, txtgrossamount.getText());
+            stmt.setString(8, txtvat.getText());
+            stmt.setString(9, txtnetvat.getText());
+            stmt.setString(10, txtreceive.getText());
+            stmt.setString(11, lblcode.getText());
             stmt.executeUpdate();
             JOptionPane.showMessageDialog(this, "Receipt Voucher '" + lblcode.getText() + "' has been updated!", " System Information", JOptionPane.INFORMATION_MESSAGE);
             Refresh();
@@ -347,6 +363,8 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         txtreceive = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
+        cbchart = new javax.swing.JComboBox();
+        jLabel12 = new javax.swing.JLabel();
         btsave = new javax.swing.JButton();
         btclose = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -484,6 +502,8 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
 
         jLabel11.setText("Receive By");
 
+        jLabel12.setText("Account");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -506,33 +526,34 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
                                 .addGap(170, 170, 170))
                             .addComponent(txtgrossamount))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(txtreceive, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
-                                .addComponent(txttin, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING))
-                            .addComponent(jLabel11))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cbdepositedto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtparticular)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel5))
-                                .addGap(0, 0, Short.MAX_VALUE))))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel8)
-                            .addComponent(txtvat, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtvat, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel9)
-                                .addGap(0, 162, Short.MAX_VALUE))
-                            .addComponent(txtnetvat))))
+                                .addGap(79, 79, 79))
+                            .addComponent(txtnetvat)))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(txtreceive, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
+                            .addComponent(txttin, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addComponent(jLabel11)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cbdepositedto, 0, 205, Short.MAX_VALUE)
+                    .addComponent(txtparticular)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel12))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(cbchart, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -556,6 +577,10 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
                                 .addComponent(cbdepositedto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel12)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cbchart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                     .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -564,21 +589,22 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
                                 .addGroup(jPanel2Layout.createSequentialGroup()
                                     .addComponent(jLabel3)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtdescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtparticular, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(txtdescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtgrossamount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addComponent(jLabel7)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtgrossamount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                    .addComponent(jLabel9)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtnetvat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel9)
+                                .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtnetvat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(txtparticular, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -639,7 +665,7 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Code", "Particular", "Quantity", "Unit", "Unit Cost", "Total Amount", "VAT Type", "VAT", "Net VAT"
+                "Code", "Item", "Quantity", "Unit", "Unit Cost", "Total Amount", "VAT Type", "VAT", "Net VAT"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -650,7 +676,6 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        table.setComponentPopupMenu(jPopupMenu1);
         table.setGridColor(new java.awt.Color(204, 204, 204));
         table.setSelectionBackground(new java.awt.Color(45, 52, 66));
         table.setSelectionForeground(new java.awt.Color(235, 235, 236));
@@ -664,7 +689,6 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btsave, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -679,7 +703,8 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
                                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -859,6 +884,7 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private static javax.swing.JButton btclose;
     private static javax.swing.JButton btsave;
+    private static javax.swing.JComboBox cbchart;
     private static javax.swing.JComboBox cbdepositedto;
     private static javax.swing.JComboBox cbpayor;
     private javax.swing.JButton jButton3;
@@ -867,6 +893,7 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

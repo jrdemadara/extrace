@@ -13,6 +13,8 @@
 	<parameter name="chargeto" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
+	<parameter name="vat" class="java.lang.String"/>
+	<parameter name="netvat" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT * FROM lozadadb.tbldisbursementvoucher WHERE Status = 'APPROVED' AND ChargeTo = $P{chargeto} AND Date BETWEEN $P{datefrom} AND $P{dateto};]]>
 	</queryString>
@@ -94,11 +96,11 @@
 				<text><![CDATA[LOZADA GROUP OF COMPANIES]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="265" y="48" width="266" height="17" uuid="b6965780-a766-4794-9a12-eef3f10a00b3"/>
+				<reportElement x="244" y="48" width="302" height="17" uuid="b6965780-a766-4794-9a12-eef3f10a00b3"/>
 				<textElement textAlignment="Center">
 					<font fontName="Cambria" size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[DISBURSEMENT VOUCHER REPORT]]></text>
+				<text><![CDATA[DISBURSEMENT VOUCHER REPORT (Company)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="82" width="94" height="12" uuid="8a4fedeb-97af-494a-a87f-3f246af9598a"/>
@@ -139,26 +141,54 @@
 				<textFieldExpression><![CDATA[$P{dateto}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="94" y="82" width="185" height="12" uuid="40f045ad-3877-4dc6-af72-19f83acfdff8"/>
+				<reportElement x="94" y="82" width="129" height="12" uuid="40f045ad-3877-4dc6-af72-19f83acfdff8"/>
 				<textElement>
 					<font fontName="Cambria" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{overallamount}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="94" width="94" height="12" uuid="a27d34d2-5012-46b2-a8ce-e94db60a3c63"/>
+				<reportElement x="244" y="82" width="94" height="12" uuid="a27d34d2-5012-46b2-a8ce-e94db60a3c63"/>
 				<textElement>
 					<font fontName="Cambria" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[CHARGE TO	:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="94" y="94" width="185" height="12" uuid="635e9aba-f771-4a3b-bb42-72b567598f9e"/>
+				<reportElement x="338" y="82" width="129" height="12" uuid="635e9aba-f771-4a3b-bb42-72b567598f9e"/>
 				<textElement>
 					<font fontName="Cambria" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{chargeto}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="206" y="94" width="59" height="12" uuid="41e8a049-b8da-447b-8a85-c7f958e30bf1"/>
+				<textElement>
+					<font fontName="Cambria" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{netvat}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="94" y="94" width="65" height="12" uuid="4f9cfa5b-fd82-4f00-ad48-f308fbef4549"/>
+				<textElement>
+					<font fontName="Cambria" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{vat}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="159" y="94" width="47" height="12" uuid="4094c8ce-16f6-46b0-9b85-8006bfc22f00"/>
+				<textElement>
+					<font fontName="Cambria" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[NET VAT	:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-1" y="94" width="95" height="12" uuid="5ec6d054-e76e-47bb-955f-79b979a426db"/>
+				<textElement>
+					<font fontName="Cambria" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[VAT		:]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>

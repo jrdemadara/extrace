@@ -28,6 +28,7 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
     public FrameMerchandiseWithdrawal() {
         initComponents();
         RetrieveCompany();
+        RetrieveChart();
         Refresh();
     }
 
@@ -64,6 +65,7 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
                 String no = rs.getString("ChargeTo");
                 String purpose = rs.getString("Purpose");
                 String destination = rs.getString("Destination");
+                String acc = rs.getString("Account");
                 String quantity = rs.getString("Quantity");
                 String unit = rs.getString("Unit");
                 String unitcost = rs.getString("UnitCost");
@@ -74,7 +76,7 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
                 String rec = rs.getString("ReceivedBy");
                 String status = rs.getString("Status");
                 String date = rs.getString("Date");
-                tableModel.addRow(new Object[]{code, mrcode, no, purpose, destination, quantity, unit, unitcost, totalamount, req, ver, approved, rec, status, date});
+                tableModel.addRow(new Object[]{code, mrcode, no, purpose, destination, acc, quantity, unit, unitcost, totalamount, req, ver, approved, rec, status, date});
             }
         } catch (SQLException e) {
         }
@@ -106,24 +108,37 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
         }
     }
 
+    private void RetrieveChart() {
+        cbchart.addItem("Select Account");
+        try (Statement stmt = connection.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tblchartofaccount");
+            while (rs.next()) {
+                String chart = rs.getString("ChartName");
+                cbchart.addItem(chart);
+            }
+        } catch (SQLException e) {
+        }
+    }
+
     private void Save() {
-        try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tblmerchandisewithdrawal VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
+        try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tblmerchandisewithdrawal VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
             stmt.setInt(1, 0);
             stmt.setString(2, lblcode.getText());
             stmt.setString(3, txtmrcode.getText());
             stmt.setString(4, cbcompany.getSelectedItem().toString());
             stmt.setString(5, txtpurpose.getText());
             stmt.setString(6, txtdestination.getText());
-            stmt.setString(7, spquantity.getValue().toString());
-            stmt.setString(8, txtunit.getText());
-            stmt.setString(9, txtunitcost.getText());
-            stmt.setString(10, txttotal.getText());
-            stmt.setString(11, user);
-            stmt.setString(12, "NOT-VERIFIED");
-            stmt.setString(13, "NOT-APPROVED");
-            stmt.setString(14, txtreceive.getText().toUpperCase());
-            stmt.setString(15, "PENDING");
-            stmt.setString(16, DateFunction.getFormattedDate());
+            stmt.setString(7, cbchart.getSelectedItem().toString());
+            stmt.setString(8, spquantity.getValue().toString());
+            stmt.setString(9, txtunit.getText());
+            stmt.setString(10, txtunitcost.getText());
+            stmt.setString(11, txttotal.getText());
+            stmt.setString(12, user);
+            stmt.setString(13, "NOT-VERIFIED");
+            stmt.setString(14, "NOT-APPROVED");
+            stmt.setString(15, txtreceive.getText().toUpperCase());
+            stmt.setString(16, "PENDING");
+            stmt.setString(17, DateFunction.getFormattedDate());
             stmt.execute();
             stmt.close();
             JOptionPane.showMessageDialog(this, "Merchandise Withdrawal '" + lblcode.getText() + "' has been saved!", " System Information", JOptionPane.INFORMATION_MESSAGE);
@@ -134,17 +149,18 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
     }
 
     private void Update() {
-        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblmerchandisewithdrawal SET MRCode = ?, ChargeTo = ?, Purpose = ?, Destination = ?, Quantity = ?, Unit = ?, UnitCost = ?, TotalAmount = ?, ReceivedBy = ? WHERE MerchWithdrawalCode = ?")) {
-            stmt.setString(10, lblcode.getText());
+        try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblmerchandisewithdrawal SET MRCode = ?, ChargeTo = ?, Purpose = ?, Destination = ?, Account = ?, Quantity = ?, Unit = ?, UnitCost = ?, TotalAmount = ?, ReceivedBy = ? WHERE MerchWithdrawalCode = ?")) {
+            stmt.setString(11, lblcode.getText());
             stmt.setString(1, txtmrcode.getText());
             stmt.setString(2, cbcompany.getSelectedItem().toString());
             stmt.setString(3, txtpurpose.getText());
             stmt.setString(4, txtdestination.getText());
-            stmt.setInt(5, Integer.parseInt(spquantity.getValue().toString()));
-            stmt.setString(6, txtunit.getText());
-            stmt.setString(7, txtunitcost.getText());
-            stmt.setString(8, txttotal.getText());
-            stmt.setString(9, txtreceive.getText());
+            stmt.setString(5, cbchart.getSelectedItem().toString());
+            stmt.setInt(6, Integer.parseInt(spquantity.getValue().toString()));
+            stmt.setString(7, txtunit.getText());
+            stmt.setString(8, txtunitcost.getText());
+            stmt.setString(9, txttotal.getText());
+            stmt.setString(10, txtreceive.getText());
             stmt.executeUpdate();
             JOptionPane.showMessageDialog(this, "Merchandise Withdrawal '" + lblcode.getText() + "' has been updated!", " System Information", JOptionPane.INFORMATION_MESSAGE);
             Refresh();
@@ -239,6 +255,8 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
         cbcompany = new javax.swing.JComboBox();
         jLabel10 = new javax.swing.JLabel();
         txtreceive = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        cbchart = new javax.swing.JComboBox();
         btclose = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
@@ -258,7 +276,7 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
 
         lblcode.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
         lblcode.setForeground(new java.awt.Color(255, 153, 0));
-        lblcode.setText("MWC2020111");
+        lblcode.setText("000000");
 
         jLabel6.setForeground(new java.awt.Color(255, 153, 0));
         jLabel6.setText("FUEL");
@@ -340,6 +358,8 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
         txtreceive.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
         txtreceive.setForeground(new java.awt.Color(0, 204, 0));
 
+        jLabel12.setText("Account");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -357,11 +377,12 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addComponent(txtmrcode))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel7)
-                            .addComponent(txtunit)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addComponent(cbcompany, 0, 247, Short.MAX_VALUE)))
+                            .addComponent(cbcompany, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel12)
+                                .addComponent(cbchart, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel11)
@@ -373,18 +394,24 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(7, 7, 7)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel8))
+                        .addComponent(jLabel3)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(jLabel10)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtunitcost, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtpurpose, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addGap(1, 1, 1)
+                                    .addComponent(txtpurpose, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(txtunit, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel7))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel8)
+                                        .addComponent(txtunitcost))))
                             .addComponent(txtreceive, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap())))
         );
@@ -398,9 +425,15 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtpurpose, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtunitcost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(txtunit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtunitcost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jLabel8))
+                                .addGap(34, 34, 34)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(txtreceive, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -416,15 +449,15 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
                             .addComponent(txtmrcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(cbcompany, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(txtunit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addGap(34, 34, 34))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtdestination, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(txtdestination, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel12)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cbchart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -455,17 +488,18 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
 
             },
             new String [] {
-                "MW Code", "MR Code", "Charge To", "Purpose", "Destination", "Quantity", "Unit", "Unit Cost", "Total Amount", "Requested By", "Verified By", "Approved By", "Received By", "Status", "Date"
+                "MW Code", "MR Code", "Charge To", "Purpose", "Destination", "Account", "Quantity", "Unit", "Unit Cost", "Total Amount", "Requested By", "Verified By", "Approved By", "Received By", "Status", "Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, true, false, true, false, false
+                false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+        table.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         table.setGridColor(new java.awt.Color(204, 204, 204));
         table.setSelectionBackground(new java.awt.Color(45, 52, 66));
         table.setSelectionForeground(new java.awt.Color(235, 235, 236));
@@ -477,6 +511,21 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
             }
         });
         jScrollPane2.setViewportView(table);
+        if (table.getColumnModel().getColumnCount() > 0) {
+            table.getColumnModel().getColumn(0).setPreferredWidth(100);
+            table.getColumnModel().getColumn(1).setPreferredWidth(100);
+            table.getColumnModel().getColumn(2).setPreferredWidth(200);
+            table.getColumnModel().getColumn(3).setPreferredWidth(200);
+            table.getColumnModel().getColumn(4).setPreferredWidth(200);
+            table.getColumnModel().getColumn(5).setPreferredWidth(200);
+            table.getColumnModel().getColumn(9).setPreferredWidth(100);
+            table.getColumnModel().getColumn(10).setPreferredWidth(150);
+            table.getColumnModel().getColumn(11).setPreferredWidth(150);
+            table.getColumnModel().getColumn(12).setPreferredWidth(150);
+            table.getColumnModel().getColumn(13).setPreferredWidth(150);
+            table.getColumnModel().getColumn(14).setPreferredWidth(100);
+            table.getColumnModel().getColumn(15).setPreferredWidth(100);
+        }
 
         btsave.setBackground(new java.awt.Color(45, 52, 66));
         btsave.setForeground(new java.awt.Color(255, 255, 255));
@@ -522,7 +571,8 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
+                    .addComponent(txtsearch)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btimport, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btsave, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -530,8 +580,7 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
                         .addComponent(btdelete, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btclose, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtsearch))
+                    .addComponent(jScrollPane2))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -582,12 +631,13 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
         cbcompany.setSelectedItem(table.getValueAt(row, 2).toString());
         txtpurpose.setText(table.getValueAt(row, 3).toString());
         txtdestination.setText(table.getValueAt(row, 4).toString());
-        txtunit.setText(table.getValueAt(row, 6).toString());
-        txtunitcost.setText(table.getValueAt(row, 7).toString());
-        txttotal.setText(table.getValueAt(row, 8).toString());
-        txtreceive.setText(table.getValueAt(row, 12).toString());
+        cbchart.setSelectedItem(table.getValueAt(row, 5).toString());
+        txtunit.setText(table.getValueAt(row, 7).toString());
+        txtunitcost.setText(table.getValueAt(row, 8).toString());
+        txttotal.setText(table.getValueAt(row, 9).toString());
+        txtreceive.setText(table.getValueAt(row, 13).toString());
         if (!"".equals(txtmrcode.getText())) {
-            spquantity.setValue(Integer.parseInt(table.getValueAt(row, 5).toString()));
+            spquantity.setValue(Integer.parseInt(table.getValueAt(row, 6).toString()));
         }
     }//GEN-LAST:event_tableMouseClicked
 
@@ -672,10 +722,12 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
     private javax.swing.JButton btdelete;
     private javax.swing.JButton btimport;
     private javax.swing.JButton btsave;
+    private javax.swing.JComboBox cbchart;
     private javax.swing.JComboBox cbcompany;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
