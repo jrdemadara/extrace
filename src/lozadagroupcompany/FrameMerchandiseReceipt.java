@@ -250,7 +250,6 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
         btsave = new javax.swing.JButton();
         btclose = new javax.swing.JButton();
         txtsearch = new javax.swing.JTextField();
-        btdelete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -469,15 +468,6 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
             }
         });
 
-        btdelete.setBackground(new java.awt.Color(45, 52, 66));
-        btdelete.setForeground(new java.awt.Color(255, 255, 255));
-        btdelete.setText("Delete");
-        btdelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btdeleteActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -489,8 +479,6 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btsave, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btdelete, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btclose, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1)
@@ -513,8 +501,7 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btclose)
-                    .addComponent(btsave)
-                    .addComponent(btdelete))
+                    .addComponent(btsave))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -548,10 +535,6 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
         double total = unitcost * quantity;
         txttotal.setText(Double.toString(total));
     }//GEN-LAST:event_spquantityStateChanged
-
-    private void btdeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btdeleteActionPerformed
-        Delete();
-    }//GEN-LAST:event_btdeleteActionPerformed
 
     private void txtsearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtsearchKeyReleased
         Search(txtsearch.getText());
@@ -621,7 +604,6 @@ public class FrameMerchandiseReceipt extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btclose;
-    private javax.swing.JButton btdelete;
     private javax.swing.JButton btsave;
     private javax.swing.JComboBox cbchart;
     private javax.swing.JComboBox cbsupplier;

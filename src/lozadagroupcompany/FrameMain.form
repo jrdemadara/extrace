@@ -40,6 +40,9 @@
             <Property name="text" type="java.lang.String" value="Approve Request"/>
             <Property name="actionCommand" type="java.lang.String" value="Verify Request"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="MenuVerifyDVActionPerformed"/>
+          </Events>
         </MenuItem>
       </SubComponents>
     </Container>
@@ -59,6 +62,9 @@
             <Property name="text" type="java.lang.String" value="Approve Request"/>
             <Property name="actionCommand" type="java.lang.String" value="Verify Request"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="MenuVerifyMWActionPerformed"/>
+          </Events>
         </MenuItem>
       </SubComponents>
     </Container>
@@ -78,6 +84,9 @@
             <Property name="text" type="java.lang.String" value="Approve Request"/>
             <Property name="actionCommand" type="java.lang.String" value="Verify Request"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="MenuVerifyMRActionPerformed"/>
+          </Events>
         </MenuItem>
       </SubComponents>
     </Container>
@@ -122,7 +131,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem13">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Personnel"/>
+                <Property name="text" type="java.lang.String" value="Bank"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem13ActionPerformed"/>

@@ -158,9 +158,9 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
             if ("VAT".equals(vattype)) {
                 double quantity = Double.parseDouble(table.getValueAt(i, 2).toString());
                 double unitcost = Double.parseDouble(table.getValueAt(i, 4).toString());
-                double totalamount = Math.ceil(unitcost * quantity);
-                double vat = Math.ceil((totalamount / 1.12) * 0.12);
-                double netvat = Math.ceil(totalamount / 1.12);
+                double totalamount = (unitcost * quantity);
+                double vat = ((totalamount / 1.12) * 0.12);
+                double netvat = (totalamount / 1.12);
                 table.setValueAt(totalamount, i, 5);
                 table.setValueAt(vat, i, 7);
                 table.setValueAt(netvat, i, 8);
@@ -170,7 +170,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
             } else {
                 double quantity = Double.parseDouble(table.getValueAt(i, 2).toString());
                 double unitcost = Double.parseDouble(table.getValueAt(i, 4).toString());
-                double totalamount = Math.ceil(unitcost * quantity);
+                double totalamount = (unitcost * quantity);
                 table.setValueAt(totalamount, i, 5);
                 table.setValueAt("0", i, 7);
                 table.setValueAt("0", i, 8);
@@ -208,7 +208,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
                 stmt.setString(10, vat);
                 stmt.setString(11, netvat);
                 stmt.execute();
-                //stmt.close();
+                stmt.close();
             } catch (SQLException ex) {
                 Logger.getLogger(FrameDisbursementVoucher.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -233,7 +233,7 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
             stmt.setString(16, "PENDING");
             stmt.setString(17, DateFunction.getFormattedDate());
             stmt.execute();
-            //stmt.close();
+            stmt.close();
             Refresh();
             JOptionPane.showMessageDialog(this, "Disbursement Voucher '" + lblcode.getText() + "' has been saved!", " System Information", JOptionPane.INFORMATION_MESSAGE);
         } catch (SQLException ex) {

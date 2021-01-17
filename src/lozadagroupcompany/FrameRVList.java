@@ -245,7 +245,7 @@ public class FrameRVList extends javax.swing.JFrame {
             String gross = tablerv.getValueAt(row, 7).toString();
             String vat = tablerv.getValueAt(row, 8).toString();
             String netvat = tablerv.getValueAt(row, 9).toString();
-            String receive = tablerv.getValueAt(row, 11).toString();
+            String receive = tablerv.getValueAt(row, 13).toString();
             FrameReceiptVoucher.LoadRV(code, acc, payor, tin, deposit, des, part, gross, vat, netvat, receive);
             for (int i = 0; i < tableparticular.getRowCount(); i++) {
                 String pcode = tableparticular.getValueAt(i, 0).toString();
@@ -298,16 +298,17 @@ public class FrameRVList extends javax.swing.JFrame {
             try (Statement stmt = connection.createStatement()) {
                 ResultSet rs = stmt.executeQuery("SELECT * FROM tblreceiptvoucherparticular WHERE ReceiptCode = '" + lblcode.getText() + "' ");
                 while (rs.next()) {
-                    String rvcode = rs.getString("ReceiptCode");
+                    //String rvcode = rs.getString("ReceiptCode");
                     String code = rs.getString("Code");
                     String particular = rs.getString("Particular");
                     String quantity = rs.getString("Quantity");
                     String unit = rs.getString("Unit");
                     String unitcost = rs.getString("UnitCost");
                     String gross = rs.getString("PGrossAmount");
+                    String vattype = rs.getString("VATType");
                     String vat = rs.getString("PVAT");
                     String netvat = rs.getString("PNetVAT");
-                    TableModel2.addRow(new Object[]{rvcode, code, particular, quantity, unit, unitcost, gross, vat, netvat});
+                    TableModel2.addRow(new Object[]{code, particular, quantity, unit, unitcost, gross, vattype, vat, netvat});
                 }
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(this, "Can't read record in system table!\nSystem detects changes in table entities!\nPlease contact the backend developer.", "ERROR 1012", JOptionPane.ERROR_MESSAGE);

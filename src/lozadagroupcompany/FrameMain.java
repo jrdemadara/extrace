@@ -55,7 +55,10 @@ public final class FrameMain extends javax.swing.JFrame {
         if (null != lbltype.getText()) {
             switch (lbltype.getText()) {
                 case "ADMINISTRATOR":
-
+                    MenuVerifyRV.setText("No Actions Allowed");
+                    MenuVerifyDV.setText("No Actions Allowed");
+                    MenuVerifyMW.setText("No Actions Allowed");
+                    MenuVerifyMR.setText("No Actions Allowed");
                     break;
                 case "REQUESTER":
                     MenuSetup.setEnabled(false);
@@ -68,10 +71,10 @@ public final class FrameMain extends javax.swing.JFrame {
                     MenuVerifyDV.setEnabled(false);
                     MenuVerifyMW.setEnabled(false);
                     MenuVerifyMR.setEnabled(false);
-                    MenuVerifyRV.setText("No Actions Available");
-                    MenuVerifyDV.setText("No Actions Available");
-                    MenuVerifyMW.setText("No Actions Available");
-                    MenuVerifyMR.setText("No Actions Available");
+                    MenuVerifyRV.setText("No Actions Allowed");
+                    MenuVerifyDV.setText("No Actions Allowed");
+                    MenuVerifyMW.setText("No Actions Allowed");
+                    MenuVerifyMR.setText("No Actions Allowed");
                     break;
                 case "VERIFIER":
                     btdv.setEnabled(false);
@@ -143,8 +146,22 @@ public final class FrameMain extends javax.swing.JFrame {
     private void SearchRV(String query) {
         dm = (DefaultTableModel) tablerv.getModel();
         TableRowSorter<DefaultTableModel> tr = new TableRowSorter<>(dm);
-        tabledv.setRowSorter(tr);
+        tablerv.setRowSorter(tr);
         tr.setRowFilter(RowFilter.regexFilter(query));
+    }
+
+    private void clearDVparticular() {
+        DefaultTableModel tableModel = (DefaultTableModel) tableparticular.getModel();
+        while (tableModel.getRowCount() > 0) {
+            tableModel.removeRow(0);
+        }
+    }
+
+    private void clearRVparticular() {
+        DefaultTableModel tableModel = (DefaultTableModel) tablervparticular.getModel();
+        while (tableModel.getRowCount() > 0) {
+            tableModel.removeRow(0);
+        }
     }
 
     private void retrieveRV() {
@@ -265,10 +282,10 @@ public final class FrameMain extends javax.swing.JFrame {
 
     private void PrintRV() {
         int row = tablerv.getSelectedRow();
-        String code = tablerv.getValueAt(row, 0).toString();
-        String status = tablerv.getValueAt(row, 13).toString();
-        if ("APPROVED".equals(status)) {
-            if (row > -1) {
+        if (row > -1) {
+            String code = tablerv.getValueAt(row, 0).toString();
+            String status = tablerv.getValueAt(row, 14).toString();
+            if ("APPROVED".equals(status)) {
                 HashMap<String, Object> parameters = new HashMap<>();
                 parameters.put("rvcode", lblcode.getText());
                 try {
@@ -280,21 +297,23 @@ public final class FrameMain extends javax.swing.JFrame {
                 } catch (JRException ex) {
                     Logger.getLogger(FrameMonitoring.class.getName()).log(Level.SEVERE, null, ex);
                 }
+
             } else {
-                JOptionPane.showMessageDialog(this, "Please select data from the table.", " System Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Receipt Voucher " + code + " is not yet approved.", " System Warning", JOptionPane.WARNING_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Receipt Voucher " + code + " is not yet approved.", " System Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please select data from the table.", " System Error", JOptionPane.ERROR_MESSAGE);
         }
 
     }
 
     private void PrintDV() {
         int row = tabledv.getSelectedRow();
-        String code = tabledv.getValueAt(row, 0).toString();
-        String status = tabledv.getValueAt(row, 13).toString();
-        if ("APPROVED".equals(status)) {
-            if (row > -1) {
+        if (row > -1) {
+            String code = tabledv.getValueAt(row, 0).toString();
+            String status = tabledv.getValueAt(row, 13).toString();
+            if ("APPROVED".equals(status)) {
+
                 HashMap<String, Object> parameters = new HashMap<>();
                 parameters.put("dvcode", lblcode.getText());
                 try {
@@ -306,21 +325,23 @@ public final class FrameMain extends javax.swing.JFrame {
                 } catch (JRException ex) {
                     Logger.getLogger(FrameMonitoring.class.getName()).log(Level.SEVERE, null, ex);
                 }
+
             } else {
-                JOptionPane.showMessageDialog(this, "Please select data from the table.", " System Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Disbursement Voucher " + code + " is not yet approved.", " System Warning", JOptionPane.WARNING_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Disbursement Voucher " + code + " is not yet approved.", " System Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please select data from the table.", " System Error", JOptionPane.ERROR_MESSAGE);
         }
 
     }
 
     private void PrintMR() {
         int row = tablemr.getSelectedRow();
-        String code = tablemr.getValueAt(row, 0).toString();
-        String status = tablemr.getValueAt(row, 10).toString();
-        if ("APPROVED".equals(status)) {
-            if (row > -1) {
+        if (row > -1) {
+            String code = tablemr.getValueAt(row, 0).toString();
+            String status = tablemr.getValueAt(row, 11).toString();
+            if ("APPROVED".equals(status)) {
+
                 HashMap<String, Object> parameters = new HashMap<>();
                 parameters.put("mrcode", lblcode.getText());
                 try {
@@ -332,21 +353,23 @@ public final class FrameMain extends javax.swing.JFrame {
                 } catch (JRException ex) {
                     Logger.getLogger(FrameMonitoring.class.getName()).log(Level.SEVERE, null, ex);
                 }
+
             } else {
-                JOptionPane.showMessageDialog(this, "Please select data from the table.", " System Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Merchandise Receipt " + code + " is not yet approved.", " System Warning", JOptionPane.WARNING_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Merchandise Receipt " + code + " is not yet approved.", " System Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please select data from the table.", " System Error", JOptionPane.ERROR_MESSAGE);
         }
 
     }
 
     private void PrintMW() {
         int row = tablemw.getSelectedRow();
-        String code = tablemw.getValueAt(row, 0).toString();
-        String status = tablemw.getValueAt(row, 13).toString();
-        if ("APPROVED".equals(status)) {
-            if (row > -1) {
+        if (row > -1) {
+            String code = tablemw.getValueAt(row, 0).toString();
+            String status = tablemw.getValueAt(row, 14).toString();
+            if ("APPROVED".equals(status)) {
+
                 HashMap<String, Object> parameters = new HashMap<>();
                 parameters.put("mwcode", lblcode.getText());
                 try {
@@ -358,11 +381,12 @@ public final class FrameMain extends javax.swing.JFrame {
                 } catch (JRException ex) {
                     Logger.getLogger(FrameMonitoring.class.getName()).log(Level.SEVERE, null, ex);
                 }
+
             } else {
-                JOptionPane.showMessageDialog(this, "Please select data from the table.", " System Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Merchandise Withdrawal " + code + " is not yet approved.", " System Warning", JOptionPane.WARNING_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Merchandise Withdrawal " + code + " is not yet approved.", " System Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please select data from the table.", " System Error", JOptionPane.ERROR_MESSAGE);
         }
 
     }
@@ -415,12 +439,13 @@ public final class FrameMain extends javax.swing.JFrame {
             if (JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this data?", " System Information", JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                 String sid = tabledv.getValueAt(row, 0).toString();
-                String sqlc = "DELETE FROM tbldisbursementvoucher WHERE DisbursementCode = ?";
+                String sqlc = "DELETE t1, t2 FROM tbldisbursementvoucher AS t1 INNER JOIN tbldisbursementvoucherparticular AS t2 ON t1.DisbursementCode = t2.DisbursementCode WHERE t1.DisbursementCode = ?";
                 try (PreparedStatement stmt = connection.prepareStatement(sqlc)) {
                     stmt.setString(1, sid);
                     stmt.executeUpdate();
                     JOptionPane.showMessageDialog(this, "Disbursement Voucher '" + lblcode.getText() + "' has been deleted!", " System Information", JOptionPane.INFORMATION_MESSAGE);
                     Refresh();
+                    clearDVparticular();
                 } catch (SQLException ex) {
                     Logger.getLogger(FrameMerchandiseReceipt.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -436,12 +461,13 @@ public final class FrameMain extends javax.swing.JFrame {
             if (JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this data?", " System Information", JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                 String sid = tablerv.getValueAt(row, 0).toString();
-                String sqlc = "DELETE FROM tblreceiptvoucher WHERE ReceiptCode = ?";
+                String sqlc = "DELETE t1, t2 FROM tblreceiptvoucher AS t1 INNER JOIN tblreceiptvoucherparticular AS t2 ON t1.ReceiptCode = t2.ReceiptCode WHERE t1.ReceiptCode = ?";
                 try (PreparedStatement stmt = connection.prepareStatement(sqlc)) {
                     stmt.setString(1, sid);
                     stmt.executeUpdate();
                     JOptionPane.showMessageDialog(this, "Receipt Voucher '" + lblcode.getText() + "' has been deleted!", " System Information", JOptionPane.INFORMATION_MESSAGE);
                     Refresh();
+                    clearRVparticular();
                 } catch (SQLException ex) {
                     Logger.getLogger(FrameMerchandiseReceipt.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -456,8 +482,8 @@ public final class FrameMain extends javax.swing.JFrame {
         int row = tablerv.getSelectedRow();
         String rvcode = TableModel.getValueAt(row, 0).toString();
         if (row > -1) {
-            if (null != TableModel.getValueAt(row, 13).toString()) {
-                switch (TableModel.getValueAt(row, 13).toString()) {
+            if (null != TableModel.getValueAt(row, 14).toString()) {
+                switch (TableModel.getValueAt(row, 14).toString()) {
                     case "PENDING":
                         try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblreceiptvoucher SET VerifiedBy = ?, Status = ? WHERE ReceiptCode = ?")) {
                             stmt.setString(1, lbluser.getText());
@@ -471,10 +497,10 @@ public final class FrameMain extends javax.swing.JFrame {
                         }
                         break;
                     case "VERIFIED":
-                        JOptionPane.showMessageDialog(this, "Receipt Voucher " + rvcode + " is already verified!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Receipt Voucher " + rvcode + " is already verified!.", " System Warning", JOptionPane.WARNING_MESSAGE);
                         break;
                     case "APPROVED":
-                        JOptionPane.showMessageDialog(this, "Receipt Voucher " + rvcode + " is already approved!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Receipt Voucher " + rvcode + " is already approved!.", " System Warning", JOptionPane.WARNING_MESSAGE);
                         break;
                 }
             }
@@ -488,8 +514,8 @@ public final class FrameMain extends javax.swing.JFrame {
         int row = tablerv.getSelectedRow();
         String rvcode = TableModel.getValueAt(row, 0).toString();
         if (row > -1) {
-            if (null != TableModel.getValueAt(row, 13).toString()) {
-                switch (TableModel.getValueAt(row, 13).toString()) {
+            if (null != TableModel.getValueAt(row, 14).toString()) {
+                switch (TableModel.getValueAt(row, 14).toString()) {
                     case "VERIFIED":
                         try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblreceiptvoucher SET ApprovedBy = ?, Status = ? WHERE ReceiptCode = ?")) {
                             stmt.setString(1, lbluser.getText());
@@ -503,10 +529,10 @@ public final class FrameMain extends javax.swing.JFrame {
                         }
                         break;
                     case "APPROVED":
-                        JOptionPane.showMessageDialog(this, "Receipt Voucher " + rvcode + " is already approved!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Receipt Voucher " + rvcode + " is already approved!.", " System Warning", JOptionPane.WARNING_MESSAGE);
                         break;
                     case "PENDING":
-                        JOptionPane.showMessageDialog(this, "Receipt Voucher " + rvcode + " is not yet verified!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Receipt Voucher " + rvcode + " is not yet verified!.", " System Warning", JOptionPane.WARNING_MESSAGE);
                         break;
                 }
             }
@@ -528,17 +554,17 @@ public final class FrameMain extends javax.swing.JFrame {
                             stmt.setString(2, "VERIFIED");
                             stmt.setString(3, rvcode);
                             stmt.executeUpdate();
-                            retrieveRV();
+                            retrieveDV();
                             JOptionPane.showMessageDialog(this, "Disbursement Voucher " + rvcode + " has been verified!.", " System Information", JOptionPane.INFORMATION_MESSAGE);
                         } catch (SQLException ex) {
                             JOptionPane.showMessageDialog(this, "Can't read record in system table!\nSystem detects changes in table entities!\nPlease contact the backend developer.", "ERROR 1012", JOptionPane.ERROR_MESSAGE);
                         }
                         break;
                     case "VERIFIED":
-                        JOptionPane.showMessageDialog(this, "Disbursement Voucher " + rvcode + " is already verified!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Disbursement Voucher " + rvcode + " is already verified!.", " System Warning", JOptionPane.WARNING_MESSAGE);
                         break;
                     case "APPROVED":
-                        JOptionPane.showMessageDialog(this, "Disbursement Voucher " + rvcode + " is already approved!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Disbursement Voucher " + rvcode + " is already approved!.", " System Warning", JOptionPane.WARNING_MESSAGE);
                         break;
                 }
             }
@@ -560,17 +586,17 @@ public final class FrameMain extends javax.swing.JFrame {
                             stmt.setString(2, "APPROVED");
                             stmt.setString(3, rvcode);
                             stmt.executeUpdate();
-                            retrieveRV();
+                            retrieveDV();
                             JOptionPane.showMessageDialog(this, "Disbursement Voucher " + rvcode + " has been approved!.", " System Information", JOptionPane.INFORMATION_MESSAGE);
                         } catch (SQLException ex) {
                             JOptionPane.showMessageDialog(this, "Can't read record in system table!\nSystem detects changes in table entities!\nPlease contact the backend developer.", "ERROR 1012", JOptionPane.ERROR_MESSAGE);
                         }
                         break;
                     case "APPROVED":
-                        JOptionPane.showMessageDialog(this, "Disbursement Voucher " + rvcode + " is already approved!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Disbursement Voucher " + rvcode + " is already approved!.", " System Warning", JOptionPane.WARNING_MESSAGE);
                         break;
                     case "PENDING":
-                        JOptionPane.showMessageDialog(this, "Disbursement Voucher " + rvcode + " is not yet verified!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Disbursement Voucher " + rvcode + " is not yet verified!.", " System Warning", JOptionPane.WARNING_MESSAGE);
                         break;
                 }
             }
@@ -592,17 +618,17 @@ public final class FrameMain extends javax.swing.JFrame {
                             stmt.setString(2, "VERIFIED");
                             stmt.setString(3, rvcode);
                             stmt.executeUpdate();
-                            retrieveRV();
+                            retrieveMW();
                             JOptionPane.showMessageDialog(this, "Merchandise Withdrawal " + rvcode + " has been verified!.", " System Information", JOptionPane.INFORMATION_MESSAGE);
                         } catch (SQLException ex) {
                             JOptionPane.showMessageDialog(this, "Can't read record in system table!\nSystem detects changes in table entities!\nPlease contact the backend developer.", "ERROR 1012", JOptionPane.ERROR_MESSAGE);
                         }
                         break;
                     case "VERIFIED":
-                        JOptionPane.showMessageDialog(this, "Merchandise Withdrawal " + rvcode + " is already verified!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Merchandise Withdrawal " + rvcode + " is already verified!.", " System Warning", JOptionPane.WARNING_MESSAGE);
                         break;
                     case "APPROVED":
-                        JOptionPane.showMessageDialog(this, "Merchandise Withdrawal " + rvcode + " is already approved!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Merchandise Withdrawal " + rvcode + " is already approved!.", " System Warning", JOptionPane.WARNING_MESSAGE);
                         break;
                 }
             }
@@ -624,17 +650,17 @@ public final class FrameMain extends javax.swing.JFrame {
                             stmt.setString(2, "APPROVED");
                             stmt.setString(3, rvcode);
                             stmt.executeUpdate();
-                            retrieveRV();
+                            retrieveMW();
                             JOptionPane.showMessageDialog(this, "Merchandise Withdrawal " + rvcode + " has been approved!.", " System Information", JOptionPane.INFORMATION_MESSAGE);
                         } catch (SQLException ex) {
                             JOptionPane.showMessageDialog(this, "Can't read record in system table!\nSystem detects changes in table entities!\nPlease contact the backend developer.", "ERROR 1012", JOptionPane.ERROR_MESSAGE);
                         }
                         break;
                     case "APPROVED":
-                        JOptionPane.showMessageDialog(this, "Merchandise Withdrawal " + rvcode + " is already approved!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Merchandise Withdrawal " + rvcode + " is already approved!.", " System Warning", JOptionPane.WARNING_MESSAGE);
                         break;
                     case "PENDING":
-                        JOptionPane.showMessageDialog(this, "Merchandise Withdrawal " + rvcode + " is not yet verified!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Merchandise Withdrawal " + rvcode + " is not yet verified!.", " System Warning", JOptionPane.WARNING_MESSAGE);
                         break;
                 }
             }
@@ -656,17 +682,17 @@ public final class FrameMain extends javax.swing.JFrame {
                             stmt.setString(2, "VERIFIED");
                             stmt.setString(3, rvcode);
                             stmt.executeUpdate();
-                            retrieveRV();
+                            retrieveMR();
                             JOptionPane.showMessageDialog(this, "Merchandise Receipt " + rvcode + " has been verified!.", " System Information", JOptionPane.INFORMATION_MESSAGE);
                         } catch (SQLException ex) {
                             JOptionPane.showMessageDialog(this, "Can't read record in system table!\nSystem detects changes in table entities!\nPlease contact the backend developer.", "ERROR 1012", JOptionPane.ERROR_MESSAGE);
                         }
                         break;
                     case "VERIFIED":
-                        JOptionPane.showMessageDialog(this, "Merchandise Receipt " + rvcode + " is already verified!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Merchandise Receipt " + rvcode + " is already verified!.", " System Warning", JOptionPane.WARNING_MESSAGE);
                         break;
                     case "APPROVED":
-                        JOptionPane.showMessageDialog(this, "Merchandise Receipt " + rvcode + " is already approved!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Merchandise Receipt " + rvcode + " is already approved!.", " System Warning", JOptionPane.WARNING_MESSAGE);
                         break;
                 }
             }
@@ -688,17 +714,17 @@ public final class FrameMain extends javax.swing.JFrame {
                             stmt.setString(2, "APPROVED");
                             stmt.setString(3, rvcode);
                             stmt.executeUpdate();
-                            retrieveRV();
+                            retrieveMR();
                             JOptionPane.showMessageDialog(this, "Merchandise Receipt " + rvcode + " has been approved!.", " System Information", JOptionPane.INFORMATION_MESSAGE);
                         } catch (SQLException ex) {
                             JOptionPane.showMessageDialog(this, "Can't read record in system table!\nSystem detects changes in table entities!\nPlease contact the backend developer.", "ERROR 1012", JOptionPane.ERROR_MESSAGE);
                         }
                         break;
                     case "APPROVED":
-                        JOptionPane.showMessageDialog(this, "Merchandise Receipt " + rvcode + " is already approved!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Merchandise Receipt " + rvcode + " is already approved!.", " System Warning", JOptionPane.WARNING_MESSAGE);
                         break;
                     case "PENDING":
-                        JOptionPane.showMessageDialog(this, "Merchandise Receipt " + rvcode + " is not yet verified!.", " System Warning", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Merchandise Receipt " + rvcode + " is not yet verified!.", " System Warning", JOptionPane.WARNING_MESSAGE);
                         break;
                 }
             }
@@ -816,18 +842,33 @@ public final class FrameMain extends javax.swing.JFrame {
 
         MenuVerifyDV.setText("Approve Request");
         MenuVerifyDV.setActionCommand("Verify Request");
+        MenuVerifyDV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuVerifyDVActionPerformed(evt);
+            }
+        });
         PopupMenuDV.add(MenuVerifyDV);
 
         PopupMenuMW.setInvoker(tablemw);
 
         MenuVerifyMW.setText("Approve Request");
         MenuVerifyMW.setActionCommand("Verify Request");
+        MenuVerifyMW.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuVerifyMWActionPerformed(evt);
+            }
+        });
         PopupMenuMW.add(MenuVerifyMW);
 
         PopupMenuMR.setInvoker(tablemr);
 
         MenuVerifyMR.setText("Approve Request");
         MenuVerifyMR.setActionCommand("Verify Request");
+        MenuVerifyMR.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuVerifyMRActionPerformed(evt);
+            }
+        });
         PopupMenuMR.add(MenuVerifyMR);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -1607,7 +1648,7 @@ public final class FrameMain extends javax.swing.JFrame {
         });
         MenuSetup.add(jMenuItem9);
 
-        jMenuItem13.setText("Personnel");
+        jMenuItem13.setText("Bank");
         jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem13ActionPerformed(evt);
@@ -1745,22 +1786,20 @@ public final class FrameMain extends javax.swing.JFrame {
     private void midvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_midvActionPerformed
         FrameDisbursementVoucher frame = new FrameDisbursementVoucher();
         frame.setVisible(true);
+        frame.GetUser(lbluser.getText());
     }//GEN-LAST:event_midvActionPerformed
 
     private void mimwActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mimwActionPerformed
         FrameMerchandiseWithdrawal frame = new FrameMerchandiseWithdrawal();
         frame.setVisible(true);
+        frame.GetUser(lbluser.getText());
     }//GEN-LAST:event_mimwActionPerformed
 
     private void mimrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mimrActionPerformed
         FrameMerchandiseReceipt frame = new FrameMerchandiseReceipt();
         frame.setVisible(true);
+        frame.GetUser(lbluser.getText());
     }//GEN-LAST:event_mimrActionPerformed
-
-    private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
-        FramePersonnel frame = new FramePersonnel();
-        frame.setVisible(true);
-    }//GEN-LAST:event_jMenuItem13ActionPerformed
 
     private void btreportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btreportActionPerformed
         FrameReport frame = new FrameReport();
@@ -1792,6 +1831,7 @@ public final class FrameMain extends javax.swing.JFrame {
     private void mirvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mirvActionPerformed
         FrameReceiptVoucher frame = new FrameReceiptVoucher();
         frame.setVisible(true);
+        frame.GetUser(lbluser.getText());
     }//GEN-LAST:event_mirvActionPerformed
 
     private void tablervMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablervMouseClicked
@@ -1825,7 +1865,7 @@ public final class FrameMain extends javax.swing.JFrame {
     }//GEN-LAST:event_tablervMouseClicked
 
     private void txtsrvKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtsrvKeyReleased
-        SearchRV(txtsdv.getText().toUpperCase());
+        SearchRV(txtsrv.getText().toUpperCase());
     }//GEN-LAST:event_txtsrvKeyReleased
 
     private void tabledvMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledvMouseClicked
@@ -1936,6 +1976,35 @@ public final class FrameMain extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_MenuVerifyRVActionPerformed
+
+    private void MenuVerifyDVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuVerifyDVActionPerformed
+        if ("Verify Request".equals(MenuVerifyDV.getText())) {
+            DVVerifyRequest();
+        } else {
+            DVApproveRequest();
+        }
+    }//GEN-LAST:event_MenuVerifyDVActionPerformed
+
+    private void MenuVerifyMWActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuVerifyMWActionPerformed
+        if ("Verify Request".equals(MenuVerifyMW.getText())) {
+            MWVerifyRequest();
+        } else {
+            MWApproveRequest();
+        }
+    }//GEN-LAST:event_MenuVerifyMWActionPerformed
+
+    private void MenuVerifyMRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuVerifyMRActionPerformed
+        if ("Verify Request".equals(MenuVerifyMR.getText())) {
+            MRVerifyRequest();
+        } else {
+            MRApproveRequest();
+        }
+    }//GEN-LAST:event_MenuVerifyMRActionPerformed
+
+    private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
+        FrameBank frame = new FrameBank();
+        frame.setVisible(true);
+    }//GEN-LAST:event_jMenuItem13ActionPerformed
 
     /**
      * @param args the command line arguments

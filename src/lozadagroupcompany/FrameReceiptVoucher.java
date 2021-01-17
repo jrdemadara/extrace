@@ -159,9 +159,9 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
             if ("VAT".equals(vattype)) {
                 double quantity = Double.parseDouble(table.getValueAt(i, 2).toString());
                 double unitcost = Double.parseDouble(table.getValueAt(i, 4).toString());
-                double totalamount = Math.ceil(unitcost * quantity);
-                double vat = Math.ceil((totalamount / 1.12) * 0.12);
-                double netvat = Math.ceil(totalamount / 1.12);
+                double totalamount = (unitcost * quantity);
+                double vat = ((totalamount / 1.12) * 0.12);
+                double netvat = (totalamount / 1.12);
                 table.setValueAt(totalamount, i, 5);
                 table.setValueAt(vat, i, 7);
                 table.setValueAt(netvat, i, 8);
@@ -171,7 +171,7 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
             } else {
                 double quantity = Double.parseDouble(table.getValueAt(i, 2).toString());
                 double unitcost = Double.parseDouble(table.getValueAt(i, 4).toString());
-                double totalamount = Math.ceil(unitcost * quantity);
+                double totalamount = (unitcost * quantity);
                 table.setValueAt(totalamount, i, 5);
                 table.setValueAt("0", i, 7);
                 table.setValueAt("0", i, 8);
@@ -218,11 +218,11 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
         try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO tblreceiptvoucher VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
             stmt.setInt(1, 0);
             stmt.setString(2, lblcode.getText());
-            stmt.setString(3, cbchart.getSelectedItem().toString());
-            stmt.setString(4, cbpayor.getSelectedItem().toString());
-            stmt.setString(5, txttin.getText());
-            stmt.setString(6, cbdepositedto.getSelectedItem().toString());
-            stmt.setString(7, txtdescription.getText().toUpperCase());
+            stmt.setString(3, cbpayor.getSelectedItem().toString());
+            stmt.setString(4, txttin.getText());
+            stmt.setString(5, cbdepositedto.getSelectedItem().toString());
+            stmt.setString(6, txtdescription.getText().toUpperCase());
+            stmt.setString(7, cbchart.getSelectedItem().toString());
             stmt.setString(8, txtparticular.getText());
             stmt.setString(9, txtgrossamount.getText());
             stmt.setString(10, txtvat.getText());
@@ -230,15 +230,13 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
             stmt.setString(12, user);
             stmt.setString(13, "NOT-VERIFIED");
             stmt.setString(14, "NOT-APPROVED");
-            stmt.setString(15, txtreceive.getText());
+            stmt.setString(15, txtreceive.getText().toUpperCase());
             stmt.setString(16, "PENDING");
             stmt.setString(17, DateFunction.getFormattedDate());
             stmt.execute();
             stmt.close();
             JOptionPane.showMessageDialog(this, "Receipt Voucher '" + lblcode.getText() + "' has been saved!", " System Information", JOptionPane.INFORMATION_MESSAGE);
             Refresh();
-            FrameMain frame = new FrameMain();
-            frame.setVisible(true);
         } catch (SQLException ex) {
             Logger.getLogger(FrameReceiptVoucher.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -284,7 +282,7 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
             stmt.setString(7, txtgrossamount.getText());
             stmt.setString(8, txtvat.getText());
             stmt.setString(9, txtnetvat.getText());
-            stmt.setString(10, txtreceive.getText());
+            stmt.setString(10, txtreceive.getText().toUpperCase());
             stmt.setString(11, lblcode.getText());
             stmt.executeUpdate();
             JOptionPane.showMessageDialog(this, "Receipt Voucher '" + lblcode.getText() + "' has been updated!", " System Information", JOptionPane.INFORMATION_MESSAGE);
@@ -545,7 +543,7 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
                         .addComponent(jLabel11)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cbdepositedto, 0, 205, Short.MAX_VALUE)
+                    .addComponent(cbdepositedto, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtparticular)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -676,6 +674,7 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        table.setComponentPopupMenu(jPopupMenu1);
         table.setGridColor(new java.awt.Color(204, 204, 204));
         table.setSelectionBackground(new java.awt.Color(45, 52, 66));
         table.setSelectionForeground(new java.awt.Color(235, 235, 236));
@@ -689,6 +688,7 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btsave, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -697,13 +697,10 @@ public class FrameReceiptVoucher extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btclose, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 15, Short.MAX_VALUE))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );

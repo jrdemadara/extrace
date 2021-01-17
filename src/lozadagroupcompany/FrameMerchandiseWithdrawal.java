@@ -261,7 +261,6 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         btsave = new javax.swing.JButton();
-        btdelete = new javax.swing.JButton();
         txtsearch = new javax.swing.JTextField();
         btimport = new javax.swing.JButton();
 
@@ -380,9 +379,8 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(cbcompany, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel12)
-                                .addComponent(cbchart, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jLabel12)
+                            .addComponent(cbchart, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel11)
@@ -434,7 +432,6 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
                                     .addComponent(jLabel7)
                                     .addComponent(jLabel8))
                                 .addGap(34, 34, 34)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(txtreceive, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -536,15 +533,6 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
             }
         });
 
-        btdelete.setBackground(new java.awt.Color(45, 52, 66));
-        btdelete.setForeground(new java.awt.Color(255, 255, 255));
-        btdelete.setText("Delete");
-        btdelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btdeleteActionPerformed(evt);
-            }
-        });
-
         txtsearch.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtsearch.setText("Search...");
         txtsearch.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -577,8 +565,6 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btsave, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btdelete, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btclose, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane2))
                 .addContainerGap())
@@ -597,7 +583,6 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btclose)
                     .addComponent(btsave)
-                    .addComponent(btdelete)
                     .addComponent(btimport))
                 .addContainerGap())
         );
@@ -657,10 +642,6 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btsaveActionPerformed
 
-    private void btdeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btdeleteActionPerformed
-        Delete();
-    }//GEN-LAST:event_btdeleteActionPerformed
-
     private void txtsearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtsearchKeyReleased
         Search(txtsearch.getText());
     }//GEN-LAST:event_txtsearchKeyReleased
@@ -719,7 +700,6 @@ public class FrameMerchandiseWithdrawal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btclose;
-    private javax.swing.JButton btdelete;
     private javax.swing.JButton btimport;
     private javax.swing.JButton btsave;
     private javax.swing.JComboBox cbchart;

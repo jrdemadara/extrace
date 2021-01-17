@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9a304fbc-44e7-4344-9ef2-b8cae314b976">
-	<property name="ireport.zoom" value="2.5937424601000187"/>
-	<property name="ireport.x" value="700"/>
+	<property name="ireport.zoom" value="1.4641000000000104"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="datefrom" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -145,21 +145,21 @@
 				<textFieldExpression><![CDATA[$P{overallamount}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="199" y="94" width="79" height="12" uuid="7471d369-de16-4dd9-9cd3-95eada9e2f15"/>
+				<reportElement x="234" y="94" width="79" height="12" uuid="7471d369-de16-4dd9-9cd3-95eada9e2f15"/>
 				<textElement>
 					<font fontName="Cambria" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{netvat}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="94" y="94" width="58" height="12" uuid="ab5ed422-3d16-499e-9170-cfb4e472a6b0"/>
+				<reportElement x="94" y="94" width="93" height="12" uuid="ab5ed422-3d16-499e-9170-cfb4e472a6b0"/>
 				<textElement>
 					<font fontName="Cambria" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{vat}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="152" y="94" width="47" height="12" uuid="06c2dd07-20da-4a6e-bbcd-776493610546"/>
+				<reportElement x="187" y="94" width="47" height="12" uuid="06c2dd07-20da-4a6e-bbcd-776493610546"/>
 				<textElement>
 					<font fontName="Cambria" size="10" isBold="false"/>
 				</textElement>

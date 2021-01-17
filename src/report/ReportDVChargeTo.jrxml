@@ -141,42 +141,42 @@
 				<textFieldExpression><![CDATA[$P{dateto}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="94" y="82" width="129" height="12" uuid="40f045ad-3877-4dc6-af72-19f83acfdff8"/>
+				<reportElement x="94" y="82" width="103" height="12" uuid="40f045ad-3877-4dc6-af72-19f83acfdff8"/>
 				<textElement>
 					<font fontName="Cambria" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{overallamount}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="244" y="82" width="94" height="12" uuid="a27d34d2-5012-46b2-a8ce-e94db60a3c63"/>
+				<reportElement x="197" y="82" width="68" height="12" uuid="a27d34d2-5012-46b2-a8ce-e94db60a3c63"/>
 				<textElement>
 					<font fontName="Cambria" size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[CHARGE TO	:]]></text>
+				<text><![CDATA[CHARGE TO:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="338" y="82" width="129" height="12" uuid="635e9aba-f771-4a3b-bb42-72b567598f9e"/>
+				<reportElement x="265" y="82" width="129" height="12" uuid="635e9aba-f771-4a3b-bb42-72b567598f9e"/>
 				<textElement>
 					<font fontName="Cambria" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{chargeto}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="206" y="94" width="59" height="12" uuid="41e8a049-b8da-447b-8a85-c7f958e30bf1"/>
+				<reportElement x="265" y="94" width="129" height="12" uuid="41e8a049-b8da-447b-8a85-c7f958e30bf1"/>
 				<textElement>
 					<font fontName="Cambria" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{netvat}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="94" y="94" width="65" height="12" uuid="4f9cfa5b-fd82-4f00-ad48-f308fbef4549"/>
+				<reportElement x="94" y="94" width="103" height="12" uuid="4f9cfa5b-fd82-4f00-ad48-f308fbef4549"/>
 				<textElement>
 					<font fontName="Cambria" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{vat}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="159" y="94" width="47" height="12" uuid="4094c8ce-16f6-46b0-9b85-8006bfc22f00"/>
+				<reportElement x="197" y="94" width="68" height="12" uuid="4094c8ce-16f6-46b0-9b85-8006bfc22f00"/>
 				<textElement>
 					<font fontName="Cambria" size="10" isBold="false"/>
 				</textElement>

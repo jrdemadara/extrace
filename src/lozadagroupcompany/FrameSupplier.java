@@ -33,6 +33,7 @@ public class FrameSupplier extends javax.swing.JFrame {
         RetrieveData();
         btsave.setText("Save");
         txtsupplier.setText("");
+        txttin.setText("");
         id = 0;
     }
 
@@ -80,7 +81,7 @@ public class FrameSupplier extends javax.swing.JFrame {
         try (PreparedStatement stmt = connection.prepareStatement("UPDATE tblsupplier SET SupplierName = ?, TIN = ? WHERE ID = ?")) {
             stmt.setInt(3, id);
             stmt.setString(1, txtsupplier.getText().toUpperCase());
-            stmt.setString(2, txtsupplier.getText().toUpperCase());
+            stmt.setString(2, txttin.getText());
             stmt.executeUpdate();
             Refresh();
             JOptionPane.showMessageDialog(this, "Supplier '" + txtsupplier.getText() + "' has been updated!", " System Information", JOptionPane.INFORMATION_MESSAGE);
