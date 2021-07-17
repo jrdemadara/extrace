@@ -16,6 +16,11 @@
 	<parameter name="account" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
+	<parameter name="company" class="java.lang.String"/>
+	<parameter name="address" class="java.lang.String"/>
+	<parameter name="tin" class="java.lang.String"/>
+	<parameter name="email" class="java.lang.String"/>
+	<parameter name="phone" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT * FROM tbldisbursementvoucher WHERE FundSource = $P{account} AND Date BETWEEN $P{datefrom} AND $P{dateto};]]>
 	</queryString>
@@ -55,7 +60,7 @@
 	<pageHeader>
 		<band height="110" splitType="Stretch">
 			<line>
-				<reportElement x="-1" y="42" width="803" height="1" uuid="b3a4f7d2-142a-400e-81ed-5570cbab07cf"/>
+				<reportElement x="-1" y="44" width="803" height="1" uuid="b3a4f7d2-142a-400e-81ed-5570cbab07cf"/>
 			</line>
 			<staticText>
 				<reportElement x="259" y="47" width="302" height="17" uuid="b6965780-a766-4794-9a12-eef3f10a00b3"/>
@@ -123,31 +128,31 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{account}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="278" y="20" width="298" height="13" uuid="10598c45-c2a3-4c00-9759-9e8870c969f4"/>
+			<image>
+				<reportElement x="0" y="0" width="46" height="42" uuid="08e06499-c9b1-4932-b809-0cd47968267d"/>
+				<imageExpression><![CDATA["C:\\Program Files\\Extrace\\logo-64.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="46" y="23" width="398" height="13" uuid="6230bd6b-b525-4863-b3ce-039e99de9e96"/>
 				<textElement>
-					<font fontName="Cambria" size="10" isBold="false"/>
+					<font fontName="Cambria" size="8"/>
 				</textElement>
-				<text><![CDATA[Purok Everlasting, Baguio District Calinan | TIN 774-350-277-000]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="278" y="-3" width="298" height="24" uuid="14dcb0a3-5e24-4e6d-a919-8b469293179f"/>
-				<textElement>
+				<textFieldExpression><![CDATA[$P{address} +" | TIN "+ $P{tin}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="46" y="0" width="398" height="24" uuid="a8f2ff79-0c67-4c24-87ab-0d69079e263e"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
 					<font fontName="Cambria" size="20" isBold="true"/>
 				</textElement>
-				<text><![CDATA[GPJAN FARMS CORPORATION]]></text>
-			</staticText>
-			<image>
-				<reportElement x="232" y="-1" width="46" height="42" uuid="08e06499-c9b1-4932-b809-0cd47968267d"/>
-				<imageExpression><![CDATA["C:\\Program Files\\DVManage\\logo-64.png"]]></imageExpression>
-			</image>
-			<staticText>
-				<reportElement x="278" y="29" width="298" height="13" uuid="5c7bd3f3-80d3-4fcd-8713-485877b3a157"/>
+				<textFieldExpression><![CDATA[$P{company}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="46" y="33" width="398" height="13" uuid="b35893dc-21c1-44db-81ee-6f374226c1d1"/>
 				<textElement>
-					<font fontName="Cambria" size="10" isBold="false"/>
+					<font fontName="Cambria" size="8"/>
 				</textElement>
-				<text><![CDATA[gpjanfarmscorporation@gmail.com | 09126565623]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[$P{email} +" | "+ $P{phone}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>

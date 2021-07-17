@@ -7,8 +7,13 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="total" class="java.lang.String"/>
+	<parameter name="company" class="java.lang.String"/>
+	<parameter name="address" class="java.lang.String"/>
+	<parameter name="tin" class="java.lang.String"/>
+	<parameter name="email" class="java.lang.String"/>
+	<parameter name="phone" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT * FROM tbldisbursementvoucher INNER JOIN tbldisbursementvoucherparticular
+		<![CDATA[SELECT * FROM tbldisbursementvoucher INNER JOIN  tbldisbursementvoucherparticular
  ON tbldisbursementvoucher.DisbursementCode = tbldisbursementvoucherparticular.DisbursementCode  WHERE tbldisbursementvoucherparticular.DisbursementCode = $P{dvcode}]]>
 	</queryString>
 	<field name="ID" class="java.lang.Integer">
@@ -55,13 +60,6 @@
 	</background>
 	<pageHeader>
 		<band height="89" splitType="Stretch">
-			<staticText>
-				<reportElement x="46" y="21" width="298" height="13" uuid="58361b27-e5ea-4cb6-b5ca-67e9f0cc984d"/>
-				<textElement>
-					<font fontName="Cambria" size="10" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Purok Everlasting, Baguio District Calinan | TIN 774-350-277-000]]></text>
-			</staticText>
 			<line>
 				<reportElement x="0" y="44" width="555" height="1" uuid="2dd386d7-c5e4-459c-adcc-0e74ca7c0312"/>
 			</line>
@@ -73,7 +71,7 @@
 				<text><![CDATA[PAYEE	:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="378" y="71" width="84" height="13" uuid="19090bf2-041a-4719-9958-3176811e7386"/>
+				<reportElement x="364" y="71" width="84" height="13" uuid="19090bf2-041a-4719-9958-3176811e7386"/>
 				<textElement>
 					<font fontName="Cambria" size="10" isBold="false"/>
 				</textElement>
@@ -94,7 +92,7 @@
 				<text><![CDATA[DESCRIPTION:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="378" y="58" width="84" height="13" uuid="732753c5-4fc5-4122-9c79-e399edf00e9f"/>
+				<reportElement x="364" y="58" width="84" height="13" uuid="732753c5-4fc5-4122-9c79-e399edf00e9f"/>
 				<textElement>
 					<font fontName="Cambria" size="10" isBold="false"/>
 				</textElement>
@@ -103,15 +101,8 @@
 			<line>
 				<reportElement x="0" y="87" width="555" height="1" uuid="4d219340-e3e0-4946-a96d-5cd0c6d55a35"/>
 			</line>
-			<staticText>
-				<reportElement x="46" y="0" width="298" height="24" uuid="86d44665-cc18-4307-8273-5c34afd2947b"/>
-				<textElement>
-					<font fontName="Cambria" size="20" isBold="true"/>
-				</textElement>
-				<text><![CDATA[GPJAN FARMS CORPORATION]]></text>
-			</staticText>
 			<textField>
-				<reportElement x="65" y="71" width="178" height="13" uuid="44d6ca7a-bb0c-4e2d-abd9-33361103e357"/>
+				<reportElement x="65" y="71" width="157" height="13" uuid="44d6ca7a-bb0c-4e2d-abd9-33361103e357"/>
 				<textElement>
 					<font fontName="Cambria" size="10" isBold="true"/>
 				</textElement>
@@ -132,14 +123,14 @@
 				<textFieldExpression><![CDATA[$F{Description}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="462" y="58" width="93" height="13" uuid="3a8eb9ae-e9cc-4779-8838-50dcc64b7a52"/>
+				<reportElement x="448" y="58" width="107" height="13" uuid="3a8eb9ae-e9cc-4779-8838-50dcc64b7a52"/>
 				<textElement>
 					<font fontName="Cambria" size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{FundSource}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="462" y="71" width="93" height="13" uuid="4663bfcf-c9f6-40cb-8e76-b329ee3a06a8"/>
+				<reportElement x="448" y="71" width="107" height="13" uuid="4663bfcf-c9f6-40cb-8e76-b329ee3a06a8"/>
 				<textElement>
 					<font fontName="Cambria" size="10" isBold="true"/>
 				</textElement>
@@ -160,35 +151,28 @@
 				<text><![CDATA[DISBURSEMENT VOUCHER]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="378" y="45" width="84" height="13" uuid="e90270ae-a9ab-4c14-828e-367c81c42cc8"/>
+				<reportElement x="364" y="45" width="84" height="13" uuid="e90270ae-a9ab-4c14-828e-367c81c42cc8"/>
 				<textElement>
 					<font fontName="Cambria" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[TIN		:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="462" y="45" width="93" height="13" uuid="7c1ddb68-cee5-4648-94c1-e68d7fc16856"/>
+				<reportElement x="448" y="45" width="107" height="13" uuid="7c1ddb68-cee5-4648-94c1-e68d7fc16856"/>
 				<textElement>
 					<font fontName="Cambria" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{TINNumber}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="46" y="31" width="298" height="13" uuid="70c5dd79-d043-4d2b-a554-c5c970e5093b"/>
-				<textElement>
-					<font fontName="Cambria" size="10" isBold="false"/>
-				</textElement>
-				<text><![CDATA[gpjanfarmscorporation@gmail.com | 09126565623]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="243" y="71" width="59" height="13" uuid="e37019b5-4c45-4616-b2eb-b00cf376bd00"/>
+				<reportElement x="222" y="71" width="59" height="13" uuid="e37019b5-4c45-4616-b2eb-b00cf376bd00"/>
 				<textElement>
 					<font fontName="Cambria" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[CHEQUE NO:		:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="302" y="71" width="75" height="13" uuid="4b0904ff-f65b-4d8c-a80c-5f88459b480f"/>
+				<reportElement x="281" y="71" width="83" height="13" uuid="4b0904ff-f65b-4d8c-a80c-5f88459b480f"/>
 				<textElement>
 					<font fontName="Cambria" isBold="true"/>
 				</textElement>
@@ -196,8 +180,29 @@
 			</textField>
 			<image>
 				<reportElement x="0" y="0" width="46" height="42" uuid="e521e0e7-4386-43de-a800-83f78afbf100"/>
-				<imageExpression><![CDATA["C:\\Program Files\\DVManage\\logo-64.png"]]></imageExpression>
+				<imageExpression><![CDATA["C:\\Program Files\\Extrace\\logo-64.png"]]></imageExpression>
 			</image>
+			<textField>
+				<reportElement x="46" y="0" width="341" height="24" uuid="6f61e526-0452-416d-b4b5-8003b22f2e4c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
+					<font fontName="Cambria" size="20" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{company}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="46" y="23" width="341" height="13" uuid="92ed7869-283c-40f2-8f08-1c15f1f2343a"/>
+				<textElement>
+					<font fontName="Cambria" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{address} +" | TIN "+ $P{tin}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="46" y="33" width="341" height="13" uuid="6f3f1bf1-9dc4-489e-94e4-b7ebdb740ccc"/>
+				<textElement>
+					<font fontName="Cambria" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{email} +" | "+ $P{phone}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>

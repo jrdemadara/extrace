@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9a304fbc-44e7-4344-9ef2-b8cae314b976">
-	<property name="ireport.zoom" value="1.331000000000008"/>
+	<property name="ireport.zoom" value="1.6105100000000103"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="datefrom" class="java.lang.String">
@@ -13,6 +13,11 @@
 	<parameter name="chargeto" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
+	<parameter name="company" class="java.lang.String"/>
+	<parameter name="address" class="java.lang.String"/>
+	<parameter name="tin" class="java.lang.String"/>
+	<parameter name="email" class="java.lang.String"/>
+	<parameter name="phone" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT * FROM tbldisbursementvoucher WHERE ChargeTo = $P{chargeto} AND Date BETWEEN $P{datefrom} AND $P{dateto};]]>
 	</queryString>
@@ -52,7 +57,7 @@
 	<pageHeader>
 		<band height="110" splitType="Stretch">
 			<line>
-				<reportElement x="-1" y="42" width="803" height="1" uuid="b3a4f7d2-142a-400e-81ed-5570cbab07cf"/>
+				<reportElement x="-1" y="43" width="803" height="1" uuid="b3a4f7d2-142a-400e-81ed-5570cbab07cf"/>
 			</line>
 			<staticText>
 				<reportElement x="244" y="48" width="302" height="17" uuid="b6965780-a766-4794-9a12-eef3f10a00b3"/>
@@ -121,30 +126,30 @@
 				<textFieldExpression><![CDATA[$P{chargeto}]]></textFieldExpression>
 			</textField>
 			<image>
-				<reportElement x="232" y="-2" width="46" height="42" uuid="32bbe6e5-74e9-4097-b9b2-8a25add7ace1"/>
-				<imageExpression><![CDATA["C:\\Program Files\\DVManage\\logo-64.png"]]></imageExpression>
+				<reportElement x="0" y="0" width="46" height="43" uuid="32bbe6e5-74e9-4097-b9b2-8a25add7ace1"/>
+				<imageExpression><![CDATA["C:\\Program Files\\Extrace\\logo-64.png"]]></imageExpression>
 			</image>
-			<staticText>
-				<reportElement x="278" y="19" width="298" height="13" uuid="a94ffb97-5125-4433-9b94-74c1c7af4883"/>
+			<textField>
+				<reportElement x="46" y="33" width="398" height="13" uuid="cf7d2c97-18ef-44c9-9c6b-cd543a74a8c6"/>
 				<textElement>
-					<font fontName="Cambria" size="10" isBold="false"/>
+					<font fontName="Cambria" size="8"/>
 				</textElement>
-				<text><![CDATA[Purok Everlasting, Baguio District Calinan | TIN 774-350-277-000]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="278" y="-4" width="298" height="24" uuid="b694858a-5c48-4c91-b554-cc767a5f592f"/>
-				<textElement>
+				<textFieldExpression><![CDATA[$P{email} +" | "+ $P{phone}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="46" y="0" width="398" height="24" uuid="22e62c89-95bd-4df4-bede-13c978b6d611"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
 					<font fontName="Cambria" size="20" isBold="true"/>
 				</textElement>
-				<text><![CDATA[GPJAN FARMS CORPORATION]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="278" y="28" width="298" height="13" uuid="98b1be29-4102-401a-8d10-c48af76e7f91"/>
+				<textFieldExpression><![CDATA[$P{company}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="46" y="23" width="398" height="13" uuid="2e46ff87-1265-46af-af98-494fea87258b"/>
 				<textElement>
-					<font fontName="Cambria" size="10" isBold="false"/>
+					<font fontName="Cambria" size="8"/>
 				</textElement>
-				<text><![CDATA[gpjanfarmscorporation@gmail.com | 09126565623]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA[$P{address} +" | TIN "+ $P{tin}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
