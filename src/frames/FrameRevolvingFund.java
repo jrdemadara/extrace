@@ -358,7 +358,9 @@ public class FrameRevolvingFund extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Extrace");
+        setMinimumSize(new java.awt.Dimension(788, 489));
         setResizable(false);
+        setSize(new java.awt.Dimension(788, 489));
 
         jPanel1.setBackground(new java.awt.Color(45, 52, 66));
 
@@ -395,12 +397,13 @@ public class FrameRevolvingFund extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(lblcode)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(lblwallet)
-                        .addComponent(jLabel12)))
+                        .addComponent(jLabel12))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(lblcode)))
                 .addContainerGap())
         );
 
@@ -410,7 +413,12 @@ public class FrameRevolvingFund extends javax.swing.JFrame {
 
         jLabel4.setText("Description");
 
-        txtamount.setText("0");
+        txtamount.setText("0.00");
+        txtamount.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtamountKeyReleased(evt);
+            }
+        });
 
         cbfundsource.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -712,6 +720,16 @@ public class FrameRevolvingFund extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_btdeleteActionPerformed
+
+    private void txtamountKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtamountKeyReleased
+        double x;
+        try {
+            x = Double.parseDouble(txtamount.getText());
+        } catch (NumberFormatException nfe) {
+            txtamount.setText("0.00");
+            txtamount.selectAll();
+        }
+    }//GEN-LAST:event_txtamountKeyReleased
 
     /**
      * @param args the command line arguments

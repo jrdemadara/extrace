@@ -540,7 +540,9 @@ public class FrameDisbursementVoucher extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Extrace");
         setAlwaysOnTop(true);
+        setMinimumSize(new java.awt.Dimension(717, 543));
         setResizable(false);
+        setSize(new java.awt.Dimension(717, 543));
 
         jPanel1.setBackground(new java.awt.Color(45, 52, 66));
 

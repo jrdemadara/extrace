@@ -398,7 +398,10 @@ public final class FrameMain extends javax.swing.JFrame {
         MenuSettings = new javax.swing.JMenu();
         jMenuItem11 = new javax.swing.JMenuItem();
         jMenuItem14 = new javax.swing.JMenuItem();
-        jMenuItem12 = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
         jMenuItem19 = new javax.swing.JMenuItem();
         jMenuItem20 = new javax.swing.JMenuItem();
@@ -606,7 +609,6 @@ public final class FrameMain extends javax.swing.JFrame {
         tablerf.setSelectionBackground(new java.awt.Color(45, 52, 66));
         tablerf.setSelectionForeground(new java.awt.Color(235, 235, 236));
         tablerf.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        tablerf.setShowHorizontalLines(true);
         tablerf.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tablerfMouseClicked(evt);
@@ -741,7 +743,6 @@ public final class FrameMain extends javax.swing.JFrame {
         tabledv.setSelectionBackground(new java.awt.Color(45, 52, 66));
         tabledv.setSelectionForeground(new java.awt.Color(235, 235, 236));
         tabledv.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        tabledv.setShowHorizontalLines(true);
         tabledv.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tabledvMouseClicked(evt);
@@ -822,7 +823,6 @@ public final class FrameMain extends javax.swing.JFrame {
         tablejournal.setSelectionBackground(new java.awt.Color(45, 52, 66));
         tablejournal.setSelectionForeground(new java.awt.Color(235, 235, 236));
         tablejournal.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        tablejournal.setShowHorizontalLines(true);
         tablejournal.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tablejournalMouseClicked(evt);
@@ -980,14 +980,25 @@ public final class FrameMain extends javax.swing.JFrame {
         });
         MenuSettings.add(jMenuItem14);
 
-        jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icons8_database_administrator_16px.png"))); // NOI18N
-        jMenuItem12.setText("Database Settings");
-        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+        jMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icons8_database_administrator_16px.png"))); // NOI18N
+        jMenu1.setText("Database");
+
+        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icons8_server_16px.png"))); // NOI18N
+        jMenuItem1.setText("Server Configuration");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem12ActionPerformed(evt);
+                jMenuItem1ActionPerformed(evt);
             }
         });
-        MenuSettings.add(jMenuItem12);
+        jMenu1.add(jMenuItem1);
+
+        jMenuItem2.setText("jMenuItem2");
+        jMenu1.add(jMenuItem2);
+
+        jMenuItem3.setText("jMenuItem3");
+        jMenu1.add(jMenuItem3);
+
+        MenuSettings.add(jMenu1);
 
         jMenuBar1.add(MenuSettings);
 
@@ -1193,10 +1204,6 @@ public final class FrameMain extends javax.swing.JFrame {
         frame.setVisible(true);
     }//GEN-LAST:event_btreportActionPerformed
 
-    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem12ActionPerformed
-
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         FrameDisbursementVoucher frame = new FrameDisbursementVoucher();
         frame.setVisible(true);
@@ -1234,6 +1241,11 @@ public final class FrameMain extends javax.swing.JFrame {
         FrameBugReport frame = new FrameBugReport();
         frame.setVisible(true);
     }//GEN-LAST:event_jMenuItem20ActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        FrameDatabaseConfig frame = new FrameDatabaseConfig();
+        frame.setVisible(true);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1281,17 +1293,20 @@ public final class FrameMain extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem11;
-    private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem13;
     private javax.swing.JMenuItem jMenuItem14;
     private javax.swing.JMenuItem jMenuItem16;
     private javax.swing.JMenuItem jMenuItem19;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem20;
     private javax.swing.JMenuItem jMenuItem21;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel11;

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9a304fbc-44e7-4344-9ef2-b8cae314b976">
-	<property name="ireport.zoom" value="1.3310000000000086"/>
+	<property name="ireport.zoom" value="1.3310000000000088"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="1"/>
 	<parameter name="datefrom" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -22,12 +22,21 @@
 	<parameter name="email" class="java.lang.String"/>
 	<parameter name="phone" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT * FROM tbldisbursementvoucher WHERE FundSource = $P{account} AND Date BETWEEN $P{datefrom} AND $P{dateto};]]>
+		<![CDATA[SELECT * FROM tbldisbursementvoucherparticular INNER JOIN  tbldisbursementvoucher ON tbldisbursementvoucherparticular.DisbursementCode = tbldisbursementvoucher.DisbursementCode WHERE FundSource = $P{account} AND Date BETWEEN $P{datefrom} AND $P{dateto};]]>
 	</queryString>
 	<field name="ID" class="java.lang.Integer">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="DisbursementCode" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Code" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Account" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Amount" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="ChargeTo" class="java.lang.String">
@@ -63,66 +72,52 @@
 				<reportElement x="-1" y="44" width="803" height="1" uuid="b3a4f7d2-142a-400e-81ed-5570cbab07cf"/>
 			</line>
 			<staticText>
-				<reportElement x="259" y="47" width="302" height="17" uuid="b6965780-a766-4794-9a12-eef3f10a00b3"/>
+				<reportElement x="0" y="49" width="802" height="17" uuid="b6965780-a766-4794-9a12-eef3f10a00b3"/>
 				<textElement textAlignment="Center">
 					<font fontName="Cambria" size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[DISBURSEMENT VOUCHER REPORT]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="82" width="94" height="12" uuid="8a4fedeb-97af-494a-a87f-3f246af9598a"/>
+				<reportElement x="0" y="81" width="64" height="12" uuid="8a4fedeb-97af-494a-a87f-3f246af9598a"/>
 				<textElement>
 					<font fontName="Cambria" size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[TOTAL AMOUNT	:]]></text>
+				<text><![CDATA[Total Amount :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="682" y="94" width="48" height="12" uuid="82c4cf54-dfac-4f04-bd8b-d477de9ec1ea"/>
+				<reportElement x="582" y="94" width="63" height="12" uuid="409cbc0a-b4d1-4185-bda6-1ce721f36226"/>
 				<textElement>
 					<font fontName="Cambria" size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[TO 	:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="682" y="82" width="48" height="12" uuid="409cbc0a-b4d1-4185-bda6-1ce721f36226"/>
-				<textElement>
-					<font fontName="Cambria" size="10" isBold="false"/>
-				</textElement>
-				<text><![CDATA[FROM 	:]]></text>
+				<text><![CDATA[Date Range :]]></text>
 			</staticText>
 			<line>
 				<reportElement x="0" y="109" width="801" height="1" uuid="4b705d0e-3a1f-49ea-ae26-266a7973cf6f"/>
 			</line>
 			<textField>
-				<reportElement x="730" y="82" width="72" height="12" uuid="60315950-3819-488e-a47f-c4d58620ded8"/>
+				<reportElement x="645" y="94" width="157" height="12" uuid="60315950-3819-488e-a47f-c4d58620ded8"/>
 				<textElement>
 					<font fontName="Cambria" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{datefrom}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{datefrom} +" to " + $P{dateto}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="730" y="94" width="72" height="12" uuid="7eb40901-5799-43bb-b6ea-948c216a81cf"/>
-				<textElement>
-					<font fontName="Cambria" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{dateto}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="94" y="82" width="138" height="12" uuid="40f045ad-3877-4dc6-af72-19f83acfdff8"/>
+				<reportElement x="64" y="81" width="168" height="12" uuid="40f045ad-3877-4dc6-af72-19f83acfdff8"/>
 				<textElement>
 					<font fontName="Cambria" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{total}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="3" y="94" width="90" height="12" uuid="a27d34d2-5012-46b2-a8ce-e94db60a3c63"/>
+				<reportElement x="3" y="92" width="61" height="12" uuid="a27d34d2-5012-46b2-a8ce-e94db60a3c63"/>
 				<textElement>
 					<font fontName="Cambria" size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[FUND SOURCE	:]]></text>
+				<text><![CDATA[Fund Source :]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="93" y="94" width="139" height="12" uuid="57684fc2-0930-4448-be88-4aab64ab377f"/>
+				<reportElement x="64" y="92" width="168" height="12" uuid="57684fc2-0930-4448-be88-4aab64ab377f"/>
 				<textElement>
 					<font fontName="Cambria" isBold="true"/>
 				</textElement>
@@ -133,150 +128,157 @@
 				<imageExpression><![CDATA["C:\\Program Files\\Extrace\\logo-64.png"]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="46" y="23" width="398" height="13" uuid="6230bd6b-b525-4863-b3ce-039e99de9e96"/>
-				<textElement>
+				<reportElement x="0" y="23" width="802" height="13" uuid="6230bd6b-b525-4863-b3ce-039e99de9e96"/>
+				<textElement textAlignment="Center">
 					<font fontName="Cambria" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{address} +" | TIN "+ $P{tin}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="46" y="0" width="398" height="24" uuid="a8f2ff79-0c67-4c24-87ab-0d69079e263e"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None">
+				<reportElement x="0" y="0" width="802" height="24" uuid="a8f2ff79-0c67-4c24-87ab-0d69079e263e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
 					<font fontName="Cambria" size="20" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{company}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="46" y="33" width="398" height="13" uuid="b35893dc-21c1-44db-81ee-6f374226c1d1"/>
-				<textElement>
+				<reportElement x="0" y="33" width="802" height="13" uuid="b35893dc-21c1-44db-81ee-6f374226c1d1"/>
+				<textElement textAlignment="Center">
 					<font fontName="Cambria" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{email} +" | "+ $P{phone}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="-1" y="65" width="803" height="17" uuid="1761a488-b598-4dff-b53e-a8f1b7664201"/>
+				<textElement textAlignment="Center">
+					<font fontName="Cambria" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[BY DATE]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="15" splitType="Stretch">
 			<staticText>
-				<reportElement mode="Opaque" x="470" y="1" width="114" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="967c0039-5a68-4bbf-8366-8bf6cf4a4a03"/>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<text><![CDATA[FUND SOURCE]]></text>
-			</staticText>
-			<staticText>
-				<reportElement mode="Opaque" x="269" y="1" width="76" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="7d8e8575-ec13-487f-9038-55ecf51bee59"/>
+				<reportElement mode="Opaque" x="328" y="1" width="66" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="e8935406-b073-4f7f-b226-64186b5d3d2c"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
 				<text><![CDATA[TIN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="345" y="1" width="125" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="4020c52f-4e05-4635-994e-f7c737be9a77"/>
+				<reportElement mode="Opaque" x="726" y="1" width="76" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="1413e8bc-5fc8-4789-bf72-3b4ab6cd6152"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<text><![CDATA[DESCRIPTION]]></text>
+				<text><![CDATA[AMOUNT]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="172" y="1" width="97" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="696cb6d2-2826-4793-ac38-71c835779511"/>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<text><![CDATA[PAYEE]]></text>
-			</staticText>
-			<staticText>
-				<reportElement mode="Opaque" x="74" y="1" width="98" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="f026aa15-1173-47fa-8e73-778e36b4f973"/>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<text><![CDATA[CHARGE TO]]></text>
-			</staticText>
-			<staticText>
-				<reportElement mode="Opaque" x="584" y="1" width="110" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="c8967a3f-07e2-447d-acc0-0ee997981627"/>
+				<reportElement mode="Opaque" x="537" y="1" width="68" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="92b2ff32-fc87-48d7-a9a1-6a1ab39b4f8f"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
 				<text><![CDATA[CHUQUE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="-1" y="1" width="75" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="d32fb2f5-9c0e-40a9-9041-3536fd7f6d23"/>
+				<reportElement mode="Opaque" x="64" y="1" width="139" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="83bb5c02-18eb-4332-a426-8e374a2b303f"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[CHARGE TO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="605" y="1" width="121" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="d3bfc24f-d195-4f98-99c5-26b4721f8a67"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Account]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="1" width="64" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="275e7182-51f5-4ae3-92da-4a9c04e0a962"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
 				<text><![CDATA[DV CODE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="694" y="1" width="107" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="74604f67-d55f-4523-b523-cb03ff03135a"/>
+				<reportElement mode="Opaque" x="203" y="1" width="125" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="97e436a6-3e85-48f2-9934-a482253002de"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<text><![CDATA[TOTAL AMOUNT]]></text>
+				<text><![CDATA[PAYEE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="394" y="1" width="143" height="14" forecolor="#FFFFFF" backcolor="#FF9900" uuid="f97706cc-8935-4250-a935-f79492f2cd98"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[DESCRIPTION]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="12" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="74" height="12" uuid="61bf7a27-3f0d-4281-8d73-bcb79e7f468d"/>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{DisbursementCode}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="584" y="0" width="110" height="12" uuid="8e476d70-d725-43c5-8f5e-0a8ec574129e"/>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{CheckNo}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="269" y="0" width="76" height="12" uuid="7f0d36bb-2309-4c40-ada0-eeedf2a80dc7"/>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{TINNumber}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="74" y="0" width="98" height="12" uuid="5a1ec851-6288-44c5-8d4c-b0d414c4578a"/>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{ChargeTo}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="470" y="0" width="114" height="12" uuid="91f13e48-d3c1-4ccf-aa69-9ccf254200a8"/>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{FundSource}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="694" y="0" width="107" height="12" uuid="4cd20478-3df1-4644-bcbf-ac85652f47d6"/>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{TotalAmount}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="172" y="0" width="97" height="12" uuid="3ebf65df-d965-4458-980f-6e0565b458e4"/>
+				<reportElement x="203" y="0" width="125" height="12" uuid="f5394a43-1c1a-4f01-916e-784851a7e86d"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{Payee}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="345" y="0" width="125" height="12" uuid="26cd2040-4889-48d4-a062-59fac94d82d0"/>
+				<reportElement x="726" y="0" width="76" height="12" uuid="df75532e-3536-4db3-900d-4dc153cbd8c6"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Amount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="605" y="0" width="121" height="12" uuid="b324d10d-9bae-4b49-9edf-92fa541cd0d7"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Account}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="537" y="0" width="68" height="12" uuid="62271cb5-6141-4005-8dd8-ad9d8bf180a9"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CheckNo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="393" y="0" width="143" height="12" uuid="d5d4e464-8462-47c6-85a9-d51949ba1f0f"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{Description}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="328" y="0" width="66" height="12" uuid="0ee870bc-d6d3-4dce-aae8-713512c209cd"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TINNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="64" y="0" width="139" height="12" uuid="a1f4ef27-5fc4-4492-96a3-57b996317367"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ChargeTo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="64" height="12" uuid="fdf94f89-8063-4790-a2db-03aac7420e00"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DisbursementCode}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="6" splitType="Stretch">
+		<band height="13" splitType="Stretch">
 			<line>
 				<reportElement x="0" y="0" width="801" height="1" uuid="09197018-7ebc-4c9f-b55c-b351cd9db27c"/>
 			</line>
@@ -292,7 +294,7 @@
 				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="763" y="5" width="38" height="17" uuid="1c190d26-1ee0-4192-b4b7-8d44067dc7cc"/>
+				<reportElement x="763" y="5" width="39" height="17" uuid="1c190d26-1ee0-4192-b4b7-8d44067dc7cc"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Cambria" isBold="false"/>
 				</textElement>

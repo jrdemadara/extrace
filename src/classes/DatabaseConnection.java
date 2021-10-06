@@ -15,12 +15,18 @@ import javax.swing.JOptionPane;
 public class DatabaseConnection {
 
     private Connection conn;
+    private String Host = "localhost";
+    private String Port = "3306";
+    private String Database = "schema_extrace";
+    private String ServerConfig = "serverTimezone=UTC";
+    private String User = "root";
+    private String Password = "Slasher15";
 
     public DatabaseConnection() {
         try {
             Connection connect;
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/schema_extrace?serverTimezone=UTC", "root", "tsiafytwiafm7677");
+            connect = DriverManager.getConnection("jdbc:mysql://" + Host + ":" + Port + "/" + Database + "?" + ServerConfig + "", "" + User + "", "" + Password + "");
             connect.setAutoCommit(true);
             setConnection(connect);
         } catch (ClassNotFoundException ex) {

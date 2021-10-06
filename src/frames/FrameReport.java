@@ -84,18 +84,19 @@ public class FrameReport extends javax.swing.JFrame {
             tableModel.removeRow(0);
         }
         try (Statement stmt = connection.createStatement()) {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM tbldisbursementvoucher");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tbldisbursementvoucherparticular INNER JOIN  tbldisbursementvoucher\n"
+                    + " ON tbldisbursementvoucherparticular.DisbursementCode = tbldisbursementvoucher.DisbursementCode");
             while (rs.next()) {
-                String code = rs.getString("DisbursementCode");
+                String iaccount = rs.getString("Account");
+                String amount = rs.getString("Amount");
+                String dvcode = rs.getString("DisbursementCode");
                 String chargeto = rs.getString("ChargeTo");
                 String payee = rs.getString("Payee");
                 String itin = rs.getString("TINNumber");
-                String fund = rs.getString("FundSource");
                 String des = rs.getString("Description");
                 String check = rs.getString("CheckNo");
-                String amount = rs.getString("TotalAmount");
                 String date = rs.getString("Date");
-                tableModel.addRow(new Object[]{code, chargeto, payee, itin, fund, des, check, amount, date});
+                tableModel.addRow(new Object[]{dvcode, chargeto, payee, itin, des, check, iaccount, amount, date});
             }
         } catch (SQLException e) {
         }
@@ -107,20 +108,20 @@ public class FrameReport extends javax.swing.JFrame {
             tableModel.removeRow(0);
         }
         try (Statement stmt = connection.createStatement()) {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM tbldisbursementvoucher WHERE Date BETWEEN '" + dtfromdv.getText() + "' AND '" + dttodv.getText() + "' ");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tbldisbursementvoucherparticular INNER JOIN  tbldisbursementvoucher\n"
+                    + " ON tbldisbursementvoucherparticular.DisbursementCode = tbldisbursementvoucher.DisbursementCode  WHERE Date BETWEEN '" + dtfromdv.getText() + "' AND '" + dttodv.getText() + "'");
             while (rs.next()) {
-                String code = rs.getString("DisbursementCode");
+                String iaccount = rs.getString("Account");
+                String amount = rs.getString("Amount");
+                String dvcode = rs.getString("DisbursementCode");
                 String chargeto = rs.getString("ChargeTo");
                 String payee = rs.getString("Payee");
                 String itin = rs.getString("TINNumber");
-                String fund = rs.getString("FundSource");
                 String des = rs.getString("Description");
                 String check = rs.getString("CheckNo");
-                String amount = rs.getString("TotalAmount");
                 String date = rs.getString("Date");
-                tableModel.addRow(new Object[]{code, chargeto, payee, itin, fund, des, check, amount, date});
+                tableModel.addRow(new Object[]{dvcode, chargeto, payee, itin, des, check, iaccount, amount, date});
             }
-
         } catch (SQLException e) {
         }
     }
@@ -131,18 +132,19 @@ public class FrameReport extends javax.swing.JFrame {
             tableModel.removeRow(0);
         }
         try (Statement stmt = connection.createStatement()) {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM tbldisbursementvoucher WHERE ChargeTo = '" + cbchargedv.getSelectedItem() + "' AND Date BETWEEN '" + dtfromdv.getText() + "' AND '" + dttodv.getText() + "' ");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tbldisbursementvoucherparticular INNER JOIN  tbldisbursementvoucher\n"
+                    + " ON tbldisbursementvoucherparticular.DisbursementCode = tbldisbursementvoucher.DisbursementCode  WHERE ChargeTo = '" + cbchargedv.getSelectedItem() + "' AND Date BETWEEN '" + dtfromdv.getText() + "' AND '" + dttodv.getText() + "'");
             while (rs.next()) {
-                String code = rs.getString("DisbursementCode");
+                String iaccount = rs.getString("Account");
+                String amount = rs.getString("Amount");
+                String dvcode = rs.getString("DisbursementCode");
                 String chargeto = rs.getString("ChargeTo");
                 String payee = rs.getString("Payee");
                 String itin = rs.getString("TINNumber");
-                String fund = rs.getString("FundSource");
                 String des = rs.getString("Description");
                 String check = rs.getString("CheckNo");
-                String amount = rs.getString("TotalAmount");
                 String date = rs.getString("Date");
-                tableModel.addRow(new Object[]{code, chargeto, payee, itin, fund, des, check, amount, date});
+                tableModel.addRow(new Object[]{dvcode, chargeto, payee, itin, des, check, iaccount, amount, date});
             }
         } catch (SQLException e) {
         }
@@ -154,18 +156,19 @@ public class FrameReport extends javax.swing.JFrame {
             tableModel.removeRow(0);
         }
         try (Statement stmt = connection.createStatement()) {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM tbldisbursementvoucher WHERE FundSource = '" + cbaccountdv.getSelectedItem() + "' AND Date BETWEEN '" + dtfromdv.getText() + "' AND '" + dttodv.getText() + "' ");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM tbldisbursementvoucherparticular INNER JOIN  tbldisbursementvoucher\n"
+                    + " ON tbldisbursementvoucherparticular.DisbursementCode = tbldisbursementvoucher.DisbursementCode  WHERE FundSource = '" + cbaccountdv.getSelectedItem() + "' AND Date BETWEEN '" + dtfromdv.getText() + "' AND '" + dttodv.getText() + "'");
             while (rs.next()) {
-                String code = rs.getString("DisbursementCode");
+                String iaccount = rs.getString("Account");
+                String amount = rs.getString("Amount");
+                String dvcode = rs.getString("DisbursementCode");
                 String chargeto = rs.getString("ChargeTo");
                 String payee = rs.getString("Payee");
                 String itin = rs.getString("TINNumber");
-                String fund = rs.getString("FundSource");
                 String des = rs.getString("Description");
                 String check = rs.getString("CheckNo");
-                String amount = rs.getString("TotalAmount");
                 String date = rs.getString("Date");
-                tableModel.addRow(new Object[]{code, chargeto, payee, itin, fund, des, check, amount, date});
+                tableModel.addRow(new Object[]{dvcode, chargeto, payee, itin, des, check, iaccount, amount, date});
             }
         } catch (SQLException e) {
         }
@@ -513,7 +516,7 @@ public class FrameReport extends javax.swing.JFrame {
 
             },
             new String [] {
-                "DV Code", "Charge To", "Payee", "TIN", "Fund Source", "Description", "Cheque", "Total Amount", "Date"
+                "DV Code", "Charge To", "Payee", "TIN", "Description", "Cheque", "Account", "Amount", "Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
